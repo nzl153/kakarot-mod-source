@@ -1,0 +1,23 @@
+{
+  "KAKAROTMOD-SAIYAN_BLOOD.title": "Saiyan Blood",
+  "KAKAROTMOD-SAIYAN_BLOOD.flavor": "The more pain, the fiercer the will.",
+  "KAKAROTMOD-SAIYAN_BLOOD.description": "Gain 1 extra Rage at the start of your first turn each combat. Whenever you play a Strike or take HP damage, gain 1 Rage. Below 20% HP: gain 2 Strength and 2 Dexterity. End of combat: if your HP is below 70%, heal 6 HP. With enough S-Cells, awaken.",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.title": "Healing Pod",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.flavor": "Restore the body, reignite the will to fight.",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.description": "At the start of each combat, heal 4 HP.",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.title": "Space Ship",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.flavor": "Tactical repositioning and immediate resupply.",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.description": "The first time you play a Skill each combat, draw 2 cards.",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.title": "Legendary Lineage",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.flavor": "More than rage flows in this bloodline. It carries a conqueror's instinct.",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "Gain 2 extra Rage at the start of your first turn each combat. Whenever you play a Strike or take HP damage, gain 2 Rage. Max Energy +1. Below 20% HP: gain 2 Strength and 2 Dexterity. End of combat: if your HP is below 80%, heal 6 HP. With enough S-Cells, awaken.",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.title": "No. 1 Capsule",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.flavor": "Compact emergency kit. Pop it open the moment you catch your breath.",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.description": "When you enter a Rest Site, heal 6 HP.",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.title": "Dragon Radar",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.flavor": "Seven wishes flicker on the glass, plus one more signal from another sphere.",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.description": "On pickup, choose 1 of 8 Shenron cards to add to your deck.",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.title": "Sacred Water Jug",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.flavor": "Catching Korin takes more than brute strength.",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.description": "The first time each turn you alternate between an Attack and a Skill, gain 1 Rage and draw 1 card. Powers do not interrupt the sequence."
+}

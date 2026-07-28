@@ -1,0 +1,14 @@
+.vs/
+.godot/
+bin/
+obj/
+*.dll
+*.pck
+*.zip
+Kakarot/Images/
+Kakarot/Audio/
+Kakarot/Animations/
+images/
+scenes/
+src/
+dist/

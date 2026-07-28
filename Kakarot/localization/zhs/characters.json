@@ -1,0 +1,16 @@
+{
+  "KAKAROTMOD-KAKAROT.title": "卡卡罗特",
+  "KAKAROTMOD-KAKAROT.titleObject": "卡卡罗特",
+  "KAKAROTMOD-KAKAROT.description": "来自异世界的赛亚人。通过受击或打出打击牌积攒怒气，并用怒气驱动卡牌与遗物效果。",
+  "KAKAROTMOD-KAKAROT.pronounObject": "他",
+  "KAKAROTMOD-KAKAROT.possessiveAdjective": "他的",
+  "KAKAROTMOD-KAKAROT.pronounPossessive": "他的",
+  "KAKAROTMOD-KAKAROT.pronounSubject": "他",
+  "KAKAROTMOD-KAKAROT.cardsModifierTitle": "卡卡罗特卡牌",
+  "KAKAROTMOD-KAKAROT.cardsModifierDescription": "卡卡罗特卡牌会出现在奖励和商店中。",
+  "KAKAROTMOD-KAKAROT.aromaPrinciple": "卡卡罗特",
+  "KAKAROTMOD-KAKAROT.eventDeathPrevention": "还没结束。",
+  "KAKAROTMOD-KAKAROT.banter.alive.endTurnPing": "继续战斗！",
+  "KAKAROTMOD-KAKAROT.banter.dead.endTurnPing": "我不会倒下。",
+  "KAKAROTMOD-KAKAROT.goldMonologue": "我会变得更强。"
+}

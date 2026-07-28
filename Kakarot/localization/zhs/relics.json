@@ -1,0 +1,23 @@
+{
+  "KAKAROTMOD-SAIYAN_BLOOD.title": "赛亚人之血",
+  "KAKAROTMOD-SAIYAN_BLOOD.flavor": "越是受伤，越能燃起斗志。",
+  "KAKAROTMOD-SAIYAN_BLOOD.description": "每场战斗首个回合额外获得1点怒气。当你打出打击牌或挨打时增加1点怒气。生命值低于20%时获得2点力量与2点灵敏。生命值低于70%时战斗结束回复6点生命。",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.title": "治疗仓",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.flavor": "修复身体，重整战意。",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.description": "每场战斗开始时，回复4点生命。",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.title": "太空飞船",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.flavor": "战术机动，先手补给。",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.description": "每场战斗中，你第一次打出技能牌时，抽2张牌。",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.title": "传说血统",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.flavor": "流淌在血脉中的，不只是愤怒，还有王者本能。",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "每场战斗首个回合额外获得2点怒气。当你打出打击牌或挨打时增加2点怒气。能量上限+1。生命值低于20%时获得2点力量与2点灵敏。生命值低于80%时战斗结束回复6点生命。",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.title": "1号胶囊",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.flavor": "巴掌大的急救舱，篝火边拆开刚好。",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.description": "进入篝火时，回复6点生命。",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.title": "龙珠雷达",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.flavor": "指针游走在七种神龙许愿之间，还有一道信号来自另一颗星。",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.description": "拾取时从8张神龙牌选择一张加入你的卡组",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.title": "超圣水壶",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.flavor": "追上卡林仙人，靠的从来不只是蛮力。",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.description": "每回合首次交替打出攻击牌与技能牌时，获得1点怒气并抽1张牌。能力牌不会中断交替记录。"
+}

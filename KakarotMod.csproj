@@ -1,0 +1,52 @@
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);_ReflectSts/**;_reflect_deck/**;_reflect_tmp/**;_KeywordProbe/**;_msbuild_obj/**;_locinspect/**;_apisniff/**;_enum_sniff/**;_sts2probe/**;_sts2pile/**;_cmd_sniff/**;_sniff_sm/**;scripts/Bootstrap/**;scripts/Relics/**;scripts/Systems/**</DefaultItemExcludes>
+    <Sts2GameRoot Condition="'$(Sts2GameRoot)'==''">$([System.Environment]::GetEnvironmentVariable('STS2_GAME_DIR'))</Sts2GameRoot>
+    <Sts2DataDir>$(Sts2GameRoot)\data_sts2_windows_x86_64</Sts2DataDir>
+    <Sts2WorkshopContentDir Condition="'$(Sts2WorkshopContentDir)'==''">$(Sts2GameRoot)\..\..\workshop\content\2868840</Sts2WorkshopContentDir>
+    <BaseLibDll Condition="'$(BaseLibDll)'=='' And Exists('$(Sts2GameRoot)\mods\BaseLib.3.3.0\BaseLib.dll')">$(Sts2GameRoot)\mods\BaseLib.3.3.0\BaseLib.dll</BaseLibDll>
+    <BaseLibDll Condition="'$(BaseLibDll)'=='' And Exists('$(Sts2WorkshopContentDir)\3737335127\BaseLib\BaseLib.dll')">$(Sts2WorkshopContentDir)\3737335127\BaseLib\BaseLib.dll</BaseLibDll>
+    <Version>3.0.0</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(Sts2DataDir)\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseLib">
+      <HintPath>$(BaseLibDll)</HintPath>
+    </Reference>
+    <Reference Include="GodotSharp">
+      <HintPath>$(Sts2DataDir)\GodotSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="sts2">
+      <HintPath>$(Sts2DataDir)\sts2.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="0.1.6" />
+    <AdditionalFiles Include="Kakarot\localization\**\*.json" />
+  </ItemGroup>
+  <PropertyGroup>
+    <KakarotModsDeployDir Condition="'$(KakarotModsDeployDir)'==''">$(Sts2GameRoot)\mods\kakarot</KakarotModsDeployDir>
+    <KakarotGameRoot Condition="'$(KakarotGameRoot)'==''">$(Sts2GameRoot)</KakarotGameRoot>
+    <DeployKakarotToMods Condition="'$(DeployKakarotToMods)'==''">false</DeployKakarotToMods>
+    <DeployKakarotDllToGameRoot Condition="'$(DeployKakarotDllToGameRoot)'==''">false</DeployKakarotDllToGameRoot>
+  </PropertyGroup>
+  <Target Name="DeployKakarotDllToMods" AfterTargets="Build" Condition="'$(DeployKakarotToMods)'!='false'">
+    <MakeDir Directories="$(KakarotModsDeployDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(KakarotModsDeployDir)\Kakarot.dll" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Kakarot.json" DestinationFiles="$(KakarotModsDeployDir)\Kakarot.json" SkipUnchangedFiles="true" Condition="Exists('$(MSBuildProjectDirectory)\Kakarot.json')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(KakarotGameRoot)\Kakarot.dll" SkipUnchangedFiles="true" Condition="'$(DeployKakarotDllToGameRoot)'=='true'" />
+  </Target>
+</Project>

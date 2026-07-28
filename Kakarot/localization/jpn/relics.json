@@ -1,0 +1,23 @@
+{
+  "KAKAROTMOD-SAIYAN_BLOOD.title": "サイヤ人の血",
+  "KAKAROTMOD-SAIYAN_BLOOD.flavor": "痛みが深いほど、意志は激しく燃える。",
+  "KAKAROTMOD-SAIYAN_BLOOD.description": "各戦闘の最初のターン開始時、追加で怒りを1得る。ストライクをプレイするかHPダメージを受けるたび、怒りを1得る。HPが20%未満なら筋力2と敏捷性2を得る。戦闘終了時、HPが70%未満ならHPを6回復。十分なS細胞があれば覚醒する。",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.title": "治療ポッド",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.flavor": "肉体を癒やし、戦う意志に再び火をつける。",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.description": "各戦闘開始時、HPを4回復。",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.title": "宇宙船",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.flavor": "戦術的な再配置と即時補給。",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.description": "各戦闘で初めてスキルをプレイした時、カードを2枚引く。",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.title": "伝説の血統",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.flavor": "この血に流れるのは怒りだけではない。征服者の本能も宿っている。",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "各戦闘の最初のターン開始時、追加で怒りを2得る。ストライクをプレイするかHPダメージを受けるたび、怒りを2得る。最大エナジー+1。HPが20%未満なら筋力2と敏捷性2を得る。戦闘終了時、HPが80%未満ならHPを6回復。十分なS細胞があれば覚醒する。",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.title": "No.1カプセル",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.flavor": "小型の緊急キット。一息ついた瞬間に開けよう。",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.description": "休憩所に入った時、HPを6回復。",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.title": "ドラゴンレーダー",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.flavor": "ガラスの上に七つの願いがちらつき、別の球からもう一つの反応が届く。",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.description": "入手時、8枚の神龍カードから1枚を選んでデッキに加える。",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.title": "超聖水の壺",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.flavor": "カリン様に追いつくには、力だけでは足りない。",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.description": "各ターン最初にアタックとスキルを交互にプレイした時、怒りを1得てカードを1枚引く。パワーは交互の記録を中断しない。"
+}

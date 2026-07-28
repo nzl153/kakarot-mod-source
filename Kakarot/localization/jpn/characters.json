@@ -1,0 +1,16 @@
+{
+  "KAKAROTMOD-KAKAROT.title": "カカロット",
+  "KAKAROTMOD-KAKAROT.titleObject": "カカロット",
+  "KAKAROTMOD-KAKAROT.description": "別の世界から来たサイヤ人。ダメージを受けたりストライク系カードを使ったりして怒りをため、カードやレリックの効果で消費する。",
+  "KAKAROTMOD-KAKAROT.pronounObject": "彼",
+  "KAKAROTMOD-KAKAROT.possessiveAdjective": "彼の",
+  "KAKAROTMOD-KAKAROT.pronounPossessive": "彼のもの",
+  "KAKAROTMOD-KAKAROT.pronounSubject": "彼",
+  "KAKAROTMOD-KAKAROT.cardsModifierTitle": "カカロットのカード",
+  "KAKAROTMOD-KAKAROT.cardsModifierDescription": "報酬やショップにカカロットのカードが出現する。",
+  "KAKAROTMOD-KAKAROT.aromaPrinciple": "カカロット",
+  "KAKAROTMOD-KAKAROT.eventDeathPrevention": "まだ終わりじゃない。",
+  "KAKAROTMOD-KAKAROT.banter.alive.endTurnPing": "まだまだ戦うぞ！",
+  "KAKAROTMOD-KAKAROT.banter.dead.endTurnPing": "オラは倒れない。",
+  "KAKAROTMOD-KAKAROT.goldMonologue": "もっと強くなる。"
+}

@@ -1,0 +1,10 @@
+{
+  "KAKAROT_STAR_COUNT.title": "Rage",
+  "KAKAROT_STAR_COUNT.description": "Your current Rage ({singleStarIcon}) count. Some Kakarot cards and relics use Rage.",
+  "KAKAROT_RELIC_RAGE_KEYWORD.title": "Rage",
+  "KAKAROT_RELIC_RAGE_KEYWORD.description": "Rage fuels cards and relic effects.",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.title": "S-Cells",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.description": "When you play cards that make you lose HP on purpose (except Kaioken), gain 1 S-Cell per HP lost. At 12 S-Cells, add Transform to your deck and put it into your hand (once per run).",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_title": "S-Cell tally",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_compendium": "During a run, this tip shows how many S-Cells you earned this combat and your lifetime total. Numbers are not available in the Compendium."
+}

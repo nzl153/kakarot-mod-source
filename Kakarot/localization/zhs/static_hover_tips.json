@@ -1,0 +1,10 @@
+{
+  "KAKAROT_STAR_COUNT.title": "怒气",
+  "KAKAROT_STAR_COUNT.description": "你当前的怒气（{singleStarIcon}）数量。卡卡罗特的部分卡牌与遗物会使用怒气。",
+  "KAKAROT_RELIC_RAGE_KEYWORD.title": "怒气",
+  "KAKAROT_RELIC_RAGE_KEYWORD.description": "怒气可以驱动卡牌与遗物效果。",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.title": "S细胞",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.description": "打出主动失去生命的卡牌时（界王拳除外），每失去1点生命获得1个S细胞。S细胞达到12个时，将变身加入牌组并置入手牌（每局游戏一次）。",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_title": "S细胞记录",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_compendium": "在一次游戏中，此提示会显示本场战斗获得的S细胞数量与累计总数。图鉴中不显示数值。"
+}
