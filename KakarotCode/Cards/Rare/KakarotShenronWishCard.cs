@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>Single-target fatal card that grants an extra card reward after combat on kill.</summary>
 public class KakarotShenronWishCard() : KakarotCard(1, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
 {
     public override int CanonicalStarCost => 1;

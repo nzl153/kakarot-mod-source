@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>完美自在极意：+20 力量与敏捷；90% 闪避（回复等量生命）；手牌耗能/怒气 -1（X 费除外）。</summary>
 public sealed class KakarotPerfectUltraInstinctPower : KakarotPower
 {
     private const int StatBonus = 20;

@@ -7,7 +7,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Each turn start: autoplay N cards from the top of the draw pile.</summary>
 public sealed class KakarotSaiyanAwakeningPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

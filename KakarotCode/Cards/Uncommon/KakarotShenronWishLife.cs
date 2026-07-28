@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Deal damage. If this card kills, increase max HP by 2.</summary>
 public class KakarotShenronWishLife() : KakarotCard(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(8m, ValueProp.Move)];

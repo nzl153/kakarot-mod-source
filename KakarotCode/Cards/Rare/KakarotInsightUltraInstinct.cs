@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>稀有能力：领悟极易（可进常规奖励池）。升级后 2 能量 2 怒气。</summary>
 public class KakarotInsightUltraInstinct() : KakarotCard(3, CardType.Power, CardRarity.Rare, TargetType.Self)
 {
     public override int CanonicalStarCost => 3;

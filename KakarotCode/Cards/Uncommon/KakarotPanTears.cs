@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Gain block on play. If this card is exhausted, gain 2 Energy.</summary>
 public class KakarotPanTears() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     public const int EnergyOnExhaust = 2;
@@ -23,7 +22,7 @@ public class KakarotPanTears() : KakarotCard(1, CardType.Skill, CardRarity.Uncom
         await CommonActions.CardBlock(this, cardPlay);
     }
 
-    // Hook 在 CardCmd.Exhaust 末尾被 await，能量按命令队列顺序串行入账，
+    // Exhaust callbacks are awaited, preserving command-queue order.
     public override async Task AfterCardExhausted(PlayerChoiceContext choiceContext, CardModel card, bool causedByEthereal)
     {
         if (card != this || Owner == null)

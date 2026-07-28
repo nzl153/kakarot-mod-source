@@ -4,8 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>赋关键字后尝试强制卡面刷新（解决野性等运行时关键字不刷新黄字行）。</summary>
+// Runtime keyword changes do not automatically refresh the card-face text.
 [HarmonyPatch(typeof(CardModel), nameof(CardModel.AddKeyword), typeof(CardKeyword))]
 public static class KakarotWildAddKeywordPatch
 {

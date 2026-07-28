@@ -50,7 +50,6 @@ public static class KakarotMerchantStaticVisualPatch
         }
         catch
         {
-            // Keep room stable even if visual replacement fails.
         }
     }
 
@@ -129,7 +128,6 @@ public static class KakarotFakeMerchantStaticVisualPatch
         }
         catch
         {
-            // Presentation-only; never break the fake merchant event.
         }
     }
 
@@ -212,7 +210,6 @@ public static class KakarotRestSiteStaticVisualPatch
         }
         catch
         {
-            // Keep room stable even if visual replacement fails.
         }
     }
 
@@ -268,7 +265,7 @@ public static class KakarotMapCleanupPatch
 {
     public static void Prefix()
     {
-        // 查看地图时保留活跃战斗立绘；战斗结束或收尾时才允许清理残留节点。
+        // Keep active combat portraits while the map overlay is open.
         if (CombatManager.Instance is { IsOverOrEnding: false })
         {
             return;
@@ -307,7 +304,6 @@ public static class KakarotMapRestorePatch
         }
         catch
         {
-            // Presentation-only; never break map navigation.
         }
     }
 }
@@ -361,10 +357,7 @@ internal static class KakarotStaticModelVisibility
         SetModels(root, true, includeRoomStaticModel: true);
     }
 
-    /// <summary>
-    /// 只隐藏房间残留立绘("KakarotStaticModel")，绝不碰角色本体("StaticModel" 是游戏自带的
-    /// 角色立绘节点)。奖励/选卡界面用：角色本应像原版一样可见，不能被一起藏掉而凭空消失。
-    /// </summary>
+    // Only target the mod's room portrait; the base StaticModel belongs to the game.
     public static void HideRoomModelsOnly(Node root)
     {
         SetRoomModels(root, false);
@@ -399,13 +392,8 @@ internal static class KakarotStaticModelVisibility
         }
     }
 
-    /// <summary>
-    /// 隐藏「战斗结束后残留的战斗立绘」。正常情况下进入地图/奖励界面时游戏会拆掉整个 CombatRoom，
-    /// 但与 RegentFX(万象辉星，patch 了 NCombatRoom)同开时拆除被打断，导致 CombatRoom 下的
-    /// "KakarotVisual"(NCreatureVisuals，本 mod 的战斗立绘场景)残留且 visible=True，飘在地图/奖励界面上。
-    /// 这里只按节点名 "KakarotVisual" 精准隐藏残留实例——每场战斗都是新建 CombatRoom，故不影响后续战斗的新立绘。
-    /// 只在战斗已结束的界面(地图/结算/选卡奖励)调用，绝不在战斗中调用。
-    /// </summary>
+    // Room-replacement mods can leave completed CombatRoom visuals mounted.
+    // Hide only stale KakarotVisual nodes and never touch active combat rooms.
     public static void HideLingeringCombatVisual(Node root)
     {
         if (root == null)
@@ -423,6 +411,34 @@ internal static class KakarotStaticModelVisibility
                 if (child.Name == "KakarotVisual" && child is CanvasItem canvasItem)
                 {
                     canvasItem.Visible = false;
+                }
+
+                stack.Push(child);
+            }
+        }
+    }
+
+    public static void HideLivingCombatVisuals(Node root)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        var stack = new System.Collections.Generic.Stack<Node>();
+        stack.Push(root);
+        while (stack.Count > 0)
+        {
+            var node = stack.Pop();
+            foreach (Node child in node.GetChildren())
+            {
+                if (child.Name == "KakarotVisual" && child is CanvasItem canvasItem)
+                {
+                    var creatureNode = FindCreatureAncestor(child);
+                    if (creatureNode?.Entity?.IsDead != true)
+                    {
+                        canvasItem.Visible = false;
+                    }
                 }
 
                 stack.Push(child);
@@ -559,7 +575,6 @@ public static class KakarotRewardsScreenCleanupPatch
         }
         catch
         {
-            // Presentation-only; never break reward flow.
         }
     }
 
@@ -571,7 +586,6 @@ public static class KakarotRewardsScreenCleanupPatch
         }
         catch
         {
-            // Presentation-only; never break reward flow.
         }
     }
 }
@@ -587,7 +601,6 @@ public static class KakarotCardRewardSelectionCleanupPatch
         }
         catch
         {
-            // Presentation-only; never break reward flow.
         }
     }
 
@@ -601,7 +614,6 @@ public static class KakarotCardRewardSelectionCleanupPatch
         }
         catch
         {
-            // Presentation-only; never break reward flow.
         }
     }
 }
@@ -648,7 +660,6 @@ public static class KakarotAbandonRunConfirmOpenPatch
         }
         catch
         {
-            // Presentation-only; never break the confirmation popup.
         }
     }
 }
@@ -664,7 +675,6 @@ public static class KakarotAbandonRunConfirmCancelPatch
         }
         catch
         {
-            // Presentation-only; never break cancellation.
         }
     }
 }
@@ -688,7 +698,6 @@ public static class KakarotRestSiteChoiceCleanupPatch
         }
         catch
         {
-            // Keep rest site flow stable.
         }
     }
 }
@@ -712,15 +721,11 @@ public static class KakarotRestSiteChoiceRestorePatch
         }
         catch
         {
-            // Keep rest site flow stable.
         }
     }
 }
 
-/// <summary>
-/// 放弃局数时房间未被替换，卡卡罗特立绘残留在画面中央遮挡结算文字。
-/// _Ready 只触发一次（结算画面可能被复用），改用 AfterOverlayOpened 每次打开都清理。
-/// </summary>
+// The game-over overlay can reuse its node, so stale room portraits are cleared on every open.
 [HarmonyPatch(typeof(NGameOverScreen), nameof(NGameOverScreen.AfterOverlayOpened))]
 public static class KakarotGameOverCleanupPatch
 {
@@ -734,12 +739,11 @@ public static class KakarotGameOverCleanupPatch
                 return;
             }
 
-            KakarotStaticModelVisibility.HideAll(root);
-            KakarotStaticModelVisibility.HideLingeringCombatVisual(root);
+            KakarotStaticModelVisibility.HideRoomModelsOnly(root);
+            KakarotStaticModelVisibility.HideLivingCombatVisuals(root);
         }
         catch
         {
-            // Keep game over screen flow stable.
         }
     }
 }

@@ -9,8 +9,7 @@ namespace KakarotMod.KakarotCode.Powers;
 
 public abstract class KakarotPower : CustomPowerModel
 {
-    // 路径解析按 Id.Entry 缓存。tooltip / power UI 刷新会高频调用 getter，
-    // 没缓存的话每次都要走 ResourceLoader.Exists（IO 探测）。
+    // Cache paths to avoid repeated resource probes during tooltip and power UI refreshes.
     private static readonly ConcurrentDictionary<string, string> PackedIconCache = new();
     private static readonly ConcurrentDictionary<string, string> BigIconCache = new();
 

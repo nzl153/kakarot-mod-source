@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>超级赛亚人蓝色：+12 力量 / +7 敏捷，替换超级赛亚人之神�?/summary>
 public sealed class KakarotSuperSaiyanBluePower : KakarotPower
 {
     private const int StrengthBonus = 12;

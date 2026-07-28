@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Next Attack gains bonus damage and Wild.</summary>
 public class KakarotTailPrep() : KakarotCard(0, CardType.Skill, CardRarity.Common, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("BonusDamage", 4m)];

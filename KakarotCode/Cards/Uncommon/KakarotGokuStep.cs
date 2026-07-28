@@ -20,7 +20,6 @@ namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
 
 
-/// <summary>This turn, your next Skill card is played twice.</summary>
 
 public class KakarotGokuStep() : KakarotCard(2, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 

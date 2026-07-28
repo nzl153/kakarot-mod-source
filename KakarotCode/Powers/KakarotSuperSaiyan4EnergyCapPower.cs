@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.Helpers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>SS4 entry: +1 max energy for this combat only (separate type from Potential Release stacks).</summary>
 public sealed class KakarotSuperSaiyan4EnergyCapPower : KakarotPower
 {
     private const string ReuseIcon = "kakarot_potential_energy_cap_power.png";

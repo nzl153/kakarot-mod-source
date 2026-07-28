@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-/// <summary>地图打开时隐藏当前事件房，关闭地图后仅在仍处于事件房时恢复显示。</summary>
+// Hide the current event room under the map overlay and restore it only if it remains active.
 public static class KakarotEventRoomUnderMapPatch
 {
     [HarmonyPatch(typeof(NMapScreen), nameof(NMapScreen.Open))]

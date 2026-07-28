@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Each turn, the first Wild card played draws cards equal to Amount.</summary>
 public sealed class KakarotWildEchoPower : KakarotPower
 {
     private bool _triggeredThisTurn;

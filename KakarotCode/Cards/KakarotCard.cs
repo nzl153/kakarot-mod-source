@@ -47,10 +47,7 @@ public abstract class KakarotCard(int cost, CardType type, CardRarity rarity, Ta
         }
     }
 
-    /// <summary>
-    /// 卡面黄色关键字行来自此处。运行时 <c>AddKeyword(Wild)</c> 只更新 <c>Keywords</c>，故在此把野性并入展示列表。
-    /// 子类若完全重写本属性，需自行合并野性（或调用 <see cref="KakarotWildDisplay.MergeWild"/>）。
-    /// </summary>
+    // Runtime Wild state is not included by the base canonical keyword list.
     public override IEnumerable<CardKeyword> CanonicalKeywords
     {
         get
@@ -71,7 +68,7 @@ public abstract class KakarotCard(int cost, CardType type, CardRarity rarity, Ta
 
             try
             {
-                // Compendium/history canonical cards have no combat owner; skip runtime keyword merge path.
+                // Compendium and history cards have no combat owner.
                 if (Owner?.PlayerCombatState == null)
                 {
                     return intrinsic;
@@ -158,15 +155,8 @@ public abstract class KakarotCoopColorlessCard(int cost, CardType type, CardRari
 
     public override CardMultiplayerConstraint MultiplayerConstraint => CardMultiplayerConstraint.MultiplayerOnly;
 
-    /// <summary>
-    /// Keep this true so multiplayer colorless generation paths can resolve this card.
-    /// Single-player paths filter it through <see cref="MultiplayerConstraint"/> first.
-    /// </summary>
+    // The multiplayer constraint removes these cards from single-player pools.
     public override bool CanBeGeneratedInCombat => true;
-
-    /// <summary>
-    /// 联机中的药水、升级与其它修饰符仍可生成；没有队友时由原版联机约束从候选池排除。
-    /// </summary>
     public override bool CanBeGeneratedByModifiers => true;
 
     protected override bool IsPlayable => base.IsPlayable && HasTeammateInCombat();

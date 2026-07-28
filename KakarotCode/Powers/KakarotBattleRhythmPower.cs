@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Each player turn start: draw N cards.</summary>
 public sealed class KakarotBattleRhythmPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

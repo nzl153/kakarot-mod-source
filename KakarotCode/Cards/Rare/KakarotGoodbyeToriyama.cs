@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>纪念鸟山明：0 费技能，虚无、消耗；获得 1 层原版无实体。升级去掉虚无并获得保留。</summary>
 public class KakarotGoodbyeToriyama() : KakarotCard(0, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Ethereal, CardKeyword.Exhaust];

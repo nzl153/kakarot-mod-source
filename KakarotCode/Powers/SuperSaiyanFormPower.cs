@@ -18,8 +18,7 @@ using ValueProp = MegaCrit.Sts2.Core.ValueProps.ValueProp;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// 超赛 1�?：力敏；回合开始先支付维持怒气否则解体；变身期间每回合首张攻击�?+1 怒；超二在能量重置后 +1 能量；超三漏气、每回合多抽 1、首张攻击翻倍�?/// </summary>
+// Shared state and upkeep for Super Saiyan stages 1-3.
 public sealed class SuperSaiyanFormPower : KakarotPower
 {
     private int _tier;
@@ -28,15 +27,15 @@ public sealed class SuperSaiyanFormPower : KakarotPower
     private int _appliedStrengthBonus;
     private int _appliedDexterityBonus;
 
-    /// <summary>超三：本场处于超三时，经过的玩家回合数（用于漏气张数，每回合张数上限 2）�?/summary>
+    // SS3 leak count grows with turns spent in the form.
     private int _ss3LeakStreak;
 
-    /// <summary>超三：本回合是否已打完「首张攻击牌」的全部伤害（用于整牌翻倍，含多段）�?/summary>
+    // The first SS3 Attack is doubled as one card, including all hits.
     private bool _ss3FirstAttackDoublingConsumed;
 
     private CardModel _ss3DoubledAttackCard;
 
-    /// <summary>非超三阶段：本回合是否已因「首张攻击牌」发过额外怒气�?/summary>
+    // Tracks the first-Attack rage trigger for SS1 and SS2.
     private bool _firstAttackBonusRageGrantedThisTurn;
 
     public bool FirstAttackBonusRageGrantedThisTurn => _firstAttackBonusRageGrantedThisTurn;
@@ -45,7 +44,6 @@ public sealed class SuperSaiyanFormPower : KakarotPower
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    /// <summary>小图标第二行：按阶段显示怒气/能量/超三机制�?/summary>
     protected override string SmartDescriptionLocKey => _tier switch
     {
         1 => "KAKAROTMOD-SUPER_SAIYAN_FORM_POWER.smart_t1",
@@ -216,7 +214,6 @@ public sealed class SuperSaiyanFormPower : KakarotPower
         }
     }
 
-    /// <summary>超二：每回合开始（能量重置后）+1 能量�?/summary>
     public override async Task AfterEnergyReset(Player player)
     {
         if (player == Owner.Player && _tier == 2)
@@ -225,7 +222,6 @@ public sealed class SuperSaiyanFormPower : KakarotPower
         }
     }
 
-    /// <summary>超三：本回合首张攻击牌（整牌，含多段伤害）的 powered 部分伤害 ×2�?/summary>
     public override decimal ModifyDamageMultiplicative(
         Creature target,
         decimal amount,
@@ -247,10 +243,7 @@ public sealed class SuperSaiyanFormPower : KakarotPower
         return 2m;
     }
 
-    /// <summary>
-    /// Some environments can throw MethodAccessException when calling ValuePropExtensions.IsPoweredAttack.
-    /// Fall back to a conservative check to avoid breaking combat flow.
-    /// </summary>
+    // Some runtime builds block ValuePropExtensions.IsPoweredAttack; use a narrow fallback.
     private static bool IsPoweredAttackSafe(ValueProp props)
     {
         try

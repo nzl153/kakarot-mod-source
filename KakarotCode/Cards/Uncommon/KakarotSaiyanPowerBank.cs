@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Playable only when leftmost hand card is Wild; gain resources and draw.</summary>
 public class KakarotSaiyanPowerBank() : KakarotCard(0, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     protected override bool IsPlayable

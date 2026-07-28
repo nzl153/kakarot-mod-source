@@ -13,7 +13,6 @@ using MegaCrit.Sts2.Core.Models.Exceptions;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>Granted after 5 Wild plays this combat. Enter Super Saiyan 4; add Tenfold Kamehameha to hand. Exhaust.</summary>
 public class KakarotReturnToOrigin() : KakarotCard(0, CardType.Skill, CardRarity.Ancient, TargetType.Self)
 {
     public override bool CanBeGeneratedInCombat => false;

@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>神龙许愿我要变：随机获得正义之心仪式、野性仪式进度或 S 细胞。</summary>
 public class KakarotShenronWishTransform() : KakarotCard(0, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     private const int JusticeThreshold = 30;

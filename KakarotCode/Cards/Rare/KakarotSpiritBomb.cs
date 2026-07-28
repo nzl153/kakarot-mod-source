@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>Spend X rage. Return to base form and deal AOE damage scaling with rage spent.</summary>
 public class KakarotSpiritBomb() : KakarotCard(3, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
 {
     public override bool HasStarCostX => true;

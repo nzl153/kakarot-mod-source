@@ -13,12 +13,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>S-cell training: pay HP to draw and gain Energy + rage.</summary>
 public class KakarotExtremeTraining() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     private const decimal HpCost = 3m;
 
-    /// <summary>S 细胞发放量固定，与超赛减免后的实际扣血无关。</summary>
     private const int SCellGrant = 4;
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<KakarotSCellPower>()];

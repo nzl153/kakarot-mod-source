@@ -16,7 +16,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Deal damage, then choose hand card(s) to gain Wild.</summary>
 public class KakarotSavagePunch() : KakarotCard(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

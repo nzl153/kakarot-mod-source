@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Merge dodge chance, then resolve all pending Justice progress at next turn start.</summary>
 public class KakarotWhisGuidance() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("DodgePercent", 10m)];

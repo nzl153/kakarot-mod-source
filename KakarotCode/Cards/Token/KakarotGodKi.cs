@@ -11,9 +11,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
-/// <summary>
-/// 仅由超赛神 / 超蓝变身召唤，不进常规卡池。本场打出 2 次后加入「变成超级赛亚人蓝色」。
-/// </summary>
 public class KakarotGodKi() : KakarotCard(2, CardType.Skill, CardRarity.Token, TargetType.Self)
 {
     public override bool CanBeGeneratedInCombat => false;
@@ -25,7 +22,6 @@ public class KakarotGodKi() : KakarotCard(2, CardType.Skill, CardRarity.Token, T
         Owner?.Creature is { } creature &&
         (creature.HasPower<KakarotSuperSaiyanGodPower>() || creature.HasPower<KakarotSuperSaiyanBluePower>());
 
-    /// <summary>超级赛亚人蓝色：本场战斗中所有「神之气」实例升一级（基础 2 费）。</summary>
     public static void UpgradeAllInstancesInCombat(Player player)
     {
         foreach (var card in player.PlayerCombatState.AllCards.ToList())
@@ -54,7 +50,7 @@ public class KakarotGodKi() : KakarotCard(2, CardType.Skill, CardRarity.Token, T
         var current = ritual?.Progress ?? 0;
         if (current >= 2)
         {
-            // Recover a counter left capped by an older DLL before beginning the next cycle.
+            // Reset a capped counter before beginning the next cycle.
             await PowerCmd.Remove<KakarotGodKiRitualPower>(creature);
             current = 0;
         }

@@ -7,7 +7,6 @@ using MegaCrit.Sts2.Core.Rooms;
 
 namespace KakarotMod.KakarotCode.Relics;
 
-/// <summary>First Skill played each combat: draw 2 cards.</summary>
 public sealed class KakarotSpaceShip : KakarotRelic
 {
     private bool _triggeredThisCombat;

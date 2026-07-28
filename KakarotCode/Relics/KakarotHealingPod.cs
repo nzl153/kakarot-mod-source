@@ -5,7 +5,6 @@ using MegaCrit.Sts2.Core.Rooms;
 
 namespace KakarotMod.KakarotCode.Relics;
 
-/// <summary>At the start of each combat, heal 4 HP.</summary>
 public sealed class KakarotHealingPod : KakarotRelic
 {
     public override RelicRarity Rarity => RelicRarity.Common;

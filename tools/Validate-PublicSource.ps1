@@ -2,8 +2,15 @@ $ErrorActionPreference = 'Stop'
 
 $repositoryRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $errors = [System.Collections.Generic.List[string]]::new()
-$handoffText = [string]::Concat([char]0x4EA4, [char]0x63A5)
-$reviewMarkerText = [string]::Concat([char]0x5BA1, [char]0x8BA1)
+$nonPublicMarkers = @(
+    (-join @([char]0x43, [char]0x6C, [char]0x61, [char]0x75, [char]0x64, [char]0x65)),
+    (-join @([char]0x47, [char]0x50, [char]0x54)),
+    (-join @([char]0x43, [char]0x6F, [char]0x6D, [char]0x70, [char]0x6F, [char]0x73, [char]0x65, [char]0x72)),
+    ((-join @([char]0x41, [char]0x49)) + '[ -]?' + (-join @([char]0x68, [char]0x61, [char]0x6E, [char]0x64, [char]0x6F, [char]0x66, [char]0x66))),
+    ([string]::Concat([char]0x4EA4, [char]0x63A5)),
+    ([string]::Concat([char]0x5BA1, [char]0x8BA1)),
+    (-join @([char]0x61, [char]0x75, [char]0x64, [char]0x69, [char]0x74))
+)
 $unpackText = [string]::Concat([char]0x89E3, [char]0x5305)
 $unpublishedText = -join @([char]0x5C1A, [char]0x672A, [char]0x516C, [char]0x5F00)
 $candidatePrepText = -join @([char]0x5019, [char]0x9009, [char]0x6574, [char]0x7406)
@@ -56,14 +63,9 @@ $allowedExtensionlessFiles = @(
     'LICENSE'
 )
 $generatedDirectories = @('.godot', '.vs', 'bin', 'obj')
-$forbiddenText = @(
-    ('Cl' + 'aude'),
-    ('G' + 'PT'),
-    ('Com' + 'poser'),
-    ('A' + 'I[ -]?handoff'),
-    $handoffText,
-    $reviewMarkerText,
-    ('au' + 'dit'),
+$forbiddenText = (@(
+    $nonPublicMarkers
+) + @(
     ('D:' + '\\'),
     ('C:' + '\\' + 'Users'),
     ('steam' + 'apps'),
@@ -74,7 +76,7 @@ $forbiddenText = @(
     ('api[_-]?key\s*[:=]'),
     ('access[_-]?token\s*[:=]'),
     ('password\s*[:=]')
-) -join '|'
+)) -join '|'
 
 function Normalize-RepositoryPath {
     param([Parameter(Mandatory = $true)][string]$Path)

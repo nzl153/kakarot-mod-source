@@ -25,9 +25,7 @@ internal static class KakarotWildRitualHandler
         return AddRitualProgress(choiceContext, player, playedCard, 1);
     }
 
-    /// <summary>
-    /// Advances Wild ritual counter (same rules as playing a Wild card). Used by cards that grant ritual progress without a Wild play.
-    /// </summary>
+    // Applies ritual progress without requiring a Wild card play.
     internal static async Task AddRitualProgress(PlayerChoiceContext choiceContext, Player player, CardModel sourceCard, int progressToAdd)
     {
         if (player.Character is not KakarotCharacter || progressToAdd <= 0)
@@ -50,7 +48,7 @@ internal static class KakarotWildRitualHandler
         var current = ritual?.Progress ?? 0;
         if (current >= 5)
         {
-            // Recover a counter left capped by an older DLL before beginning the next cycle.
+            // Reset a capped counter before beginning the next cycle.
             await PowerCmd.Remove<KakarotWildRitualPower>(creature);
             current = 0;
         }

@@ -9,9 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>
-/// Draw 3 (4 when upgraded), then choose 1 (2) card(s) in hand to gain Retain.
-/// </summary>
 public class KakarotSaiyanMeditation() : KakarotCard(0, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];

@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>Apply Regeneration. Upgrade grants Retain (keyword on card for UI).</summary>
 public class KakarotQiqiMeal() : KakarotCard(2, CardType.Power, CardRarity.Rare, TargetType.Self)
 {
     public override int CanonicalStarCost => 2;

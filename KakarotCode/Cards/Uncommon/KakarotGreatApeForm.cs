@@ -16,7 +16,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Gain block, mark hand cards Wild, then add Out of Control to draw pile.</summary>
 public class KakarotGreatApeForm() : KakarotCard(2, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

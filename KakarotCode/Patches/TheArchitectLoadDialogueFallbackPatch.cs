@@ -8,11 +8,7 @@ using MegaCrit.Sts2.Core.Models.Events;
 using MegaCrit.Sts2.Core.Saves;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>
-/// Mod characters are not listed in TheArchitect's CharacterDialogues, so GetValidDialogues yields nothing,
-/// LoadDialogue leaves Dialogue null, and WinRun dereferences Dialogue.EndAttackers. Reuse Ironclad's architect script.
-/// </summary>
+// Reuse Ironclad's script when the Architect has no dialogue registered for a mod character.
 [HarmonyPatch(typeof(TheArchitect), "LoadDialogue")]
 public static class TheArchitectLoadDialogueFallbackPatch
 {

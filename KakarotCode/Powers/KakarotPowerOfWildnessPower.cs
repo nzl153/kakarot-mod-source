@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>On Wild play, gain Strength and Block.</summary>
 public sealed class KakarotPowerOfWildnessPower : KakarotPower
 {
     public const decimal BaseBlockPerStack = 4m;

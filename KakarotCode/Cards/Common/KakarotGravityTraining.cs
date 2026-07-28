@@ -13,17 +13,14 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>S-cell training: pay HP for rage, Block, and temporary Strength.</summary>
 public class KakarotGravityTraining() : KakarotCard(1, CardType.Skill, CardRarity.Common, TargetType.Self)
 {
     private const decimal HpCost = 3m;
 
-    /// <summary>S 细胞发放量固定，与超赛减免后的实际扣血无关。</summary>
     private const int SCellGrant = 3;
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<KakarotSCellPower>()];
 
-    /// <summary>超级赛亚人形态下高亮，提示卖血减免生效。</summary>
     protected override bool ShouldGlowGoldInternal =>
         Owner?.Creature?.GetPower<SuperSaiyanFormPower>() != null;
 

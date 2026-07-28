@@ -12,18 +12,13 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Whis's Guidance: until your next turn start, chance to negate HP loss; then Justice ritual + draw.
-/// </summary>
 public sealed class KakarotWhisGuidancePower : KakarotPower
 {
-    /// <summary>多张维斯卡叠加时在出牌侧合并为单一实例，避免多条图标。</summary>
     public override MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType InstanceType => MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType.None;
 
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    /// <summary>角标显示合计规避概率（%）。</summary>
     public override int DisplayAmount => (int)Amount;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>

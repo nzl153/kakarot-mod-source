@@ -9,9 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Combat-only: tracks Justice Heart progress toward the next Super Saiyan God transformation card.
-/// </summary>
 public sealed class KakarotJusticeHeartRitualPower : KakarotPower
 {
     private const int MaxProgress = 5;

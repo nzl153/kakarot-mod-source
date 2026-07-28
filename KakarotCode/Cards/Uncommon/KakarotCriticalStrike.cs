@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Cost 2 Energy. Deal damage, apply Vulnerable. Gain rage. Optionally exhaust 1 card from hand. Upgrade: +3 damage, +1 Vulnerable, and +1 rage.</summary>
 public class KakarotCriticalStrike() : KakarotCard(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

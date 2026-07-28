@@ -59,7 +59,6 @@ public static class KakarotEnergyCounterColorPatch
         }
         catch
         {
-            // Purely cosmetic patch: never break room flow.
         }
     }
 
@@ -88,7 +87,6 @@ public static class KakarotEnergyCounterColorPatch
 
             if (node is CanvasItem ci)
             {
-                // Keep a subtle difference between main and rotating layers.
                 ci.Modulate = node.Name.ToString().Contains("Rotation", StringComparison.OrdinalIgnoreCase) ? dimTint : normalTint;
             }
 
@@ -146,7 +144,6 @@ public static class KakarotStarCounterScalePatch
             }
 
             ApplyKakarotStarHoverTip(__instance);
-            // Restore Kakarot custom star layers and original sizing intent.
             ReplaceStarTextures(__instance);
             __instance.Scale = new Vector2(0.62f, 0.62f);
             __instance.Position += new Vector2(0f, 16f);
@@ -154,7 +151,6 @@ public static class KakarotStarCounterScalePatch
         }
         catch
         {
-            // Cosmetic only.
         }
     }
 
@@ -201,7 +197,7 @@ public static class KakarotStarCounterScalePatch
     }
 }
 
-/// <summary>初始化路径未执行时的兜底刷新；完成一次设置后通过元数据快速跳过后续帧。</summary>
+// Reused combat UI may skip Initialize; metadata keeps the process fallback one-shot.
 [HarmonyPatch(typeof(NStarCounter), "_Process")]
 public static class KakarotStarCounterScaleRuntimePatch
 {
@@ -233,7 +229,6 @@ public static class KakarotStarCounterScaleRuntimePatch
         }
         catch
         {
-            // Cosmetic only.
         }
     }
 

@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Marks your next Attack as Wild and gives temporary Strength for that Attack only.</summary>
 public sealed class KakarotTailPrepPower : KakarotPower
 {
     private decimal _damageBonus = 4m;

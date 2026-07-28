@@ -14,7 +14,7 @@ namespace KakarotMod.KakarotCode.Helpers;
 
 internal static class KakarotCardSelectHelper
 {
-    /// <summary>LocString ctor is (locTable, locEntryKey). Reversed args throw at runtime (empty loc table).</summary>
+    // LocString expects table first and entry key second.
     private static readonly LocString HandSelectPrompt = new("combat_messages", "KAKAROTMOD_HAND_SELECT");
 
     private static readonly LocString DrawPileSelectPrompt = new("combat_messages", "KAKAROTMOD_DRAW_SELECT");
@@ -39,7 +39,7 @@ internal static class KakarotCardSelectHelper
         return await CardSelectCmd.FromHand(choiceContext, player, prefs, null, source);
     }
 
-    /// <summary>Select between <paramref name="minPick"/> and <paramref name="maxPick"/> cards from hand (inclusive). When <paramref name="minPick"/> is 0, uses discard-style selection so “confirm with 0 picks” works.</summary>
+    // Discard-style selection supports confirming with zero picks.
     internal static async Task<IEnumerable<CardModel>> FromHandSelectRangeAsync(
         PlayerChoiceContext choiceContext,
         Player player,

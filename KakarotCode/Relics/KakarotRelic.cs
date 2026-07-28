@@ -12,7 +12,7 @@ namespace KakarotMod.KakarotCode.Relics;
 [Pool(typeof(KakarotRelicPool))]
 public abstract class KakarotRelic : CustomRelicModel
 {
-    // 路径解析按 Id.Entry 缓存：遗物 tooltip / 顶栏图标渲染会高频调用 getter。
+    // Cache paths because relic tooltips and the top bar query these getters frequently.
     private static readonly ConcurrentDictionary<string, string> PackedIconCache = new();
     private static readonly ConcurrentDictionary<string, string> OutlineIconCache = new();
     private static readonly ConcurrentDictionary<string, string> BigIconCache = new();

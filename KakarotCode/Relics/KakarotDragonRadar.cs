@@ -17,9 +17,6 @@ using MegaCrit.Sts2.Core.Nodes.Screens.Map;
 
 namespace KakarotMod.KakarotCode.Relics;
 
-/// <summary>
-/// 拾取时（地图 / 宝箱 / 战后等）：从 8 张许愿牌中选 1 张，加入本局卡组。
-/// </summary>
 public sealed class KakarotDragonRadar : KakarotRelic
 {
     private static readonly LocString PickPrompt = new("combat_messages", "KAKAROTMOD_DRAGON_RADAR_PICK");
@@ -47,8 +44,7 @@ public sealed class KakarotDragonRadar : KakarotRelic
             return;
         }
 
-        // 若地图正打开（宝箱房获得遗物后），选牌面板会被地图遮罩盖住。
-        // 先关闭地图，选牌完成后再恢复。
+        // The map overlay otherwise covers the card-selection screen.
         var mapScreen = NMapScreen.Instance;
         var mapWasOpen = mapScreen?.IsOpen == true;
         if (mapWasOpen)
@@ -56,7 +52,7 @@ public sealed class KakarotDragonRadar : KakarotRelic
             mapScreen.Close(animateOut: false);
         }
 
-        // Obtain 可能从控制台等路径在非战斗 UI 栈上调用；ThrowingPlayerChoiceContext 在此场景下往往不会真正弹出选牌，FromSimpleGrid 会空返回。
+        // Defer one frame so non-combat acquisition paths can mount the selection UI.
         if (Engine.GetMainLoop() is SceneTree tree)
         {
             await tree.ToSignal(tree, SceneTree.SignalName.ProcessFrame);
@@ -85,11 +81,10 @@ public sealed class KakarotDragonRadar : KakarotRelic
 
         Flash();
 
-        // CreateCard 必须接收 ModelDb 的 canonical 实例；若传入 ToMutable() 的展示用副本会抛 MutableModelException（见 godot.log）。
+        // CreateCard requires the canonical ModelDb instance.
         var toAdd = Owner.RunState.CreateCard(WishCanonical(idx), Owner);
         var addResult = await CardPileCmd.Add(toAdd, Owner.Deck, CardPilePosition.Bottom, this, skipVisuals: false);
-        // 主卡组界面用 ContentsChanged 刷新；顶部栏卡组数字只跟 CardAddFinished。地图上加牌常无 NCard 节点，
-        // CardPileCmd 不会对 Deck 走到 InvokeCardAddFinished，这里补一次以免数字滞后。
+        // Map acquisition has no NCard node, so refresh the top-bar deck count explicitly.
         if (addResult.success)
         {
             Owner.Deck.InvokeCardAddFinished();

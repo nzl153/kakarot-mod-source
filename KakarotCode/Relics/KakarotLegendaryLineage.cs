@@ -11,15 +11,12 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Relics;
 
-/// <summary>Boss upgrade of Saiyan Blood with stronger rage gain and +1 max Energy.</summary>
 public sealed class KakarotLegendaryLineage : SaiyanBlood
 {
     public override RelicRarity Rarity => RelicRarity.Ancient;
 
-    /// <summary>较赛亚人之血（首回合 1 点）更高：每场首回合 2 点怒气。</summary>
     protected override decimal OpeningCombatRageBonus => 2m;
 
-    /// <summary>战后回复覆写基础遗物：生命低于最大值 80% 时回复 6。</summary>
     protected override int EndCombatHealHpThresholdPercent => 80;
 
     protected override decimal EndCombatHealAmount => 6m;

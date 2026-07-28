@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>蓄力：下一张攻击牌打出两次。</summary>
 public class KakarotFocusCharge() : KakarotCard(2, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

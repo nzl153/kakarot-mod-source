@@ -10,12 +10,10 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Marker: you played 领悟极易; adds +15% to the Ultra Instinct proc roll until it fires.</summary>
 public sealed class KakarotInsightUltraInstinctPower : KakarotPower
 {
     private const int BonusPerStack = 15;
 
-    /// <summary>与其它自在极意系 Power 一致；缺省时 ModelDb 会报「同型共享 ID」警告。</summary>
     public override MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType InstanceType => MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType.None;
 
     public override PowerType Type => PowerType.Buff;

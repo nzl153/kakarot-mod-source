@@ -56,45 +56,28 @@ public class SaiyanBlood : KakarotRelic
         }
     }
 
-    /// <summary>
-    /// Runtime only: after playing the Super Saiyan God transform card this combat, duplicate copies become unplayable.
-    /// Cleared at combat end so each new fight can ritual-grant and play transform again (per-combat, not per-run).
-    /// </summary>
-    private bool _superSaiyanGodUsedThisCombat;
-
     [SavedProperty(SerializationCondition.SaveIfNotTypeDefault)]
     private int _dragonFistBurstBonusThisRun;
 
     private int _wishGoldPendingThisCombat;
 
-    /// <summary>每场新战斗的首次我方回合开始时给予 1 点怒气。</summary>
     private bool _pendingOpeningCombatRage;
 
-    /// <summary>变身卡打出后的集气检索、解除卡后续。</summary>
     private bool _pendingSuperSaiyanTransformFollowup;
 
-    /// <summary>自在极意「神之气」本回合触发率加成（百分比）。遗物字段参与战斗快照，并在回合或战斗边界归零。</summary>
+    // Relic-backed storage participates in rollback snapshots; static storage desynchronizes replay.
     private int _godKiBonusPercentThisTurn;
 
     private int _ultraInstinctHpLossRollCounterThisCombat;
 
-    private bool _wildReturnToOriginGrantedThisCombat;
-
     [SavedProperty(SerializationCondition.SaveIfNotTypeDefault)]
     private int _whoElseButMePlayCountThisRun;
 
-    /// <summary>True after Super Saiyan God transform was played this combat; reset when combat ends.</summary>
-    public bool SuperSaiyanGodUsedThisCombat => _superSaiyanGodUsedThisCombat;
     public int DragonFistBurstBonusThisRun => _dragonFistBurstBonusThisRun;
-    public bool WildReturnToOriginGrantedThisCombat => _wildReturnToOriginGrantedThisCombat;
 
-    /// <summary>「舍我其谁」本局已成功打出并结算的次数（用于下次攻击段数）。</summary>
     public int WhoElseButMePlayCountThisRun => _whoElseButMePlayCountThisRun;
 
-    /// <summary>
-    /// Resolve the active Saiyan-bloodline relic regardless of whether it is
-    /// the starter relic or the upgraded Legendary Lineage replacement.
-    /// </summary>
+    // Support both the starter relic and its boss-relic replacement.
     public static SaiyanBlood ResolveBloodlineRelic(Player owner)
     {
         if (owner == null)
@@ -103,13 +86,6 @@ public class SaiyanBlood : KakarotRelic
         }
 
         return owner.GetRelic<SaiyanBlood>() ?? owner.GetRelic<KakarotLegendaryLineage>();
-    }
-
-    /// <summary>Call when transform card resolves; prevents duplicate plays until combat ends.</summary>
-    public void MarkSuperSaiyanGodUsedThisCombat()
-    {
-        AssertMutable();
-        _superSaiyanGodUsedThisCombat = true;
     }
 
     public void AddDragonFistBurstBonusThisRun(int amount)
@@ -140,16 +116,8 @@ public class SaiyanBlood : KakarotRelic
         _whoElseButMePlayCountThisRun++;
     }
 
-    public void MarkWildReturnToOriginGrantedThisCombat()
-    {
-        AssertMutable();
-        _wildReturnToOriginGrantedThisCombat = true;
-    }
-
-    /// <summary>本回合神之气加成（百分比）。仅读取，供触发率计算与 UI 使用。</summary>
     public int GodKiBonusPercentThisTurn => _godKiBonusPercentThisTurn;
 
-    /// <summary>神之气打出时叠加本回合触发率加成。</summary>
     public void AddGodKiBonusPercentThisTurn(int amount)
     {
         if (amount == 0)
@@ -161,7 +129,6 @@ public class SaiyanBlood : KakarotRelic
         _godKiBonusPercentThisTurn += amount;
     }
 
-    /// <summary>回合开始 / 进出战斗时清零本回合神之气加成。</summary>
     public void ResetGodKiBonusPercentThisTurn()
     {
         AssertMutable();
@@ -175,7 +142,7 @@ public class SaiyanBlood : KakarotRelic
         return _ultraInstinctHpLossRollCounterThisCombat;
     }
 
-    /// <summary>Transfer run-scoped counters from another SaiyanBlood before it is removed (e.g. boss relic upgrade).</summary>
+    // Preserve run-scoped counters when the starter relic is replaced.
     public void TransferRunPersistentStateFrom(SaiyanBlood old)
     {
         if (old == null || ReferenceEquals(old, this))
@@ -197,15 +164,12 @@ public class SaiyanBlood : KakarotRelic
 
     public override RelicRarity Rarity => RelicRarity.Starter;
 
-    /// <summary>本场战斗你第一个回合开始时额外获得的基础怒气。传说血统覆写为 2。</summary>
     protected virtual decimal OpeningCombatRageBonus => 1m;
 
-    /// <summary>战斗结束时：当前生命低于「最大生命 × 该百分比」则回复 <see cref="EndCombatHealAmount"/>。传说血统覆写为更高百分比与回复量。</summary>
     protected virtual int EndCombatHealHpThresholdPercent => 70;
 
     protected virtual decimal EndCombatHealAmount => 6m;
 
-    /// <summary>「变身」牌 OnPlay 末尾调用：标记须在 <see cref="AfterCardPlayed"/> 中完成集气检索与解除卡发放。</summary>
     public static void MarkPendingSuperSaiyanTransformFollowup(Player player)
     {
         var relic = ResolveBloodlineRelic(player);
@@ -248,7 +212,7 @@ public class SaiyanBlood : KakarotRelic
             return;
         }
 
-        // 整数式比较，避免浮点非确定性（联机）：CurrentHp/MaxHp < Percent/100。
+        // Integer comparison avoids floating-point divergence in multiplayer.
         if (creature.CurrentHp * 100 < creature.MaxHp * EndCombatHealHpThresholdPercent)
         {
             Flash();
@@ -326,7 +290,6 @@ public class SaiyanBlood : KakarotRelic
             KakarotUltraInstinctCombatState.ResetForNewCombat(Owner);
             _wishGoldPendingThisCombat = 0;
             _ultraInstinctHpLossRollCounterThisCombat = 0;
-            _wildReturnToOriginGrantedThisCombat = false;
             if (Owner?.Character is KakarotCharacter)
             {
                 _pendingOpeningCombatRage = true;
@@ -338,7 +301,6 @@ public class SaiyanBlood : KakarotRelic
         }
     }
 
-    /// <summary>Clears per-turn God Ki / UI proc bonus without a visible Power (see KakarotUltraInstinctCombatState).</summary>
     public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         if (player is { Character: KakarotCharacter } && ReferenceEquals(ResolveBloodlineRelic(player), this))
@@ -367,7 +329,6 @@ public class SaiyanBlood : KakarotRelic
             _wishGoldPendingThisCombat = 0;
         }
 
-        _superSaiyanGodUsedThisCombat = false;
         _pendingOpeningCombatRage = false;
         _nearDeathBoostApplied = false;
         Status = RelicStatus.Normal;
@@ -386,7 +347,6 @@ public class SaiyanBlood : KakarotRelic
 
         KakarotUltraInstinctCombatState.ResetForNewCombat(Owner);
         _ultraInstinctHpLossRollCounterThisCombat = 0;
-        _wildReturnToOriginGrantedThisCombat = false;
         _pendingSuperSaiyanTransformFollowup = false;
     }
 
@@ -408,7 +368,7 @@ public class SaiyanBlood : KakarotRelic
             return;
         }
 
-        // 残血爆发阈值：生命 ≤ 最大值 20%（CurrentHp*5 <= MaxHp）。整数比较，联机确定。
+        // Integer comparison keeps the 20% health threshold deterministic.
         bool isNearDeath = creature.CurrentHp * 5 <= creature.MaxHp;
         Status = isNearDeath ? RelicStatus.Active : RelicStatus.Normal;
 

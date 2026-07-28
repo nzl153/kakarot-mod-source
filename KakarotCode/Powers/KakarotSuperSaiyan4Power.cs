@@ -16,12 +16,9 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Super Saiyan 4: +10 Strength / +6 Dexterity; turn start +2 rage and mark one hand card Wild (upgraded while this persists).</summary>
 public sealed class KakarotSuperSaiyan4Power : KakarotPower
 {
-    // 直接走常量：原来�?`_strengthBonus = StrengthBonus` 的实例字段是无意义的�?
-    // IsInstanced=true 时存档加载会重建实例并把字段重置为初值，期望"运行期修改并持久�?是错的�?
-    // 改成常量后语义明确——AfterRemoved 减去的就�?BeforeApplied 加上的同一个值�?
+    // Use constants so removal always reverses exactly what application added.
     private const int StrengthBonus = 10;
     private const int DexterityBonus = 6;
 
@@ -71,13 +68,11 @@ public sealed class KakarotSuperSaiyan4Power : KakarotPower
         CardModel card = null;
         try
         {
-            // Keep original design: player chooses 1 hand card to gain Wild.
             var chosen = await KakarotCardSelectHelper.FromHandSelectAsync(choiceContext, player, 1, this);
             card = chosen.FirstOrDefault();
         }
         catch
         {
-            // Never let selection UI issues break turn flow.
             return;
         }
 

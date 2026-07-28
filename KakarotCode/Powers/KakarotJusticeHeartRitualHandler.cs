@@ -31,7 +31,7 @@ public static class KakarotJusticeHeartRitualHandler
         var current = ritual?.Progress ?? 0;
         if (current >= MaxProgress)
         {
-            // Recover a counter left capped by an older DLL before beginning the next cycle.
+            // Reset a capped counter before beginning the next cycle.
             await PowerCmd.Remove<KakarotJusticeHeartRitualPower>(creature);
             current = 0;
         }

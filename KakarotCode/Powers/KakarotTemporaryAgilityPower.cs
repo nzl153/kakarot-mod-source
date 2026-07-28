@@ -14,9 +14,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Temporary Dexterity until end of your turn: single buff row entry; does not mirror <see cref="DexterityPower"/>.
-/// </summary>
+// Separate from DexterityPower so temporary stacks share one reversible source.
 public sealed class KakarotTemporaryAgilityPower : KakarotPower
 {
     public override string CustomPackedIconPath =>

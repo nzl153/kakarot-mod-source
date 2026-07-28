@@ -10,13 +10,10 @@ using MegaCrit.Sts2.Core.Models.Exceptions;
 
 namespace KakarotMod.KakarotCode.DynamicVars;
 
-// 预览路径只更新 PreviewValue；不得从卡面渲染路径修改同步战斗状态。
-// 词条页和主菜单中的 canonical 卡牌没有有效 Owner，计算时必须先检查 run/combat 状态并容错返回基础值。
+// Preview code may update PreviewValue only; BaseValue participates in synchronized rollback state.
+// Canonical cards have no Owner, so calculations must short-circuit outside a run or combat.
 
-/// <summary>
-/// 「舍我其谁」段数展示：显示 = 基础段数(Hits，含升级) + 本局已打出次数（从赛亚血脉遗物只读）。
-/// 与 OnPlay 实际结算同源同公式（Hits.BaseValue + 计数器，再 clamp）。只读计算，绝不写 BaseValue。
-/// </summary>
+// Uses the same hit-count formula as card resolution without mutating synchronized values.
 public sealed class KakarotTotalHitsVar : DynamicVar
 {
     public KakarotTotalHitsVar(string name, decimal baseValue)
@@ -69,10 +66,7 @@ public sealed class KakarotTotalHitsVar : DynamicVar
     }
 }
 
-/// <summary>
-/// 卖血/修炼牌扣血展示：显示 = 超赛形态减免后的实际扣血（<see cref="KakarotTrainingSelfHpCost.Resolve"/>）。
-/// OnPlay 实扣血用同一公式（对常量基础值求 Resolve）。只读计算，绝不写 BaseValue。
-/// </summary>
+// Uses the same self-damage formula as card resolution.
 public sealed class KakarotReducedHpLossVar : DynamicVar
 {
     public KakarotReducedHpLossVar(string name, decimal baseValue)

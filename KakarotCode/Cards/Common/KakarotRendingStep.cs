@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Attack and block. If this card is Wild, deal extra damage.</summary>
 public class KakarotRendingStep() : KakarotCard(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

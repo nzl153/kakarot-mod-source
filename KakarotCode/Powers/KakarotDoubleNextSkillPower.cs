@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Duplicate the next Skill card played this turn.</summary>
 public sealed class KakarotDoubleNextSkillPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

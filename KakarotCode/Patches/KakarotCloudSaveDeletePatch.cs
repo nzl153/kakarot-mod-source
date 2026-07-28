@@ -4,10 +4,7 @@ using MegaCrit.Sts2.Core.Saves;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-/// <summary>
-/// Work around cloud/local save drift where deleting stale history backups can throw
-/// and block startup. We only swallow targeted history backup delete failures.
-/// </summary>
+// Ignore only stale history-backup deletion failures caused by cloud/local save drift.
 [HarmonyPatch(typeof(GodotFileIo), nameof(GodotFileIo.DeleteFile))]
 public static class KakarotCloudSaveDeletePatch
 {

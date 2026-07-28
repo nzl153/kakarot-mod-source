@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Expose-like: strip one enemy's Block and Artifact, gain rage. Exhaust.</summary>
 public class KakarotRoar() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];

@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Wild;
 
-/// <summary>赋予野性后请求卡面刷新，使关键字行及时同步。</summary>
+// Notify known card-face refresh methods after Wild changes.
 public static class KakarotWildCardPresentationBump
 {
     public static void TryBump(CardModel card)
@@ -13,6 +13,8 @@ public static class KakarotWildCardPresentationBump
         {
             return;
         }
+
+        // Invoke refresh methods only; mutating layout fields can corrupt card presentation.
 
         foreach (var methodName in new[]
                  {
@@ -32,7 +34,6 @@ public static class KakarotWildCardPresentationBump
             }
             catch
             {
-                // ignore
             }
         }
     }

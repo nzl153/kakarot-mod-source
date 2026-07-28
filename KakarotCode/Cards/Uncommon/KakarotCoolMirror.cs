@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Attack; if rightmost hand card is Wild, attack again and draw.</summary>
 public class KakarotCoolMirror() : KakarotCard(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
 {
     public override int CanonicalStarCost => 1;

@@ -7,9 +7,6 @@ using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-/// <summary>
-/// Force Dusty Tome ("魔封的宝典") to always grant Father-Son Wave for Kakarot.
-/// </summary>
 [HarmonyPatch(typeof(DustyTome), nameof(DustyTome.SetupForPlayer))]
 public static class KakarotDustyTomeAncientCardPatch
 {
@@ -25,10 +22,7 @@ public static class KakarotDustyTomeAncientCardPatch
     }
 }
 
-/// <summary>
-/// Fallback for paths that obtain Dusty Tome directly (e.g. dev console),
-/// ensuring pickup reward is still forced to Father-Son Wave for Kakarot.
-/// </summary>
+// Direct relic grants bypass the normal reward path.
 [HarmonyPatch(typeof(DustyTome), nameof(DustyTome.AfterObtained))]
 public static class KakarotDustyTomeAfterObtainedPatch
 {

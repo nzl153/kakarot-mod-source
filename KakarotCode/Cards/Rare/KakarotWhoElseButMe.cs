@@ -15,9 +15,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>
-/// 舍我其谁：0 费卖血爆发。半血及以下重复一次全体攻击；不再使用本局成长/动态段数，避开联机多段同步风险。
-/// </summary>
 public class KakarotWhoElseButMe() : KakarotCard(0, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
 {
     private const decimal HpCostBase = 5m;

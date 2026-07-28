@@ -13,7 +13,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Events;
 
-/// <summary>不可思议的冒险：随机升级两张牌，或扣血并移除两张牌。</summary>
 public sealed class KakarotIncredibleAdventure : EventModel
 {
     private const decimal GoodbyeHpLoss = 6m;

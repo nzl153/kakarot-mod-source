@@ -4,11 +4,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>
-/// Make Touch of Orobas upgrade Saiyan Blood into Legendary Lineage
-/// instead of falling back to Circlet.
-/// </summary>
+// Touch of Orobas needs an explicit upgrade path for the custom starter relic.
 [HarmonyPatch(typeof(TouchOfOrobas), nameof(TouchOfOrobas.GetUpgradedStarterRelic))]
 public static class KakarotTouchOfOrobasUpgradePatch
 {

@@ -11,10 +11,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Per-turn rage while transformed; same behaviour as <see cref="KakarotRageAuraPower"/> but a separate type so removal does not hit other rage auras.
-/// Uses the rage-engine power art if present.
-/// </summary>
+// Form removal must not remove rage granted by unrelated powers.
 public sealed class SuperSaiyanRagePower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

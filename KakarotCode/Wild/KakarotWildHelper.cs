@@ -9,11 +9,10 @@ namespace KakarotMod.KakarotCode.Wild;
 
 public static class KakarotWildHelper
 {
-    /// <summary>Canonical/百科用的卡可能没有初始化 <see cref="CardModel.Keywords"/>，此处必须防空否则枚举卡池会整页失败。</summary>
+    // Canonical cards may not initialize Keywords.
     public static bool HasWild(CardModel card) =>
         card?.Keywords?.Contains(KakarotWildKeyword.Wild) == true;
 
-    /// <summary>While SS4 is active, wild cards behave as upgraded (engine upgrade pipeline).</summary>
     public static void EnsureWildActsUpgradedIfSs4(Player player, CardModel card)
     {
         if (player?.Creature?.GetPower<KakarotSuperSaiyan4Power>() == null || card == null)
@@ -33,7 +32,7 @@ public static class KakarotWildHelper
         }
         catch (Exception ex)
         {
-            // Guard against max-upgrade cards from old saves/modded pools causing hard crashes.
+            // Skip invalid max-upgrade cards supplied by saves or other mods.
             GD.PrintErr($"[Kakarot] Skip Wild auto-upgrade for {card.Id.Entry}: {ex.Message}");
         }
     }

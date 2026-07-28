@@ -9,20 +9,11 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>
-/// 卡面黄字来自 <see cref="CardModel.GetDescriptionForPile"/>：引擎用 <see cref="CardKeywordOrder"/> 的固定数组决定
-/// 哪些 <see cref="CardKeyword"/> 会调用 <see cref="CardKeywordExtensions.GetCardText"/>。自定义槽位 8 不在数组里，
-/// 因此永远不会出现；在 postfix 中按同样格式补上。
-/// </summary>
+// Custom keyword slot 8 is absent from the engine's card-face keyword order.
 [HarmonyPatch]
 public static class KakarotWildGetDescriptionForPilePatch
 {
-    /// <summary>
-    /// internal 类型 <c>CardKeywordExtensions</c> 上的公共方法，需反射调用。
-    /// 用 <see cref="Lazy{T}"/> 包装：若游戏更新去掉/改名该方法，整个 class 不会因为
-    /// 静态构造抛 <see cref="TypeInitializationException"/> 而连带毁掉相邻补丁。
-    /// </summary>
+    // Lazy reflection prevents an upstream rename from breaking adjacent patches at type initialization.
     private static readonly Lazy<MethodInfo?> GetCardTextMethod = new(() =>
     {
         try

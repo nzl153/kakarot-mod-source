@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>巅峰的极易：1 能量 1 怒气，5% 进入完美自在极意（成功则消耗）。</summary>
 public class KakarotPeakUltraInstinct() : KakarotCard(1, CardType.Skill, CardRarity.Ancient, TargetType.Self)
 {
     public override bool CanBeGeneratedInCombat => false;

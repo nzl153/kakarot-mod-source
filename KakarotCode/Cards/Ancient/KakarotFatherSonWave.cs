@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>Ancient reward card intended for modifier/relic generation.</summary>
 public class KakarotFatherSonWave() : KakarotCard(1, CardType.Attack, CardRarity.Ancient, TargetType.AnyEnemy)
 {
     public override int CanonicalStarCost => 3;

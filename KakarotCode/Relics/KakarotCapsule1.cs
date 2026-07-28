@@ -5,7 +5,6 @@ using MegaCrit.Sts2.Core.Rooms;
 
 namespace KakarotMod.KakarotCode.Relics;
 
-/// <summary>Enter rest site (campfire): heal 6 HP.</summary>
 public sealed class KakarotCapsule1 : KakarotRelic
 {
     private const decimal HealAmount = 6m;

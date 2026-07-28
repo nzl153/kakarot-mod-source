@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>1 energy: mark 1 card in hand as Wild and gain temporary Strength.</summary>
 public class KakarotProvokeWildness() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     public override int CanonicalStarCost => 1;

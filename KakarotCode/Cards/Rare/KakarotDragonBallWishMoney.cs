@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>AOE attack. Each kill grants extra gold after combat.</summary>
 public class KakarotDragonBallWishMoney() : KakarotCard(2, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
 {
     private const int GoldPerKill = 100;

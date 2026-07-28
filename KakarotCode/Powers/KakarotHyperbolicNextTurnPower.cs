@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Next player turn: after energy reset gain Energy + Stars; at turn start draw then remove.</summary>
 public sealed class KakarotHyperbolicNextTurnPower : KakarotPower
 {
     private decimal _energyPerStack = 3m;

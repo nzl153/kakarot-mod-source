@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Simple regeneration: heal at turn start, then reduce by 1.</summary>
 public sealed class KakarotQiqiMealPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

@@ -28,7 +28,7 @@ namespace KakarotMod.KakarotCode.Monsters.Frieza;
 
 public sealed class FriezaBoss : CustomMonsterModel
 {
-    // Balance knobs for the first playable build.
+    // Encounter balance values are centralized here.
     private const int WhiteHp = 290;
     private const int GoldenHp = 450;
     private const int BlackHp = 520;

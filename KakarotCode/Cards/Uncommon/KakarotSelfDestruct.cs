@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>AOE damage + self HP loss. When exhausted, gain rage and Wild Ritual progress.</summary>
 public class KakarotSelfDestruct() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.AllEnemies)
 {
     private const decimal SelfDamage = 10m;
@@ -32,7 +31,7 @@ public class KakarotSelfDestruct() : KakarotCard(1, CardType.Skill, CardRarity.U
         await CreatureCmd.Damage(choiceContext, Owner.Creature, SelfDamage, ValueProp.Unblockable | ValueProp.Unpowered, Owner.Creature, this);
     }
 
-    // Hook 在 CardCmd.Exhaust 末尾被 await，怒气与野性仪式进度按命令队列顺序串行结算，
+    // Exhaust callbacks are awaited, preserving rage and ritual command order.
     public override async Task AfterCardExhausted(PlayerChoiceContext choiceContext, CardModel card, bool causedByEthereal)
     {
         if (card != this || Owner == null)

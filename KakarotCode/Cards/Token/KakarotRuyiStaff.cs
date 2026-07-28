@@ -9,9 +9,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
-/// <summary>
-/// Combat-only token: 0 Energy, 1 Rage, AOE damage; Retain; returns to hand after play (like Shiv).
-/// </summary>
 public class KakarotRuyiStaff() : KakarotCard(0, CardType.Attack, CardRarity.Token, TargetType.AllEnemies)
 {
     public override int CanonicalStarCost => 1;

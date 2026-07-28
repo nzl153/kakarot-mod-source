@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>自在极意兆：0 费金色技能，保留、消耗。进入兆状态并入手「巅峰的极易」。</summary>
 public class KakarotUltraInstinctOmen() : KakarotCard(0, CardType.Skill, CardRarity.Ancient, TargetType.Self)
 {
     public override bool CanBeGeneratedByModifiers => false;

@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Pick a card from your Draw pile into hand.</summary>
 public class KakarotSenseKi() : KakarotCard(1, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];

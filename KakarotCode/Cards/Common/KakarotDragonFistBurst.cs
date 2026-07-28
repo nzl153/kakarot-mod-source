@@ -9,10 +9,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>
-/// Super Saiyan 3 signature: summoned to hand on entering SS3, only playable while in SS3.
-/// Multi-hit AOE so it scales with Strength and pairs with the SS3 first-attack ×2.
-/// </summary>
 public class KakarotDragonFistBurst() : KakarotCard(1, CardType.Attack, CardRarity.Token, TargetType.AllEnemies)
 {
     public override int CanonicalStarCost => 1;

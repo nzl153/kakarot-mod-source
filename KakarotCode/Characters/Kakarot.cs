@@ -45,7 +45,6 @@ public class Kakarot : PlaceholderCharacterModel
     public override RelicPoolModel RelicPool => ModelDb.RelicPool<KakarotRelicPool>();
     public override PotionPoolModel PotionPool => ModelDb.PotionPool<KakarotPotionPool>();
 
-    // 1.1 entry points for custom presentation assets.
     public override string CustomVisualPath => "res://Kakarot/Scenes/KakarotVisual.tscn";
     public override string CustomCharacterSelectBg => "res://Kakarot/Scenes/CharSelect/KakarotCharSelectBg.tscn";
 
@@ -55,10 +54,7 @@ public class Kakarot : PlaceholderCharacterModel
     public override string CustomMapMarkerPath => "map_marker_char_name.png".CharacterUiPath();
     public override string CharacterTransitionSfx => "event:/sfx/ui/wipe_ironclad";
 
-    /// <summary>
-    /// Architect victory sequence shuffles these VFX for the “player attacks Architect” beat.
-    /// Placeholder characters must still return a non-empty list or the flow can misbehave.
-    /// </summary>
+    // Placeholder characters need at least one Architect victory effect.
     public override List<string> GetArchitectAttackVfx()
     {
         return

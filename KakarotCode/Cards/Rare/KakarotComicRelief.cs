@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>Gain Buffer, Strength and Dexterity. Base card exhausts; upgrade removes exhaust.</summary>
 public class KakarotComicRelief() : KakarotCard(4, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];

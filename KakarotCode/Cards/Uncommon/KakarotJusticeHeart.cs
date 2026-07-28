@@ -11,10 +11,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>
-/// Common block card. On play, adds 1 Justice Ritual progress.
-/// At 5, grants Super Saiyan God transformation and resets for the next cycle.
-/// </summary>
 public class KakarotJusticeHeart() : KakarotCard(1, CardType.Skill, CardRarity.Common, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>
@@ -25,7 +21,6 @@ public class KakarotJusticeHeart() : KakarotCard(1, CardType.Skill, CardRarity.C
 
     protected override bool IsPlayable => base.IsPlayable && Owner?.Creature?.GetPower<KakarotSuperSaiyanGodPower>() == null;
 
-    /// <summary>Must not touch <see cref="CardModel.Owner"/> — compendium uses the canonical model and throws <see cref="CanonicalModelException"/>.</summary>
     public override IEnumerable<CardKeyword> CanonicalKeywords => [];
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>

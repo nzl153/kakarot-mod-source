@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Temporary Thorns until the start of your next turn.</summary>
 public sealed class KakarotTemporaryThornsPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

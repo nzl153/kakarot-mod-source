@@ -812,7 +812,7 @@ internal static class FriezaBossVisuals
         }
         catch
         {
-            // Presentation must never interrupt a synchronized combat command.
+            // Presentation failures must not interrupt synchronized combat.
         }
     }
 }

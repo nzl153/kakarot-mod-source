@@ -19,11 +19,7 @@ public class KakarotDragonFist() : KakarotCard(3, CardType.Attack, CardRarity.Ra
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Chain: replay while the volley actually killed someone (matches the card text
-        // "若有敌人因此死亡"). Tracks the pre-hit alive enemies by reference instead of a
-        // headcount, so kill-triggered spawns (splitters) still chain and enemies that merely
-        // turn unhittable (burrow/fly) don't count as kills. The snapshot is a local inside
-        // the synced command path and only reads synced state — deterministic in multiplayer.
+        // Reference snapshots distinguish actual deaths from spawns or temporarily unhittable enemies.
         for (var safety = 0; safety < 20; safety++)
         {
             var aliveBefore = CombatState.HittableEnemies.Where(e => e.IsAlive).ToList();

@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>0 费，消耗。变身为超级赛亚人蓝色，替换超赛 buff。</summary>
 public class KakarotSuperSaiyanBlueTransform() : KakarotCard(0, CardType.Skill, CardRarity.Ancient, TargetType.Self)
 {
     public override bool CanBeGeneratedByModifiers => false;

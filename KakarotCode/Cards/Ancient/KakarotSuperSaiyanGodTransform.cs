@@ -12,16 +12,12 @@ using MegaCrit.Sts2.Core.Models.Exceptions;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
-/// <summary>0-cost, Exhaust, Ancient rarity. Enter Super Saiyan God after each completed Justice Heart ritual.</summary>
 public class KakarotSuperSaiyanGodTransform() : KakarotCard(0, CardType.Skill, CardRarity.Ancient, TargetType.Self)
 {
     public override bool CanBeGeneratedByModifiers => false;
     public override bool CanBeGeneratedInCombat => false;
 
-    /// <summary>
-    /// Keep Exhaust keyword visible on card face; actual move-to-exhaust still uses explicit <see cref="CardCmd.Exhaust"/>
-    /// to avoid the historical stuck-overlay issue from keyword-only exhaust handling.
-    /// </summary>
+    // Exhaustion is resolved explicitly in OnPlay, but remains visible on the card face.
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
 
     protected override bool IsPlayable

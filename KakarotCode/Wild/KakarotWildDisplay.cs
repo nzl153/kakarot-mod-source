@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.Models.Exceptions;
 
 namespace KakarotMod.KakarotCode.Wild;
 
-/// <summary>供完全重写 <see cref="CardModel.CanonicalKeywords"/> 的卡合并「野性」展示用。</summary>
 public static class KakarotWildDisplay
 {
     public static IEnumerable<CardKeyword> MergeWild(CardModel card, IEnumerable<CardKeyword> intrinsicKeywords)

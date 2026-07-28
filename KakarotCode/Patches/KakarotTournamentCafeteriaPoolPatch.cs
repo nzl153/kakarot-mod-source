@@ -7,10 +7,7 @@ using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>
-/// 关卡生成完成后把卡卡罗特自定义事件加入每层事件池（仅卡卡罗特开局时）。
-/// </summary>
+// Add Kakarot events only after room generation and only for Kakarot runs.
 [HarmonyPatch(typeof(RunManager), nameof(RunManager.GenerateRooms))]
 public static class KakarotTournamentCafeteriaPoolPatch
 {

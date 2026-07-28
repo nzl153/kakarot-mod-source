@@ -12,7 +12,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>自在极意兆：+15 力量与敏捷；宽松闪避：受伤时 50% 概率立刻回复等量生命（视为闪避）。</summary>
 public sealed class KakarotUltraInstinctOmenPower : KakarotPower
 {
     private const int StatBonus = 15;

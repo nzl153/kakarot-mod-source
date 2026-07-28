@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Optionally exhaust up to 2 (3) card(s) from your hand. Costs shown on card frame.</summary>
 public class KakarotGetOut() : KakarotCard(0, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     public override int CanonicalStarCost => 2;

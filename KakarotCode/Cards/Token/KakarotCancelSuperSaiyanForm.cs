@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
-/// <summary>0 费：超级赛亚人降一阶（超三→超二→超一→解除）。</summary>
 public class KakarotCancelSuperSaiyanForm() : KakarotCard(0, CardType.Skill, CardRarity.Token, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Retain];

@@ -3,9 +3,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// 每回合「神之气」触发率加成的存取入口。状态存放于玩家遗物实例中，以参与战斗快照。
-/// </summary>
+// God Ki bonuses live on SaiyanBlood so rollback snapshots restore them.
 public static class KakarotUltraInstinctCombatState
 {
     public static int GetGodKiBonusPercent(Player player)

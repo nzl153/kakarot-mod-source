@@ -7,8 +7,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>升级版召唤如意棒使用独立描述键（引擎无内置 upgraded description key）。</summary>
+// The engine has no separate localization key for upgraded descriptions.
 [HarmonyPatch]
 public static class KakarotSummonRuyiStaffDescriptionPatch
 {

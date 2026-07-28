@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>20% chance to deal massive damage to all enemies.</summary>
 public class KakarotShenronWishWin() : KakarotCard(4, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
 {
     private const int SuccessChance = 20;

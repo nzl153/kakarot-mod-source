@@ -15,10 +15,7 @@ using MegaCrit.Sts2.Core.Runs;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-/// <summary>
-/// 原版 <c>event</c> 控制台只在 <see cref="ModelDb.AllEvents"/> 枚举里找，不包含纯 mod 注册的事件。
-/// 在未命中时再按 <see cref="ModelId"/> 查 <see cref="ModelDb.GetByIdOrNull{T}"/>。
-/// </summary>
+// Resolve registered mod events when the built-in event list misses them.
 [HarmonyPatch(typeof(EventConsoleCmd), nameof(EventConsoleCmd.Process))]
 public static class KakarotEventConsoleCmdPatch
 {
@@ -38,8 +35,7 @@ public static class KakarotEventConsoleCmdPatch
             return true;
         }
 
-        // GetCategory 在类型未注册或控制台输入异常时可能抛 KeyNotFoundException；
-        // 失败时回退到原生流程，让控制台报"未找到事件"，不至于栈崩。
+        // Unregistered or malformed IDs fall back to the console's normal not-found path.
         ModelId id;
         try
         {

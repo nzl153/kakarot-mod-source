@@ -11,7 +11,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Tracks Wild card plays toward the next Return to Origin transformation card.</summary>
 public sealed class KakarotWildRitualPower : KakarotPower
 {
     private const string DedicatedIcon = "kakarot_wild_ritual_power.png";

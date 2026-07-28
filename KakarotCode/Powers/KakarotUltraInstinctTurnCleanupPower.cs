@@ -6,9 +6,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// 保留此类型以兼容现有存档和显式的 <c>PowerCmd.Remove</c> 调用。
-/// </summary>
+// Retained for save compatibility; turn cleanup now runs from SaiyanBlood.
 public sealed class KakarotUltraInstinctTurnCleanupPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

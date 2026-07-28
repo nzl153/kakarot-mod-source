@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>瞬间移动：本回合由技能链叠出的临时灵敏（与 levitation 等其它来源分开）。</summary>
 public sealed class KakarotInstantTransmissionDexPower : KakarotPower
 {
     public override string CustomPackedIconPath =>

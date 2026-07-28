@@ -6,10 +6,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// At the start of your turn, gain 1 Justice Heart ritual progress.
-/// Amount is used as remaining turns and counts down each trigger.
-/// </summary>
 public sealed class KakarotInsightDivineRealmPower : KakarotPower
 {
     public override MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType InstanceType => MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType.Instanced;

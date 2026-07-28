@@ -12,16 +12,10 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Helpers;
 
-/// <summary>
-/// 变身时：「集气」从现有牌堆中检索置入手牌（不复制新卡）。「变身」由打出牌的 <see cref="PileType.Hand"/> 结算回到手牌，此处不再生成。
-/// </summary>
+// Retrieves existing progression cards without creating duplicate instances.
 internal static class KakarotSuperSaiyanRefundCards
 {
-    /// <summary>
-    /// 检索顺序：抽牌堆 → 弃牌堆 → 消耗堆 → 手牌（已在手则不动）。
-    /// 手牌满时目标为抽牌堆顶：若集气<strong>已在抽牌堆</strong>，禁止再 Add(Draw→Draw)，否则引擎可能把卡移出 Run 导致整场构筑里消失。
-    /// 若在战斗垛里找不到但仍存在于 <see cref="Player.Deck"/> 列表，再尝试拉进战斗垛。
-    /// </summary>
+    // Never issue a draw-to-draw move; the engine can detach that card from the run.
     internal static async Task TryRetrieveChargeUpToHand(Player player, AbstractModel source)
     {
         var cs = player.PlayerCombatState;
@@ -49,10 +43,7 @@ internal static class KakarotSuperSaiyanRefundCards
         await CardPileCmd.Add(deckCard, PileType.Hand, CardPilePosition.Top, source, skipVisuals: false);
     }
 
-    /// <summary>
-    /// <strong>仅补救 SL / 合并异常</strong>：正常满 12 发变身仍走 <see cref="Relics.SaiyanBlood"/> 的 <c>TryDeliver…</c>，一般会直接进手牌。
-    /// 每场战斗<strong>首回合开始</strong>再扫一遍：若变身已在本场垛/构筑里却不在手牌（例如只登记在构筑、<c>AllCards</c> 游离），则抽到可打位置；避免与正规发放叠两次 <c>Add</c>。
-    /// </summary>
+    // First-turn recovery only moves a buried transform card; normal delivery remains authoritative.
     internal static async Task TryRetrieveTransformToHandIfBuriedAsync(Player player, AbstractModel source)
     {
         if (!CombatManager.Instance.IsInProgress || player?.PlayerCombatState is not { } cs)

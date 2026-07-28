@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>集气：初始牌组中的 1 费技能；+3 怒气并将本牌移回手牌；升级：固有。</summary>
 public class KakarotChargeUp() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Stars", 3m)];

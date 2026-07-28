@@ -10,7 +10,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>The first Wild card you play each turn draws cards.</summary>
 public class KakarotWildEcho() : KakarotCard(2, CardType.Power, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<KakarotWildEchoPower>(1m)];

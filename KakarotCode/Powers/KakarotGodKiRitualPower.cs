@@ -12,12 +12,10 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>本场战斗内记录「神之气」打出次数（1–2）。</summary>
 public sealed class KakarotGodKiRitualPower : KakarotPower
 {
     private const string DedicatedIcon = "kakarot_god_ki_ritual_power.png";
 
-    /// <summary>Until dedicated art exists, reuse the blue-ki marker asset (formerly on the hidden turn-cleanup power).</summary>
     private const string FallbackIcon = "kakarot_ultra_instinct_turn_cleanup_power.png";
 
     public override MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType InstanceType => MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType.None;

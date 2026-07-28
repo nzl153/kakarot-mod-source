@@ -14,10 +14,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Temporary Strength until end of your turn: one buff icon, stacks as Counter; does not mirror <see cref="StrengthPower"/>
-/// (avoids duplicate strength icons and double revert).
-/// </summary>
+// Separate from StrengthPower to avoid duplicate icons and double rollback.
 public sealed class KakarotTemporaryStrengthPower : KakarotPower
 {
     public override string CustomPackedIconPath =>

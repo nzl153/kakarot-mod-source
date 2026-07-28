@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-/// <summary>Gain block; gain more if a Wild card has been played this turn.</summary>
 public class KakarotWildGuard() : KakarotCard(1, CardType.Skill, CardRarity.Common, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>

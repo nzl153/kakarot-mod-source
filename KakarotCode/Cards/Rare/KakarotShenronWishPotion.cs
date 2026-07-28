@@ -13,7 +13,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>Single-target fatal card that grants an extra potion reward after combat on kill.</summary>
 public class KakarotShenronWishPotion() : KakarotCard(2, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];

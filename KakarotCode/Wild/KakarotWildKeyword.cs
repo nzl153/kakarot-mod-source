@@ -4,18 +4,12 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 
 namespace KakarotMod.KakarotCode.Wild;
 
-/// <summary>
-/// Custom keyword slot — engine <see cref="CardKeyword"/> enum has no named Wild; slot 8 is unused in current sts2 builds.
-/// </summary>
+// The current game build leaves CardKeyword slot 8 unused.
 public static class KakarotWildKeyword
 {
     public const CardKeyword Wild = (CardKeyword)8;
 
-    /// <summary>
-    /// 启动时调用：检测槽位 8 是否被某个版本的 <see cref="CardKeyword"/> 占用。
-    /// 占用了不强制中止，但要让我们能在 godot.log 里第一时间看到这个根因，
-    /// 否则各种"野性显示异常 / 误判命中"会很难定位。
-    /// </summary>
+    // Log slot conflicts without preventing startup.
     public static void LogIfSlotCollides()
     {
         try

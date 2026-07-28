@@ -12,9 +12,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
-/// <summary>
-/// S-cell grant: Token rarity (not in Common/Uncommon/Rare rewards). 0 Energy, 4 rage; SS stages 1-3.
-/// </summary>
 public class KakarotSuperSaiyanTransform() : KakarotCard(0, CardType.Skill, CardRarity.Token, TargetType.Self)
 {
     public override int CanonicalStarCost => 4;
@@ -50,14 +47,14 @@ public class KakarotSuperSaiyanTransform() : KakarotCard(0, CardType.Skill, Card
 
         KakarotFormVisuals.Refresh(creature);
 
-        // 进入超三：召唤专属绝招「龙拳」到手牌（仅超三可打）。照搬回归本源塞十倍龟派的写法。
+        // Entering tier 3 grants its form-exclusive finisher.
         if (nextTier == 3)
         {
             var dragonFist = CombatState.CreateCard<KakarotDragonFistBurst>(Owner);
             await CardPileCmd.AddGeneratedCardToCombat(dragonFist, PileType.Hand, Owner);
         }
 
-        // 集气检索与解除卡须在 AfterCardPlayed 结算：OnPlay 内 CardPileCmd.Add 会与手动出牌锁冲突（见 SaiyanBlood 注释）。
+        // Follow-up cards are delivered after play resolution to avoid the manual-play lock.
         SaiyanBlood.MarkPendingSuperSaiyanTransformFollowup(Owner);
     }
 

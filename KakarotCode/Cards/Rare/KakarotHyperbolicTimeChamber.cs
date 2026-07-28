@@ -14,7 +14,6 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-/// <summary>S-cell training: Exhaust. Pay HP; next turn gain Energy, rage, and bonus draws.</summary>
 public class KakarotHyperbolicTimeChamber() : KakarotCard(0, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
     private const decimal HpCost = 6m;

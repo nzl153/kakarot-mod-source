@@ -7,7 +7,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Events;
 
-/// <summary>武道大会的食堂：小额免费回血或付费大餐。</summary>
 public sealed class KakarotTournamentCafeteria : EventModel
 {
     private const decimal LightSnackHeal = 6m;

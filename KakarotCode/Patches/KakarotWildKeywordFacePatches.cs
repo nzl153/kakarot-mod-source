@@ -10,10 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-/// <summary>
-/// 冥想赋予的 Retain 能显示 → 卡面逻辑正常；野性为自定义枚举槽位，常被「是否上卡面」类判断过滤。
-/// 这里对 CardModel 上可疑的实例方法做兜底补丁，并在 CanonicalKeywords getter 上合并野性。
-/// </summary>
+// Include the custom Wild slot in card-face keyword queries.
 public static class KakarotWildKeywordFacePatches
 {
     public static void TryApply(Harmony harmony)
@@ -65,11 +62,7 @@ public static class KakarotWildKeywordFacePatches
         __result = list;
     }
 
-    /// <summary>
-    /// CardModel 上「该关键字是否要在卡面显示」的判定方法白名单。
-    /// 收紧到显式名称：原启发式（Contains "show" / "tag" / "row" / ...）会被未来引擎更新里同名但语义无关的方法误命中。
-    /// 若引擎改名 / 新增此类判定，在 godot.log 里会有「Wild face: predicate XXX not found」提示再来补。
-    /// </summary>
+    // Explicit names avoid patching unrelated methods added by later game builds.
     private static readonly string[] InstancePredicateNameWhitelist =
     [
         "ShouldShowKeywordOnCardFace",
@@ -136,11 +129,7 @@ public static class KakarotWildKeywordFacePatches
         __result = true;
     }
 
-    /// <summary>
-    /// CardModel 上「卡面显示用的关键字列表」零参方法白名单。CanonicalKeywords 已在 getter 处理。
-    /// 收紧到显式名称：原代码"任何名字含 Keyword 且返回 IEnumerable&lt;CardKeyword&gt; 的零参方法"
-    /// 会把引擎中无关方法也卷入（如内部计数 / 调试枚举）。
-    /// </summary>
+    // Restrict list patches to known card-face keyword methods.
     private static readonly string[] KeywordEnumerableNameWhitelist =
     [
         "GetDisplayKeywords",

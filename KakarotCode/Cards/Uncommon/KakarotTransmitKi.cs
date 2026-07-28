@@ -8,12 +8,16 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-/// <summary>Co-op card: give a teammate energy, and advance Justice ritual if they are Kakarot.</summary>
-public class KakarotTransmitKi() : KakarotCoopColorlessCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
+public class KakarotTransmitKi() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
+    public override CardMultiplayerConstraint MultiplayerConstraint => CardMultiplayerConstraint.MultiplayerOnly;
+
+    protected override bool IsPlayable => base.IsPlayable && TryGetTeammate() != null;
+
     protected override IEnumerable<DynamicVar> CanonicalVars =>
         [new DynamicVar("RitualProgress", 1m)];
 

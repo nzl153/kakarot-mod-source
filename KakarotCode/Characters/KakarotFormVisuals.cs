@@ -8,7 +8,7 @@ namespace KakarotMod.KakarotCode.Characters;
 
 public static class KakarotFormVisuals
 {
-    // 模型整体缩小到原来的 0.8（战斗+商店一起，休息点保持不变）。Y 因中心锚点缩放后脚会上浮，已下调补偿（待真机微调）。
+    // Offsets compensate for center-anchored scaling.
     private static readonly Vector2 AlivePosition = new(0f, -180f);
     private static readonly Vector2 DeadPosition = new(0f, -68f);
     private static readonly Vector2 AliveScale = new(0.176f, 0.176f);
@@ -39,19 +39,13 @@ public static class KakarotFormVisuals
         "res://Kakarot/Images/Charui/kakarot_combat_model_god.png",
     ];
 
-    /// <summary>龟派气功"发波架势"立绘（_kamehameha_pose）。任何缺图自动 fallback。</summary>
     public static string ResolveKamehamehaPosePath(Creature creature) => ResolvePosePath(creature, "_kamehameha_pose");
 
-    /// <summary>近战"出拳/打击"pose（_attack_pose）。按形态找，缺则回退常态，再缺放弃。</summary>
     public static string ResolveAttackPosePath(Creature creature) => ResolvePosePath(creature, "_attack_pose");
 
-    /// <summary>"受击踉跄"pose（_hurt_pose）。按形态找，缺则回退常态，再缺放弃。</summary>
     public static string ResolveHurtPosePath(Creature creature) => ResolvePosePath(creature, "_hurt_pose");
 
-    /// <summary>
-    /// 通用动作 pose 路径解析：当前形态 model + suffix；缺该形态 pose → 退到常态(base) pose；再缺 → null（放弃替换）。
-    /// 与 <see cref="ResolveModelPath"/> 共用形态优先级。任何缺图都安全 fallback，绝不因缺资源中断战斗。
-    /// </summary>
+    // Missing form-specific poses fall back to the base pose.
     private static string ResolvePosePath(Creature creature, string suffix)
     {
         if (creature == null || !IsKakarot(creature))
@@ -91,7 +85,6 @@ public static class KakarotFormVisuals
         return modelPath.Substring(0, modelPath.Length - ext.Length) + suffix + ext;
     }
 
-    /// <summary>立绘静止基准变换（存活/死亡）。待机呼吸与出招/受击 tween 都以此为基准，避免漂移。</summary>
     public static (Vector2 Pos, Vector2 Scale) GetRestTransform(Creature creature)
     {
         bool dead = creature?.IsDead ?? false;
@@ -117,8 +110,7 @@ public static class KakarotFormVisuals
                 return;
             }
 
-            // 如果当前正处于发波 pose swap 状态，先丢弃 pose 记录：避免后续定时器把贴图
-            // 错误地恢复到「形态切换前」的旧 model；Refresh 自己会立刻把贴图设成正确的形态。
+            // Cancel pending pose restoration before changing form textures.
             KakarotCombatPresentation.TryRestoreFromKamehamehaPose(staticModel);
 
             var selectedPath = ResolveModelPath(creature);
@@ -135,14 +127,12 @@ public static class KakarotFormVisuals
             var isDead = creature.IsDead;
             staticModel.Position = isDead ? DeadPosition : AlivePosition;
             staticModel.Scale = isDead ? DeadScale : AliveScale;
-            // 与原版立绘同层（z=0），让盾牌/遗物等战斗特效正常盖在立绘之上（场景里默认设了 z=1 会把立绘顶到特效上面）。
+            // Match the base character layer so combat effects render above the portrait.
             staticModel.ZIndex = 0;
 
-            // Freeze facing when dead to avoid visual jitter during death flow.
             if (!isDead)
             {
                 ApplyFacing(creature, staticModel);
-                // 启动/重启待机呼吸（围绕存活基准摆动；出招/受击会临时暂停再恢复，死亡时停）。
                 KakarotCombatPresentation.StartIdleBreathing(staticModel, AlivePosition, AliveScale);
             }
             else
@@ -152,7 +142,6 @@ public static class KakarotFormVisuals
         }
         catch
         {
-            // Never let visual refresh exceptions bubble into gameplay/network flow.
         }
     }
 
@@ -178,7 +167,6 @@ public static class KakarotFormVisuals
         }
         catch
         {
-            // Keep combat stable if facing update fails.
         }
     }
 
@@ -207,19 +195,16 @@ public static class KakarotFormVisuals
         }
         catch
         {
-            // Keep combat stable if facing update fails.
         }
     }
 
     private static string ResolveModelPath(Creature creature)
     {
-        // If a dedicated death sprite exists, prefer it for dead units.
         if (creature.IsDead && ResourceLoader.Exists(DeadModelPath))
         {
             return DeadModelPath;
         }
 
-        // 自在极意系：独立变身立绘，与超赛/神/蓝/界王拳互斥（由卡牌与 Power 侧清理保证）。
         if (creature.HasPower<KakarotPerfectUltraInstinctPower>())
         {
             if (ResourceLoader.Exists(PerfectUltraInstinctPath))

@@ -13,9 +13,6 @@ using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>
-/// Super Saiyan God: +8 Strength / +5 Dexterity; while active, cards in hand (and while resolving from hand) have Energy cost reduced by 1 (min 0). X-cost cards are not modified.
-/// </summary>
 public sealed class KakarotSuperSaiyanGodPower : KakarotPower
 {
     private const int StatBonus = 8;

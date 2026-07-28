@@ -4,10 +4,7 @@ using MegaCrit.Sts2.Core.Helpers;
 
 namespace KakarotMod.KakarotCode.Characters;
 
-/// <summary>
-/// Deprecated: coop cards now use vanilla ColorlessCardPool so they appear in card library.
-/// Kept only for backward compatibility with older saves/mod references.
-/// </summary>
+// Kept for compatibility with saves and mods that reference the former pool.
 public class KakarotCoopColorlessCardPool : CustomCardPoolModel
 {
     public override string Title => "Kakarot Coop";

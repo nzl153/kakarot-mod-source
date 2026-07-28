@@ -8,10 +8,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Patches;
-
-/// <summary>
-/// 部分构建里卡面黄字只画「原版」关键字；对返回 bool(CardKeyword) 的可见性探测方法做保守补丁，使野性(8)视为可显示。
-/// </summary>
+// Treat custom keyword slot 8 as card-face visible on known engine predicates.
 public static class KakarotWildKeywordVisibilityPatches
 {
     private static readonly string[] MethodNameHints =

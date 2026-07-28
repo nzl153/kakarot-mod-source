@@ -5,7 +5,6 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>Next turn start (energy reset): gain energy once then remove.</summary>
 public sealed class KakarotEnergyNextTurnPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;

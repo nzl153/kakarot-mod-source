@@ -9,7 +9,6 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Powers;
 
-/// <summary>瞬间移动：监听本回合打出的技能牌，叠临时灵敏（见 <see cref="KakarotInstantTransmissionDexPower"/>）。</summary>
 public sealed class KakarotInstantTransmissionListenerPower : KakarotPower
 {
     public override PowerType Type => PowerType.Buff;
@@ -30,7 +29,7 @@ public sealed class KakarotInstantTransmissionListenerPower : KakarotPower
 
     internal static async Task AppendDexPowerAsync(PlayerChoiceContext choiceContext, Creature creature, CardModel source)
     {
-        // Counter 由引擎命令原子累加，避免异步回调之间出现缺失状态。
+        // Counter stacking avoids a remove/apply gap between awaited callbacks.
         await KakarotPowerCmd.Apply<KakarotInstantTransmissionDexPower>(choiceContext, creature, 1m, creature, source);
     }
 
