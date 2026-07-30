@@ -5,6 +5,7 @@ using KakarotMod.KakarotCode.Cards.Basic;
 using KakarotMod.KakarotCode.Cards.Common;
 using KakarotMod.KakarotCode.Extensions;
 using KakarotMod.KakarotCode.Relics;
+using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Entities.Characters;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
@@ -49,6 +50,22 @@ public class Kakarot : PlaceholderCharacterModel
     public override string CustomCharacterSelectBg => "res://Kakarot/Scenes/CharSelect/KakarotCharSelectBg.tscn";
 
     public override string CustomIconTexturePath => "character_icon_char_name.png".CharacterUiPath();
+    public override Control CustomIcon
+    {
+        get
+        {
+            var icon = new TextureRect
+            {
+                Texture = PreloadManager.Cache.GetTexture2D(CustomIconTexturePath),
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+                StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+                MouseFilter = Control.MouseFilterEnum.Ignore,
+            };
+            icon.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+            return icon;
+        }
+    }
+
     public override string CustomCharacterSelectIconPath => "char_select_char_name.png".CharacterUiPath();
     public override string CustomCharacterSelectLockedIconPath => "char_select_char_name_locked.png".CharacterUiPath();
     public override string CustomMapMarkerPath => "map_marker_char_name.png".CharacterUiPath();

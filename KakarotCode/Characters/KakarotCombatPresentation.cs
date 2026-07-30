@@ -1487,7 +1487,13 @@ public static class KakarotCombatPresentation
     }
 
     // Action tweens pause idle breathing and restart it from the stored baseline.
-    public static void StartIdleBreathing(Sprite2D staticModel, Vector2 restPos, Vector2 restScale)
+    public static void StartIdleBreathing(
+        Sprite2D staticModel,
+        Vector2 restPos,
+        Vector2 restScale,
+        float scaleMultiplier = 1.013f,
+        float verticalOffset = 2.0f,
+        float halfCycleSeconds = 1.5f)
     {
         if (staticModel == null || !GodotObject.IsInstanceValid(staticModel))
         {
@@ -1515,14 +1521,14 @@ public static class KakarotCombatPresentation
             tween.SetLoops();
             tween.SetPauseMode(Tween.TweenPauseMode.Process);
 
-            var breatheScale = restScale * 1.018f;
-            tween.TweenProperty(staticModel, "position:y", restPos.Y - 2.8f, 1.3f)
+            var breatheScale = restScale * scaleMultiplier;
+            tween.TweenProperty(staticModel, "position:y", restPos.Y - verticalOffset, halfCycleSeconds)
                 .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-            tween.Parallel().TweenProperty(staticModel, "scale", breatheScale, 1.3f)
+            tween.Parallel().TweenProperty(staticModel, "scale", breatheScale, halfCycleSeconds)
                 .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-            tween.TweenProperty(staticModel, "position:y", restPos.Y, 1.3f)
+            tween.TweenProperty(staticModel, "position:y", restPos.Y, halfCycleSeconds)
                 .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-            tween.Parallel().TweenProperty(staticModel, "scale", restScale, 1.3f)
+            tween.Parallel().TweenProperty(staticModel, "scale", restScale, halfCycleSeconds)
                 .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
             IdleTweens[id] = tween;
@@ -1534,7 +1540,7 @@ public static class KakarotCombatPresentation
 
     public static void StopIdle(Sprite2D staticModel)
     {
-        if (staticModel == null)
+        if (staticModel == null || !GodotObject.IsInstanceValid(staticModel))
         {
             return;
         }
@@ -1546,6 +1552,33 @@ public static class KakarotCombatPresentation
         }
 
         IdleTweens.Remove(id);
+    }
+
+    public static void StopAllMotion(Sprite2D staticModel, Vector2 restPos, Vector2 restScale)
+    {
+        if (staticModel == null || !GodotObject.IsInstanceValid(staticModel))
+        {
+            return;
+        }
+
+        StopIdle(staticModel);
+
+        var id = staticModel.GetInstanceId();
+        if (ActiveTweens.TryGetValue(id, out var active) && GodotObject.IsInstanceValid(active))
+        {
+            active.Kill();
+        }
+
+        ActiveTweens.Remove(id);
+
+        var crossfade = staticModel.GetNodeOrNull<Sprite2D>("KakarotPoseCrossfade");
+        if (crossfade != null && GodotObject.IsInstanceValid(crossfade))
+        {
+            crossfade.QueueFree();
+        }
+
+        staticModel.Position = restPos;
+        staticModel.Scale = restScale;
     }
 
     // Pose swaps are optional and always restore the first retained texture.

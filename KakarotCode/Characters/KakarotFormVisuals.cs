@@ -91,6 +91,30 @@ public static class KakarotFormVisuals
         return dead ? (DeadPosition, DeadScale) : (AlivePosition, AliveScale);
     }
 
+    public static void ApplyDeadVisual(Sprite2D staticModel)
+    {
+        ApplyDeadVisual(staticModel, DeadPosition, DeadScale);
+    }
+
+    public static void ApplyDeadVisual(Sprite2D staticModel, Vector2 position, Vector2 scale)
+    {
+        if (staticModel == null || !GodotObject.IsInstanceValid(staticModel))
+        {
+            return;
+        }
+
+        KakarotCombatPresentation.TryRestoreFromKamehamehaPose(staticModel);
+
+        if (ResourceLoader.Exists(DeadModelPath))
+        {
+            staticModel.Texture = ResourceLoader.Load<Texture2D>(DeadModelPath);
+        }
+
+        staticModel.Visible = true;
+        staticModel.ZIndex = 0;
+        KakarotCombatPresentation.StopAllMotion(staticModel, position, scale);
+    }
+
     public static void Refresh(Creature creature)
     {
         try
@@ -110,6 +134,12 @@ public static class KakarotFormVisuals
                 return;
             }
 
+            if (creature.IsDead)
+            {
+                ApplyDeadVisual(staticModel);
+                return;
+            }
+
             // Cancel pending pose restoration before changing form textures.
             KakarotCombatPresentation.TryRestoreFromKamehamehaPose(staticModel);
 
@@ -124,21 +154,14 @@ public static class KakarotFormVisuals
                 staticModel.Texture = ResourceLoader.Load<Texture2D>(selectedPath);
             }
 
-            var isDead = creature.IsDead;
-            staticModel.Position = isDead ? DeadPosition : AlivePosition;
-            staticModel.Scale = isDead ? DeadScale : AliveScale;
+            staticModel.Visible = true;
+            staticModel.Position = AlivePosition;
+            staticModel.Scale = AliveScale;
             // Match the base character layer so combat effects render above the portrait.
             staticModel.ZIndex = 0;
 
-            if (!isDead)
-            {
-                ApplyFacing(creature, staticModel);
-                KakarotCombatPresentation.StartIdleBreathing(staticModel, AlivePosition, AliveScale);
-            }
-            else
-            {
-                KakarotCombatPresentation.StopIdle(staticModel);
-            }
+            ApplyFacing(creature, staticModel);
+            KakarotCombatPresentation.StartIdleBreathing(staticModel, AlivePosition, AliveScale);
         }
         catch
         {

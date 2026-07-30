@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Godot;
 using HarmonyLib;
+using KakarotMod.KakarotCode.Characters;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Nodes.Combat;
@@ -83,6 +84,14 @@ public static class KakarotMerchantStaticVisualPatch
         {
             sprite.Texture = ResourceLoader.Load<Texture2D>(path);
         }
+
+        KakarotCombatPresentation.StartIdleBreathing(
+            sprite,
+            MerchantPos,
+            MerchantScale,
+            scaleMultiplier: 1.006f,
+            verticalOffset: 0.8f,
+            halfCycleSeconds: 1.8f);
     }
 
     private static bool IsKakarot(Player p)
@@ -153,6 +162,14 @@ public static class KakarotFakeMerchantStaticVisualPatch
         {
             sprite.Texture = ResourceLoader.Load<Texture2D>(path);
         }
+
+        KakarotCombatPresentation.StartIdleBreathing(
+            sprite,
+            FakeMerchantPos,
+            FakeMerchantScale,
+            scaleMultiplier: 1.006f,
+            verticalOffset: 0.8f,
+            halfCycleSeconds: 1.8f);
     }
 
     private static void HideExistingVisuals(Node root)
@@ -310,6 +327,9 @@ public static class KakarotMapRestorePatch
 
 internal static class KakarotStaticModelVisibility
 {
+    private static readonly Vector2 MerchantGameOverDeadPos = new(-70f, -83f);
+    private static readonly Vector2 MerchantGameOverDeadScale = new(0.327f, 0.327f);
+
     private const string OriginalZIndexMeta = "kakarot_original_creature_z_index";
     private const string OriginalZRelativeMeta = "kakarot_original_creature_z_relative";
 
@@ -418,9 +438,9 @@ internal static class KakarotStaticModelVisibility
         }
     }
 
-    public static void HideLivingCombatVisuals(Node root)
+    public static void PrepareGameOverVisuals(Node root, Node preservedRoot)
     {
-        if (root == null)
+        if (root == null || preservedRoot == null)
         {
             return;
         }
@@ -432,12 +452,28 @@ internal static class KakarotStaticModelVisibility
             var node = stack.Pop();
             foreach (Node child in node.GetChildren())
             {
+                var isPreserved = HasAncestor(child, preservedRoot);
                 if (child.Name == "KakarotVisual" && child is CanvasItem canvasItem)
                 {
-                    var creatureNode = FindCreatureAncestor(child);
-                    if (creatureNode?.Entity?.IsDead != true)
+                    canvasItem.Visible = isPreserved;
+                    if (isPreserved)
                     {
-                        canvasItem.Visible = false;
+                        var staticModel = child.GetNodeOrNull<Sprite2D>("StaticModel");
+                        if (staticModel != null)
+                        {
+                            KakarotFormVisuals.ApplyDeadVisual(staticModel);
+                        }
+                    }
+                }
+                else if (child.Name == "KakarotStaticModel" && child is Sprite2D roomStaticModel)
+                {
+                    roomStaticModel.Visible = isPreserved;
+                    if (isPreserved)
+                    {
+                        KakarotFormVisuals.ApplyDeadVisual(
+                            roomStaticModel,
+                            MerchantGameOverDeadPos,
+                            MerchantGameOverDeadScale);
                     }
                 }
 
@@ -556,6 +592,19 @@ internal static class KakarotStaticModelVisibility
         for (var current = node.GetParent(); current != null; current = current.GetParent())
         {
             if (current.Name == ancestorName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasAncestor(Node node, Node ancestor)
+    {
+        for (var current = node.GetParent(); current != null; current = current.GetParent())
+        {
+            if (current == ancestor)
             {
                 return true;
             }
@@ -725,7 +774,7 @@ public static class KakarotRestSiteChoiceRestorePatch
     }
 }
 
-// The game-over overlay can reuse its node, so stale room portraits are cleared on every open.
+// Keep the visuals reparented into the game-over screen and hide only stale room copies.
 [HarmonyPatch(typeof(NGameOverScreen), nameof(NGameOverScreen.AfterOverlayOpened))]
 public static class KakarotGameOverCleanupPatch
 {
@@ -739,8 +788,7 @@ public static class KakarotGameOverCleanupPatch
                 return;
             }
 
-            KakarotStaticModelVisibility.HideRoomModelsOnly(root);
-            KakarotStaticModelVisibility.HideLivingCombatVisuals(root);
+            KakarotStaticModelVisibility.PrepareGameOverVisuals(root, __instance);
         }
         catch
         {
