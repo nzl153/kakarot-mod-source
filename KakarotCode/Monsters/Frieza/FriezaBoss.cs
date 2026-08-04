@@ -39,6 +39,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     private int _phase = 1;
     private int _phaseMoveIndex;
     private bool _phaseTransitionPending;
+    private bool _goldenTransformQueued;
     private bool _secondWavePending;
     private bool _whiteOpeningDone;
     private bool _secondWaveSummoned;
@@ -48,6 +49,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     private int _blackNormalActionsUntilSupernova = 3;
 
     private MoveState? _whiteSummon;
+    private MoveState? _goldenTransform;
     private MoveState? _psychicPressure;
     private MoveState? _contemptuousFinger;
     private MoveState? _deathBeam;
@@ -84,7 +86,108 @@ public sealed class FriezaBoss : CustomMonsterModel
         }
     }
 
+    private int PhaseMoveIndex
+    {
+        get => _phaseMoveIndex;
+        set
+        {
+            AssertMutable();
+            _phaseMoveIndex = value;
+        }
+    }
+
+    private bool PhaseTransitionPending
+    {
+        get => _phaseTransitionPending;
+        set
+        {
+            AssertMutable();
+            _phaseTransitionPending = value;
+        }
+    }
+
+    private bool GoldenTransformQueued
+    {
+        get => _goldenTransformQueued;
+        set
+        {
+            AssertMutable();
+            _goldenTransformQueued = value;
+        }
+    }
+
+    private bool SecondWavePending
+    {
+        get => _secondWavePending;
+        set
+        {
+            AssertMutable();
+            _secondWavePending = value;
+        }
+    }
+
+    private bool WhiteOpeningDone
+    {
+        get => _whiteOpeningDone;
+        set
+        {
+            AssertMutable();
+            _whiteOpeningDone = value;
+        }
+    }
+
+    private bool SecondWaveSummoned
+    {
+        get => _secondWaveSummoned;
+        set
+        {
+            AssertMutable();
+            _secondWaveSummoned = value;
+        }
+    }
+
+    private bool GoldenOpeningDone
+    {
+        get => _goldenOpeningDone;
+        set
+        {
+            AssertMutable();
+            _goldenOpeningDone = value;
+        }
+    }
+
+    private bool BlackOpeningDone
+    {
+        get => _blackOpeningDone;
+        set
+        {
+            AssertMutable();
+            _blackOpeningDone = value;
+        }
+    }
+
+    private int GoldenStrengthRemaining
+    {
+        get => _goldenStrengthRemaining;
+        set
+        {
+            AssertMutable();
+            _goldenStrengthRemaining = value;
+        }
+    }
+
+    private int BlackNormalActionsUntilSupernova
+    {
+        get => _blackNormalActionsUntilSupernova;
+        set
+        {
+            AssertMutable();
+            _blackNormalActionsUntilSupernova = value;
+        }
+    }
+
     public bool IsSaucerPending => GetSaucerPower() != null;
+    public bool IsAwaitingGoldenTransformation => Phase == 1 && PhaseTransitionPending;
     public ulong SaucerTargetNetId
     {
         get
@@ -126,6 +229,14 @@ public sealed class FriezaBoss : CustomMonsterModel
         var decision = new ConditionalBranchState("FRIEZA_DECISION");
 
         _whiteSummon = new MoveState("WHITE_SUMMON", WhiteSummon, new SummonIntent());
+        _goldenTransform = new MoveState(
+            "GOLDEN_TRANSFORM",
+            TransformToGolden,
+            new HealIntent(),
+            new BuffIntent())
+        {
+            MustPerformOnceBeforeTransitioning = true,
+        };
         _psychicPressure = new MoveState(
             "PSYCHIC_PRESSURE",
             PsychicPressure,
@@ -173,6 +284,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         MoveState[] moves =
         [
             _whiteSummon,
+            _goldenTransform,
             _psychicPressure,
             _contemptuousFinger,
             _deathBeam,
@@ -195,29 +307,30 @@ public sealed class FriezaBoss : CustomMonsterModel
             move.FollowUpState = decision;
         }
 
-        decision.AddState(_whiteSummon, () => Phase == 1 && !_whiteOpeningDone);
+        decision.AddState(_goldenTransform, () => IsAwaitingGoldenTransformation);
+        decision.AddState(_whiteSummon, () => Phase == 1 && !WhiteOpeningDone);
         decision.AddState(_psychicPressure, () =>
-            Phase == 1 && HasLivingFriezaMinion() && _phaseMoveIndex % 3 == 0);
+            Phase == 1 && HasLivingFriezaMinion() && PhaseMoveIndex % 3 == 0);
         decision.AddState(_contemptuousFinger, () =>
-            Phase == 1 && HasLivingFriezaMinion() && _phaseMoveIndex % 3 == 1);
+            Phase == 1 && HasLivingFriezaMinion() && PhaseMoveIndex % 3 == 1);
         decision.AddState(_emperorOrder, () => Phase == 1 && HasLivingFriezaMinion());
-        decision.AddState(_deathBeam, () => Phase == 1 && _phaseMoveIndex % 2 == 0);
+        decision.AddState(_deathBeam, () => Phase == 1 && PhaseMoveIndex % 2 == 0);
         decision.AddState(_contemptuousFinger, () => Phase == 1);
 
-        decision.AddState(_goldenBarrage, () => Phase == 2 && !_goldenOpeningDone);
+        decision.AddState(_goldenBarrage, () => Phase == 2 && !GoldenOpeningDone);
         decision.AddState(_resolveSaucer, () => Phase == 2 && HasSaucerPower());
-        decision.AddState(_deathBeam, () => Phase == 2 && _phaseMoveIndex % 3 == 0);
-        decision.AddState(_deathSaucer, () => Phase == 2 && _phaseMoveIndex % 3 == 1);
+        decision.AddState(_deathBeam, () => Phase == 2 && PhaseMoveIndex % 3 == 0);
+        decision.AddState(_deathSaucer, () => Phase == 2 && PhaseMoveIndex % 3 == 1);
         decision.AddState(_goldenHeavy, () => Phase == 2);
 
-        decision.AddState(_blackFlash, () => Phase == 3 && !_blackOpeningDone);
+        decision.AddState(_blackFlash, () => Phase == 3 && !BlackOpeningDone);
         decision.AddState(_supernovaStun, () => Phase == 3 && IsSupernovaBroken());
         decision.AddState(_supernovaCharge, () => Phase == 3 && GetSupernovaPower()?.Turns > 0);
         decision.AddState(_supernovaDetonate, () =>
             Phase == 3 && GetSupernovaPower() is { Turns: 0 });
-        decision.AddState(_supernovaStart, () => Phase == 3 && _blackNormalActionsUntilSupernova <= 0);
-        decision.AddState(_blackBurst, () => Phase == 3 && _phaseMoveIndex % 3 == 0);
-        decision.AddState(_emperorShockwave, () => Phase == 3 && _phaseMoveIndex % 3 == 1);
+        decision.AddState(_supernovaStart, () => Phase == 3 && BlackNormalActionsUntilSupernova <= 0);
+        decision.AddState(_blackBurst, () => Phase == 3 && PhaseMoveIndex % 3 == 0);
+        decision.AddState(_emperorShockwave, () => Phase == 3 && PhaseMoveIndex % 3 == 1);
         decision.AddState(_finalBeam, () => Phase == 3);
 
         return new MonsterMoveStateMachine([decision, .. moves], decision);
@@ -235,7 +348,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             return amount;
         }
 
-        if (_phaseTransitionPending)
+        if (PhaseTransitionPending)
         {
             return 0m;
         }
@@ -251,16 +364,43 @@ public sealed class FriezaBoss : CustomMonsterModel
             int floor = Phase == 1 ? 1 : (int)Math.Ceiling(Creature.MaxHp * 0.40m);
             if (Creature.CurrentHp <= floor)
             {
-                _phaseTransitionPending = true;
+                PhaseTransitionPending = true;
             }
         }
 
-        if (Phase == 1 && !_secondWaveSummoned && ShouldReplaceFirstWave())
+        if (Phase == 1 && !SecondWaveSummoned && ShouldSummonSecondWave())
         {
-            _secondWavePending = true;
+            SecondWavePending = true;
         }
 
         return Task.CompletedTask;
+    }
+
+    public override bool ShouldDie(Creature creature)
+    {
+        return creature != Creature || Phase >= 3;
+    }
+
+    public override async Task AfterPreventingDeath(Creature creature)
+    {
+        if (creature != Creature || Phase >= 3)
+        {
+            return;
+        }
+
+        PhaseTransitionPending = true;
+        if (Phase == 1)
+        {
+            if (Creature.CurrentHp <= 0)
+            {
+                await CreatureCmd.SetCurrentHp(Creature, 1m);
+            }
+
+            await ResolvePendingAtActionBoundary();
+            return;
+        }
+
+        await PerformPendingPhaseTransition();
     }
 
     public override async Task AfterCardPlayedLate(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -332,11 +472,12 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         if (!wasRemovalPrevented &&
             Phase == 1 &&
-            !_secondWaveSummoned &&
+            !PhaseTransitionPending &&
+            !SecondWaveSummoned &&
             creature.Monster is FriezaGuldo or FriezaRecoome &&
-            ShouldReplaceFirstWave())
+            ShouldSummonSecondWave())
         {
-            _secondWavePending = true;
+            SecondWavePending = true;
         }
 
         return Task.CompletedTask;
@@ -352,16 +493,35 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task ResolvePendingAtActionBoundary()
     {
-        if (_phaseTransitionPending)
+        if (!CombatManager.Instance.IsInProgress)
         {
-            await PerformPendingPhaseTransition();
             return;
         }
 
-        if (_secondWavePending)
+        if (PhaseTransitionPending && Phase == 1)
         {
-            await ReplaceFirstWave();
+            if (!GoldenTransformQueued)
+            {
+                SecondWavePending = false;
+                await WithdrawSummons();
+                GoldenTransformQueued = true;
+                SetMoveImmediate(_goldenTransform!, forceTransition: true);
+            }
+
+            return;
         }
+
+        if (SecondWavePending)
+        {
+            await SummonSecondWave();
+        }
+
+        if (!PhaseTransitionPending)
+        {
+            return;
+        }
+
+        await PerformPendingPhaseTransition();
     }
 
     private static bool IsDirectCardDamage(ValueProp props)
@@ -369,7 +529,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         return props.HasFlag(ValueProp.Move) && !props.HasFlag(ValueProp.Unpowered);
     }
 
-    private bool ShouldReplaceFirstWave()
+    private bool ShouldSummonSecondWave()
     {
         return Creature.CurrentHp <= Creature.MaxHp / 2;
     }
@@ -381,7 +541,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             return;
         }
 
-        _whiteOpeningDone = true;
+        WhiteOpeningDone = true;
         FriezaBossVisuals.PlayCastMotion(Creature, new Color(0.8f, 0.35f, 1.4f, 1f));
         Creature guldo = await CreatureCmd.Add<FriezaGuldo>(CombatState, "support1");
         Creature recoome = await CreatureCmd.Add<FriezaRecoome>(CombatState, "support2");
@@ -389,30 +549,37 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlaySummonEffect(recoome);
     }
 
-    private async Task ReplaceFirstWave()
+    private async Task TransformToGolden(IReadOnlyList<Creature> _)
     {
-        _secondWavePending = false;
-        if (_secondWaveSummoned || Phase != 1)
+        await PerformPendingPhaseTransition();
+    }
+
+    private async Task SummonSecondWave()
+    {
+        if (!CombatManager.Instance.IsInProgress)
         {
             return;
         }
 
-        if (!_whiteOpeningDone)
+        SecondWavePending = false;
+        if (SecondWaveSummoned || Phase != 1)
         {
-            _whiteOpeningDone = true;
-            SetMoveImmediate(_psychicPressure!, forceTransition: true);
+            return;
         }
 
-        _secondWaveSummoned = true;
-        foreach (Creature enemy in CombatState.Enemies.Where(static enemy =>
-                     enemy.IsAlive && enemy.Monster is FriezaGuldo or FriezaRecoome).ToList())
+        if (!WhiteOpeningDone)
         {
-            await CreatureCmd.Escape(enemy);
+            WhiteOpeningDone = true;
+            if (!GoldenTransformQueued)
+            {
+                SetMoveImmediate(_psychicPressure!, forceTransition: true);
+            }
         }
 
+        SecondWaveSummoned = true;
         FriezaBossVisuals.PlayCastMotion(Creature, new Color(0.8f, 0.35f, 1.4f, 1f));
-        Creature ginyu = await CreatureCmd.Add<FriezaCaptainGinyu>(CombatState, "support1");
-        Creature burterJeice = await CreatureCmd.Add<FriezaBurterJeice>(CombatState, "support2");
+        Creature ginyu = await CreatureCmd.Add<FriezaCaptainGinyu>(CombatState, "support3");
+        Creature burterJeice = await CreatureCmd.Add<FriezaBurterJeice>(CombatState, "support4");
         FriezaBossVisuals.PlaySummonEffect(ginyu);
         FriezaBossVisuals.PlaySummonEffect(burterJeice);
     }
@@ -428,28 +595,27 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task PerformPendingPhaseTransition()
     {
-        if (!_phaseTransitionPending || Phase >= 3)
+        if (!CombatManager.Instance.IsInProgress || !PhaseTransitionPending || Phase >= 3)
         {
             return;
         }
 
-        _phaseTransitionPending = false;
-        _secondWavePending = false;
+        PhaseTransitionPending = false;
+        GoldenTransformQueued = false;
+        SecondWavePending = false;
         await WithdrawSummons();
         if (Creature.Block > 0)
         {
             await CreatureCmd.LoseBlock(Creature, Creature.Block);
         }
 
-        await RemovePhaseDebuffs();
-        await PowerCmd.Remove<FriezaEmperorGuardPower>(Creature);
+        await ClearPhasePowers();
         Phase++;
-        _phaseMoveIndex = 0;
+        PhaseMoveIndex = 0;
         if (Phase == 2)
         {
             await SetPhaseHp(GoldenHp);
-            _goldenStrengthRemaining = GoldenPhaseStrength;
-            await PowerCmd.Remove<ArtifactPower>(Creature);
+            GoldenStrengthRemaining = GoldenPhaseStrength;
             await KakarotPowerCmd.Apply<ArtifactPower>(Creature, 3m, Creature, null);
             await KakarotPowerCmd.Apply<StrengthPower>(Creature, GoldenPhaseStrength, Creature, null);
             await KakarotPowerCmd.Apply<FriezaGoldenStaminaPower>(
@@ -457,14 +623,9 @@ public sealed class FriezaBoss : CustomMonsterModel
                 GoldenPhaseStrength,
                 Creature,
                 null);
-            SetMoveImmediate(_goldenBarrage!, forceTransition: true);
         }
         else
         {
-            await PowerCmd.Remove<FriezaDeathSaucerPower>(Creature);
-            await PowerCmd.Remove<FriezaGoldenStaminaPower>(Creature);
-            await PowerCmd.Remove<StrengthPower>(Creature);
-            await PowerCmd.Remove<ArtifactPower>(Creature);
             FriezaBossVisuals.ClearSaucerTarget();
             await SetPhaseHp(BlackHp);
             await KakarotPowerCmd.Apply<ArtifactPower>(Creature, 3m, Creature, null);
@@ -480,11 +641,9 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlayTransformationFlash(Creature, Phase);
     }
 
-    private async Task RemovePhaseDebuffs()
+    private async Task ClearPhasePowers()
     {
-        foreach (PowerModel power in Creature.Powers
-                     .Where(static power => power.TypeForCurrentAmount == PowerType.Debuff)
-                     .ToList())
+        foreach (PowerModel power in Creature.Powers.ToList())
         {
             await PowerCmd.Remove(power);
         }
@@ -554,7 +713,7 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task GoldenBarrage(IReadOnlyList<Creature> _)
     {
-        _goldenOpeningDone = true;
+        GoldenOpeningDone = true;
         FriezaBossVisuals.PlayAttackMotion(Creature, 30f);
         FriezaBossVisuals.PlayEnergyBolts(
             Creature,
@@ -658,18 +817,18 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task FinishGoldenMove()
     {
-        if (Phase != 2 || _goldenStrengthRemaining <= 0)
+        if (Phase != 2 || GoldenStrengthRemaining <= 0)
         {
             return;
         }
 
         StrengthPower? strength = Creature.GetPower<StrengthPower>();
         int currentStrength = Math.Max(0, strength?.Amount ?? 0);
-        _goldenStrengthRemaining = Math.Min(_goldenStrengthRemaining, currentStrength);
-        if (strength != null && _goldenStrengthRemaining > 0)
+        GoldenStrengthRemaining = Math.Min(GoldenStrengthRemaining, currentStrength);
+        if (strength != null && GoldenStrengthRemaining > 0)
         {
             strength.SetAmount(currentStrength - 1);
-            _goldenStrengthRemaining--;
+            GoldenStrengthRemaining--;
             if (strength.ShouldRemoveDueToAmount())
             {
                 await PowerCmd.Remove(strength);
@@ -679,7 +838,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaGoldenStaminaPower? stamina = Creature.GetPower<FriezaGoldenStaminaPower>();
         if (stamina != null)
         {
-            stamina.SetAmount(_goldenStrengthRemaining);
+            stamina.SetAmount(GoldenStrengthRemaining);
             if (stamina.ShouldRemoveDueToAmount())
             {
                 await PowerCmd.Remove(stamina);
@@ -689,7 +848,7 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task BlackFlash(IReadOnlyList<Creature> _)
     {
-        _blackOpeningDone = true;
+        BlackOpeningDone = true;
         FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
         await Attack(
             38,
@@ -819,7 +978,7 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task EndSupernova()
     {
-        _blackNormalActionsUntilSupernova = 3;
+        BlackNormalActionsUntilSupernova = 3;
         await PowerCmd.Remove<FriezaSupernovaChargePower>(Creature);
     }
 
@@ -864,13 +1023,13 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private void AdvanceMove()
     {
-        _phaseMoveIndex++;
+        PhaseMoveIndex++;
     }
 
     private void FinishBlackNormalAction()
     {
-        _phaseMoveIndex++;
-        _blackNormalActionsUntilSupernova--;
+        PhaseMoveIndex++;
+        BlackNormalActionsUntilSupernova--;
     }
 
     private bool HasSaucerPower()
@@ -901,6 +1060,6 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private bool SecondWaveSummonedOrPending()
     {
-        return _secondWaveSummoned || _secondWavePending;
+        return SecondWaveSummoned || SecondWavePending;
     }
 }

@@ -1,17 +1,27 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BaseLib.Abstracts;
+using BaseLib.Utils.Attributes;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Gold;
 using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace KakarotMod.KakarotCode.Events;
 
-public sealed class KakarotTournamentCafeteria : EventModel
+[CustomID("KAKAROT_TOURNAMENT_CAFETERIA")]
+public sealed class KakarotTournamentCafeteria : CustomEventModel
 {
     private const decimal LightSnackHeal = 6m;
     private const decimal FeastGoldCost = 40m;
     private const decimal FeastHeal = 12m;
+
+    public override string CustomInitialPortraitPath =>
+        "res://images/events/kakarot_tournament_cafeteria.png";
+
+    public override bool IsAllowed(IRunState runState) =>
+        KakarotEventEligibility.HasKakarot(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

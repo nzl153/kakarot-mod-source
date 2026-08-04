@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BaseLib.Abstracts;
+using BaseLib.Utils.Attributes;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -9,13 +11,21 @@ using MegaCrit.Sts2.Core.Events;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
+using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Events;
 
-public sealed class KakarotIncredibleAdventure : EventModel
+[CustomID("KAKAROT_INCREDIBLE_ADVENTURE")]
+public sealed class KakarotIncredibleAdventure : CustomEventModel
 {
     private const decimal GoodbyeHpLoss = 6m;
+
+    public override string CustomInitialPortraitPath =>
+        "res://images/events/kakarot_incredible_adventure.png";
+
+    public override bool IsAllowed(IRunState runState) =>
+        KakarotEventEligibility.HasKakarot(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

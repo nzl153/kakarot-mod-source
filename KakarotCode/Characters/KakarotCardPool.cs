@@ -8,7 +8,6 @@ public class KakarotCardPool : CustomCardPoolModel
 {
     public override string Title => Kakarot.CharacterId;
 
-    public override string EnergyColorName => "kakarot";
     public override string BigEnergyIconPath => ImageHelper.GetImagePath("packed/sprite_fonts/kakarot_energy_icon.png");
     public override string TextEnergyIconPath => ImageHelper.GetImagePath("packed/sprite_fonts/kakarot_energy_icon.png");
 

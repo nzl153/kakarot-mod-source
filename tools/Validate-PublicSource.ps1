@@ -145,7 +145,12 @@ function Test-RepositoryPath {
 }
 
 $repositoryFiles = @(Get-ChildItem -LiteralPath $repositoryRoot -Recurse -Force -File | Where-Object {
-    $_.FullName -notmatch '[\\/]\.git[\\/]'
+    if ($_.FullName -match '[\\/]\.git[\\/]') {
+        return $false
+    }
+
+    $relativeFile = $_.FullName.Substring($repositoryRoot.Length).TrimStart('\', '/')
+    return -not (Test-IsGeneratedPath (Normalize-RepositoryPath $relativeFile))
 })
 
 foreach ($fileInfo in $repositoryFiles) {
@@ -185,7 +190,7 @@ foreach ($commit in $commits) {
         Test-RepositoryPath -Path $historicalPath -Context "Git history $commit"
     }
 
-    $historyMatches = @(git -C $repositoryRoot grep -I -n -E $forbiddenText $commit)
+    $historyMatches = @(git -C $repositoryRoot grep -I -i -n -E $forbiddenText $commit)
     if ($LASTEXITCODE -eq 0) {
         foreach ($historyMatch in $historyMatches) {
             $errors.Add("Forbidden text in Git history: $historyMatch")

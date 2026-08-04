@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Rewards;
+using MegaCrit.Sts2.Core.Runs;
 
 namespace KakarotMod.KakarotCode.Events;
 
@@ -23,6 +24,9 @@ public sealed class KakarotKorinTowerTrial : CustomEventModel
 
     public override string CustomInitialPortraitPath =>
         ResourceLoader.Exists(PortraitPath) ? PortraitPath : FallbackPortraitPath;
+
+    public override bool IsAllowed(IRunState runState) =>
+        KakarotEventEligibility.HasKakarot(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

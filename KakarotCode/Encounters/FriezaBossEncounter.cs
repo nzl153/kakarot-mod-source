@@ -10,7 +10,8 @@ namespace KakarotMod.KakarotCode.Encounters;
 
 public sealed class FriezaBossEncounter : CustomEncounterModel
 {
-    private static readonly string[] SlotNames = ["support1", "support2", "frieza"];
+    private static readonly string[] SlotNames =
+        ["support1", "support2", "support3", "support4", "frieza"];
 
     public FriezaBossEncounter() : base(RoomType.Boss)
     {

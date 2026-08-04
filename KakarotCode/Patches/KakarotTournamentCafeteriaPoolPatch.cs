@@ -7,7 +7,8 @@ using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
 
 namespace KakarotMod.KakarotCode.Patches;
-// Add Kakarot events only after room generation and only for Kakarot runs.
+// BaseLib normally registers these events before shuffling. This remains as a
+// compatibility fallback for older BaseLib builds that did not add them.
 [HarmonyPatch(typeof(RunManager), nameof(RunManager.GenerateRooms))]
 public static class KakarotTournamentCafeteriaPoolPatch
 {
