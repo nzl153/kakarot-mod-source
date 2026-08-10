@@ -68,6 +68,14 @@ public sealed class FriezaChallenge : CustomEventModel
             {
                 await CreatureCmd.Heal(player.Creature, player.Creature.MaxHp - player.Creature.CurrentHp);
             }
+
+            // The preceding act boss stops replay recording, while this extra fight stays on the same map point.
+            // Re-establish the initial snapshot before combat checksums begin.
+            RunManager runManager = RunManager.Instance;
+            if (runManager.CombatReplayWriter.IsEnabled && !runManager.CombatReplayWriter.IsRecordingReplay)
+            {
+                runManager.CombatReplayWriter.RecordInitialState(runManager.ToSave(null));
+            }
         }
 
         EnterCombatWithoutExitingEvent<FriezaBossEncounter>(
