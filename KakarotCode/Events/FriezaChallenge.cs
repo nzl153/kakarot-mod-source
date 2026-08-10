@@ -57,14 +57,17 @@ public sealed class FriezaChallenge : CustomEventModel
 
     private async Task AcceptChallenge()
     {
-        if (Owner == null || !LocalContext.IsMe(Owner))
+        if (Owner == null)
         {
             return;
         }
 
-        foreach (var player in Owner.RunState.Players.Where(static player => player.Creature.IsAlive))
+        if (LocalContext.IsMe(Owner))
         {
-            await CreatureCmd.Heal(player.Creature, player.Creature.MaxHp - player.Creature.CurrentHp);
+            foreach (var player in Owner.RunState.Players.Where(static player => player.Creature.IsAlive))
+            {
+                await CreatureCmd.Heal(player.Creature, player.Creature.MaxHp - player.Creature.CurrentHp);
+            }
         }
 
         EnterCombatWithoutExitingEvent<FriezaBossEncounter>(
