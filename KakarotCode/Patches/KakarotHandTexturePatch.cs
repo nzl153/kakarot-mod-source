@@ -44,16 +44,10 @@ public static class KakarotHandTexturePatch
             return fallback;
         }
 
-        var explicitKakarot = $"res://images/ui/hands/multiplayer_hand_kakarot_{suffix}.png";
-        if (ResourceLoader.Exists(explicitKakarot))
+        var path = $"res://images/ui/hands/multiplayer_hand_kakarot_{suffix}.png";
+        if (ResourceLoader.Exists(path))
         {
-            return PreloadManager.Cache.GetTexture2D(explicitKakarot);
-        }
-
-        var fullEntryPath = $"res://images/ui/hands/multiplayer_hand_{entry.ToLowerInvariant()}_{suffix}.png";
-        if (ResourceLoader.Exists(fullEntryPath))
-        {
-            return PreloadManager.Cache.GetTexture2D(fullEntryPath);
+            return PreloadManager.Cache.GetTexture2D(path);
         }
 
         return fallback;

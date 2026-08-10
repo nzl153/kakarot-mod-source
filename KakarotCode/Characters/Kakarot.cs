@@ -15,6 +15,14 @@ namespace KakarotMod.KakarotCode.Characters;
 
 public class Kakarot : PlaceholderCharacterModel
 {
+    private static readonly string[] MultiplayerHandAssetPaths =
+    [
+        "res://images/ui/hands/multiplayer_hand_kakarot_point.png",
+        "res://images/ui/hands/multiplayer_hand_kakarot_rock.png",
+        "res://images/ui/hands/multiplayer_hand_kakarot_paper.png",
+        "res://images/ui/hands/multiplayer_hand_kakarot_scissors.png",
+    ];
+
     public const string CharacterId = "Kakarot";
 
     public override string PlaceholderID => "ironclad";
@@ -69,7 +77,13 @@ public class Kakarot : PlaceholderCharacterModel
     public override string CustomCharacterSelectIconPath => "char_select_char_name.png".CharacterUiPath();
     public override string CustomCharacterSelectLockedIconPath => "char_select_char_name_locked.png".CharacterUiPath();
     public override string CustomMapMarkerPath => "map_marker_char_name.png".CharacterUiPath();
+    public override string CustomArmPointingTexturePath => MultiplayerHandAssetPaths[0];
+    public override string CustomArmRockTexturePath => MultiplayerHandAssetPaths[1];
+    public override string CustomArmPaperTexturePath => MultiplayerHandAssetPaths[2];
+    public override string CustomArmScissorsTexturePath => MultiplayerHandAssetPaths[3];
     public override string CharacterTransitionSfx => "event:/sfx/ui/wipe_ironclad";
+
+    protected override IEnumerable<string> ExtraAssetPaths => MultiplayerHandAssetPaths;
 
     // Placeholder characters need at least one Architect victory effect.
     public override List<string> GetArchitectAttackVfx()
