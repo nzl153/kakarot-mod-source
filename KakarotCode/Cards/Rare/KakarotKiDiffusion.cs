@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -10,41 +11,39 @@ namespace KakarotMod.KakarotCode.Cards.Rare;
 
 public class KakarotKiDiffusion() : KakarotCard(1, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
-    protected override IEnumerable<DynamicVar> CanonicalVars => [];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Stars", 3m)];
 
-    protected override Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         var handCards = Owner?.PlayerCombatState?.Hand?.Cards?.ToList();
-        if (handCards == null || handCards.Count == 0)
+        if (handCards != null)
         {
-            return Task.CompletedTask;
+            foreach (var card in handCards)
+            {
+                if (card == null || ReferenceEquals(card, this) || ReferenceEquals(card, cardPlay?.Card) || card.Pile?.Type != PileType.Hand)
+                {
+                    continue;
+                }
+
+                if (card.IsUpgraded)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    card.UpgradeInternal();
+                    card.FinalizeUpgradeInternal();
+                }
+                catch (System.Exception ex)
+                {
+                    // Keep combat/action queue stable if one card cannot be upgraded.
+                    GD.PrintErr($"[Kakarot] KiDiffusion failed to upgrade card '{card.Id?.Entry ?? "UNKNOWN"}': {ex.Message}");
+                }
+            }
         }
 
-        foreach (var card in handCards)
-        {
-            if (card == null || ReferenceEquals(card, this) || ReferenceEquals(card, cardPlay?.Card) || card.Pile?.Type != PileType.Hand)
-            {
-                continue;
-            }
-
-            if (card.IsUpgraded)
-            {
-                continue;
-            }
-
-            try
-            {
-                card.UpgradeInternal();
-                card.FinalizeUpgradeInternal();
-            }
-            catch (System.Exception ex)
-            {
-                // Keep combat/action queue stable if one card cannot be upgraded.
-                GD.PrintErr($"[Kakarot] KiDiffusion failed to upgrade card '{card.Id?.Entry ?? "UNKNOWN"}': {ex.Message}");
-            }
-        }
-
-        return Task.CompletedTask;
+        await PlayerCmd.GainStars(DynamicVars["Stars"].BaseValue, Owner);
     }
 
     protected override void OnUpgrade()

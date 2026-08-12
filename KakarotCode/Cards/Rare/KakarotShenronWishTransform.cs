@@ -18,8 +18,6 @@ public class KakarotShenronWishTransform() : KakarotCard(0, CardType.Skill, Card
 
     private const int SCellGrant = 3;
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
-
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
         HoverTipFactory.FromPower<KakarotJusticeHeartRitualPower>(),
@@ -42,12 +40,13 @@ public class KakarotShenronWishTransform() : KakarotCard(0, CardType.Skill, Card
             return;
         }
 
-        // Intentional design: rolls 90-99 (10%) do nothing. The card text documents a
-        // "10%: nothing" outcome, so the code is kept in sync with the description.
         if (roll < SCellThreshold)
         {
             await KakarotSCellPower.TryGrantCellsAsync(choiceContext, Owner, SCellGrant, this);
+            return;
         }
+
+        await CardPileCmd.Draw(choiceContext, 1, Owner);
     }
 
     protected override void OnUpgrade()

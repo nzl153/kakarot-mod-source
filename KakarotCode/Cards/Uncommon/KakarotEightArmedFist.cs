@@ -35,7 +35,6 @@ public class KakarotEightArmedFist() : KakarotCard(0, CardType.Attack, CardRarit
     protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(1m);
-        DynamicVars["Hits"].UpgradeValueBy(1m);
         DynamicVars["Draw"].UpgradeValueBy(1m);
     }
 }

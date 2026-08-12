@@ -22,7 +22,6 @@ public class KakarotBattleRhythm() : KakarotCard(2, CardType.Power, CardRarity.C
 
     protected override void OnUpgrade()
     {
-        EnergyCost.UpgradeBy(-1);
         AddKeyword(CardKeyword.Innate);
     }
 }

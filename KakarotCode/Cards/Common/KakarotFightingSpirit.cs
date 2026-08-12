@@ -15,7 +15,7 @@ public class KakarotFightingSpirit() : KakarotCard(0, CardType.Skill, CardRarity
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new DynamicVar("Strength", 1m),
+        new DynamicVar("Strength", 2m),
         new EnergyVar(1),
     ];
 

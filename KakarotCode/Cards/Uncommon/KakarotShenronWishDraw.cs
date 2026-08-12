@@ -18,8 +18,6 @@ public class KakarotShenronWishDraw() : KakarotCard(0, CardType.Skill, CardRarit
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await PlayerCmd.GainEnergy(1m, Owner);
-
         if (Owner.PlayerCombatState.Hand.Cards.Count > 0)
         {
             var handCount = Owner.PlayerCombatState.Hand.Cards.Count;

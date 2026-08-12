@@ -34,6 +34,6 @@ public class KakarotPotentialRelease() : KakarotCard(0, CardType.Power, CardRari
 
     protected override void OnUpgrade()
     {
-        DynamicVars["KakarotBattleRhythmPower"].UpgradeValueBy(1m);
+        UpgradeStarCostBy(-1);
     }
 }

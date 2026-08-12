@@ -17,8 +17,8 @@ public class KakarotRockPaperScissors() : KakarotCard(0, CardType.Skill, CardRar
     [
         new DynamicVar("BuffChance", 40m),
         new DynamicVar("SelfDamageChance", 30m),
-        new DynamicVar("Strength", 1m),
-        new DynamicVar("Dexterity", 1m),
+        new DynamicVar("Strength", 2m),
+        new DynamicVar("Dexterity", 2m),
         new DynamicVar("SelfDamage", 5m),
         new DynamicVar("EnergyGain", 2m),
         new DynamicVar("Draw", 1m),

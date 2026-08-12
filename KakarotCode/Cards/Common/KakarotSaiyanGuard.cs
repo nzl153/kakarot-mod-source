@@ -15,7 +15,7 @@ public class KakarotSaiyanGuard() : KakarotCard(1, CardType.Skill, CardRarity.Co
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new BlockVar(8m, ValueProp.Move),
-        new DynamicVar("Stars", 1m),
+        new DynamicVar("Stars", 2m),
     ];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)

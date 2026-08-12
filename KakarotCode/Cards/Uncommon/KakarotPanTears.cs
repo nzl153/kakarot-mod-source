@@ -15,7 +15,7 @@ public class KakarotPanTears() : KakarotCard(1, CardType.Skill, CardRarity.Uncom
 {
     public const int EnergyOnExhaust = 2;
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new BlockVar(8m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new BlockVar(9m, ValueProp.Move)];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {

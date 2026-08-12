@@ -15,7 +15,7 @@ public class KakarotMonkeyFist() : KakarotCard(1, CardType.Attack, CardRarity.Co
 {
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new DamageVar(6m, ValueProp.Move),
+        new DamageVar(9m, ValueProp.Move),
         new DynamicVar("Draw", 1m),
     ];
 
@@ -27,7 +27,6 @@ public class KakarotMonkeyFist() : KakarotCard(1, CardType.Attack, CardRarity.Co
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(2m);
-        DynamicVars["Draw"].UpgradeValueBy(1m);
+        DynamicVars.Damage.UpgradeValueBy(4m);
     }
 }

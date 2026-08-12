@@ -8,11 +8,11 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-public class KakarotKamehameha() : KakarotCard(2, CardType.Attack, CardRarity.Uncommon, TargetType.AllEnemies)
+public class KakarotKamehameha() : KakarotCard(1, CardType.Attack, CardRarity.Uncommon, TargetType.AllEnemies)
 {
-    public override int CanonicalStarCost => 2;
+    public override int CanonicalStarCost => 3;
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(30m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(25m, ValueProp.Move)];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {

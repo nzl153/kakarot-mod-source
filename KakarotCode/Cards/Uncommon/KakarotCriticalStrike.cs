@@ -19,7 +19,7 @@ public class KakarotCriticalStrike() : KakarotCard(2, CardType.Attack, CardRarit
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new DamageVar(13m, ValueProp.Move),
-        new PowerVar<VulnerablePower>(1m),
+        new PowerVar<VulnerablePower>(2m),
         new DynamicVar("Stars", 1m),
     ];
 

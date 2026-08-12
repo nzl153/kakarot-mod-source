@@ -12,8 +12,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-public class KakarotInstantTransmission() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
+public class KakarotInstantTransmission() : KakarotCard(0, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
+    public override int CanonicalStarCost => 2;
+
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new BlockVar(10m, ValueProp.Move),

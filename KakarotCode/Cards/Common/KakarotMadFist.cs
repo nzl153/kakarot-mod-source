@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BaseLib.Utils;
 using KakarotMod.KakarotCode.Helpers;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.ValueProps;
 
@@ -16,24 +17,22 @@ public class KakarotMadFist() : KakarotCard(0, CardType.Attack, CardRarity.Commo
 {
     public override int CanonicalStarCost => 1;
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(6m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
+    [
+        new DamageVar(8m, ValueProp.Move),
+        new PowerVar<VulnerablePower>(1m),
+    ];
+
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<VulnerablePower>()];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
-        await CardPileCmd.Draw(choiceContext, 1, Owner);
-        if (Owner.PlayerCombatState.Hand.Cards.Count > 0)
-        {
-            var chosen = await KakarotCardSelectHelper.FromHandSelectAsync(choiceContext, Owner, 1, this);
-            foreach (var c in chosen)
-            {
-                await CardCmd.Discard(choiceContext, c);
-            }
-        }
+        await KakarotPowerCmd.Apply<VulnerablePower>(choiceContext, cardPlay.Target, DynamicVars.Vulnerable.BaseValue, Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(4m);
+        DynamicVars.Damage.UpgradeValueBy(5m);
     }
 }

@@ -26,6 +26,6 @@ public class KakarotSolarFist() : KakarotCard(2, CardType.Skill, CardRarity.Unco
 
     protected override void OnUpgrade()
     {
-        RemoveKeyword(CardKeyword.Exhaust);
+        EnergyCost.UpgradeBy(-1);
     }
 }

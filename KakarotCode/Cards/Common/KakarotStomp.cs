@@ -10,11 +10,13 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
-public class KakarotStomp() : KakarotCard(2, CardType.Attack, CardRarity.Common, TargetType.AllEnemies)
+public class KakarotStomp() : KakarotCard(0, CardType.Attack, CardRarity.Common, TargetType.AllEnemies)
 {
+    public override int CanonicalStarCost => 3;
+
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new DamageVar(10m, ValueProp.Move),
+        new DamageVar(8m, ValueProp.Move),
         new PowerVar<WeakPower>(2m),
     ];
 
@@ -30,6 +32,6 @@ public class KakarotStomp() : KakarotCard(2, CardType.Attack, CardRarity.Common,
 
     protected override void OnUpgrade()
     {
-        EnergyCost.UpgradeBy(-1);
+        DynamicVars.Damage.UpgradeValueBy(3m);
     }
 }

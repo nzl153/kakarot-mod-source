@@ -13,8 +13,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
-public class KakarotShenronWishPotion() : KakarotCard(2, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
+public class KakarotShenronWishPotion() : KakarotCard(1, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
 {
+    public override int CanonicalStarCost => 1;
+
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(20m, ValueProp.Move)];

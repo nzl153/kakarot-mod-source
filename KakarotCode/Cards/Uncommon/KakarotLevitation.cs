@@ -18,7 +18,7 @@ public class KakarotLevitation() : KakarotCard(1, CardType.Skill, CardRarity.Unc
 {
     private static readonly LocString DiscardPileSelectPrompt = new("combat_messages", "KAKAROTMOD_DISCARD_SELECT");
 
-    protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Dexterity", 3m)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Dexterity", 4m)];
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
