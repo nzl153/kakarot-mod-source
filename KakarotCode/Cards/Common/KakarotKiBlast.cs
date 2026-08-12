@@ -42,6 +42,6 @@ public class KakarotKiBlast() : KakarotCard(0, CardType.Attack, CardRarity.Commo
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(4m);
+        DynamicVars.Damage.UpgradeValueBy(2m);
     }
 }

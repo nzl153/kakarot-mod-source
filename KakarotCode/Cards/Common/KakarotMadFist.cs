@@ -33,6 +33,6 @@ public class KakarotMadFist() : KakarotCard(0, CardType.Attack, CardRarity.Commo
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(5m);
+        DynamicVars.Damage.UpgradeValueBy(3m);
     }
 }

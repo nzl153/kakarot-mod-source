@@ -39,6 +39,6 @@ public class KakarotCombo() : KakarotCard(1, CardType.Attack, CardRarity.Common,
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(4m);
+        DynamicVars.Damage.UpgradeValueBy(3m);
     }
 }

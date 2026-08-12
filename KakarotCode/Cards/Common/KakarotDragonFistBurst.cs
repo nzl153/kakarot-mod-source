@@ -20,7 +20,7 @@ public class KakarotDragonFistBurst() : KakarotCard(1, CardType.Attack, CardRari
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new DamageVar(2m, ValueProp.Move),
-        new DynamicVar("Hits", 4m),
+        new DynamicVar("Hits", 3m),
     ];
 
     protected override bool IsPlayable =>
