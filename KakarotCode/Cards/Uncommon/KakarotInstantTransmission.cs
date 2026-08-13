@@ -14,11 +14,11 @@ namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
 public class KakarotInstantTransmission() : KakarotCard(0, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
-    public override int CanonicalStarCost => 2;
+    public override int CanonicalStarCost => 3;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new BlockVar(10m, ValueProp.Move),
+        new BlockVar(12m, ValueProp.Move),
     ];
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>

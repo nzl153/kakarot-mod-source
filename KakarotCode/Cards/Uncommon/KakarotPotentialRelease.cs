@@ -12,7 +12,7 @@ namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
 public class KakarotPotentialRelease() : KakarotCard(0, CardType.Power, CardRarity.Uncommon, TargetType.Self)
 {
-    public override int CanonicalStarCost => 4;
+    public override int CanonicalStarCost => 5;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [

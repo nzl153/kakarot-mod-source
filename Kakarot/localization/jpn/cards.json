@@ -141,7 +141,7 @@
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.title": "息抜き",
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.description": "バッファーを{Buffer:diff()}、[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷性[/gold]を{Dexterity:diff()}得る。",
   "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.title": "ドラゴンボールの願い：富",
-  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "敵全体に{Damage:diff()}ダメージを与える。このカードで倒した敵1体につき、戦闘後に追加で100ゴールドを得る。",
+  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "敵1体に{Damage:diff()}ダメージを与える。このカードで倒した場合、戦闘後に追加で100ゴールドを得る。",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.title": "チチの食事",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.description": "[gold]再生[/gold]を{KakarotQiqiMealPower:diff()}得る。",
   "KAKAROTMOD-KAKAROT_SHENRON_WISH_WIN.title": "神龍の願い：勝利",

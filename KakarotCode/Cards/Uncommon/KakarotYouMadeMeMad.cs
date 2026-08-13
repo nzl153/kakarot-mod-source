@@ -9,7 +9,7 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-public class KakarotYouMadeMeMad() : KakarotCard(2, CardType.Power, CardRarity.Uncommon, TargetType.Self)
+public class KakarotYouMadeMeMad() : KakarotCard(3, CardType.Power, CardRarity.Uncommon, TargetType.Self)
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<KakarotYouMadeMeMadPower>(1m)];
 
@@ -22,6 +22,6 @@ public class KakarotYouMadeMeMad() : KakarotCard(2, CardType.Power, CardRarity.U
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Innate);
+        EnergyCost.UpgradeBy(-1);
     }
 }

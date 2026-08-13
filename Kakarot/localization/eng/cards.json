@@ -141,7 +141,7 @@
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.title": "Comic Relief",
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.description": "Gain {Buffer:diff()} Buffer, {Strength:diff()} [gold]Strength[/gold], and {Dexterity:diff()} [gold]Dexterity[/gold].",
   "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.title": "Dragon Ball Wish: Riches",
-  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "Deal {Damage:diff()} damage to ALL enemies. For each enemy killed by this card, gain 100 extra gold after combat.",
+  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "Deal {Damage:diff()} damage. If this card kills the enemy, gain 100 extra gold after combat.",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.title": "Qiqi's Meal",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.description": "Gain {KakarotQiqiMealPower:diff()} [gold]Regeneration[/gold].",
   "KAKAROTMOD-KAKAROT_SHENRON_WISH_WIN.title": "Shenron Wish: Victory",

@@ -12,7 +12,7 @@ namespace KakarotMod.KakarotCode.Cards.Common;
 
 public class KakarotStomp() : KakarotCard(0, CardType.Attack, CardRarity.Common, TargetType.AllEnemies)
 {
-    public override int CanonicalStarCost => 3;
+    public override int CanonicalStarCost => 4;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [

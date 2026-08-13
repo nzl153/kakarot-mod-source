@@ -57,7 +57,6 @@ public sealed class KakarotSuperSaiyan4Power : KakarotPower
         }
 
         Flash();
-        await PlayerCmd.GainStars(2m, player);
 
         var hand = player.PlayerCombatState.Hand.Cards;
         if (hand.Count == 0)

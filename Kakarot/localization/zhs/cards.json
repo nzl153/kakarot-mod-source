@@ -141,7 +141,7 @@
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.title": "搞笑角色",
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.description": "获得{Buffer:diff()}层缓冲、{Strength:diff()}点[gold]力量[/gold]和{Dexterity:diff()}点敏捷。",
   "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.title": "龙珠许愿我要发",
-  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "对全体敌人造成{Damage:diff()}点伤害。每[gold]斩杀[/gold]一名敌人，战斗结算后额外获得100金币。",
+  "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "造成{Damage:diff()}点伤害。若以此牌[gold]斩杀[/gold]，战斗结算后额外获得100金币。",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.title": "琪琪的饭",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.description": "获得{KakarotQiqiMealPower:diff()}点[gold]再生[/gold]。",
   "KAKAROTMOD-KAKAROT_SHENRON_WISH_WIN.title": "神龙许愿我要赢",

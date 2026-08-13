@@ -13,7 +13,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
-public class KakarotDestruction() : KakarotCard(2, CardType.Attack, CardRarity.Token, TargetType.AnyEnemy)
+public class KakarotDestruction() : KakarotCard(3, CardType.Attack, CardRarity.Token, TargetType.AnyEnemy)
 {
     public override bool CanBeGeneratedInCombat => false;
 
