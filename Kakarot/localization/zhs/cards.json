@@ -109,7 +109,7 @@
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.title": "巅峰的极易",
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.description": "有百分之25的概率领悟最强的巅峰。",
   "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.title": "激发野性",
-  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "获得{Strength:diff()}点[gold]力量[/gold]与1点[gold]灵敏[/gold]。选择[gold]手牌[/gold]中的一张牌使其赋予[gold]野性[/gold]。",
+  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "获得{Strength:diff()}点[gold]力量[/gold]。选择[gold]手牌[/gold]中的一张牌使其赋予[gold]野性[/gold]。",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.title": "兽性冲拳",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.description": "造成{Damage:diff()}点伤害并施加{VulnerablePower:diff()}层[gold]易伤[/gold]。选择[gold]手牌[/gold]中{PickCount}张牌赋予[gold]野性[/gold]。",
   "KAKAROTMOD-KAKAROT_RENDING_STEP.title": "撕裂步",

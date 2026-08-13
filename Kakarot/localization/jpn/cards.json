@@ -109,7 +109,7 @@
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.title": "身勝手の極意・極",
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.description": "25%の確率で[gold]完成された身勝手の極意[/gold]に入る。成功した場合、[gold]廃棄[/gold]。",
   "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.title": "野性を呼び起こす",
-  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷性[/gold]を1得る。[gold]手札[/gold]のカードを1枚選び、[gold]野性[/gold]を与える。",
+  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "[gold]筋力[/gold]を{Strength:diff()}得る。[gold]手札[/gold]のカードを1枚選び、[gold]野性[/gold]を与える。",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.title": "荒々しい拳",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.description": "{Damage:diff()}ダメージを与える。[gold]脱力[/gold]を{VulnerablePower:diff()}付与する。[gold]手札[/gold]のカードを{PickCount:diff()}枚選ぶ。それらは[gold]野性[/gold]を得る。",
   "KAKAROTMOD-KAKAROT_RENDING_STEP.title": "裂く踏み込み",

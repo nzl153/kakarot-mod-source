@@ -18,7 +18,7 @@ public class KakarotInstantTransmission() : KakarotCard(0, CardType.Skill, CardR
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new BlockVar(12m, ValueProp.Move),
+        new BlockVar(10m, ValueProp.Move),
     ];
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>

@@ -109,7 +109,7 @@
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.title": "Peak Ultra Instinct",
   "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT.description": "25% chance to enter [gold]Perfect Ultra Instinct[/gold]. On success, [gold]Exhaust[/gold].",
   "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.title": "Provoke Wildness",
-  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "Gain {Strength:diff()} [gold]Strength[/gold] and 1 [gold]Dexterity[/gold]. Choose 1 card in [gold]hand[/gold] and give it [gold]Wild[/gold].",
+  "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "Gain {Strength:diff()} [gold]Strength[/gold]. Choose 1 card in [gold]hand[/gold] and give it [gold]Wild[/gold].",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.title": "Savage Punch",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.description": "Deal {Damage:diff()} damage. Apply {VulnerablePower:diff()} [gold]Vulnerable[/gold]. Choose {PickCount:diff()} card(s) in your [gold]hand[/gold]. They gain [gold]Wild[/gold].",
   "KAKAROTMOD-KAKAROT_RENDING_STEP.title": "Rending Step",

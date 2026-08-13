@@ -14,7 +14,7 @@ namespace KakarotMod.KakarotCode.Powers;
 public sealed class KakarotSuperSaiyanBluePower : KakarotPower
 {
     private const int StrengthBonus = 12;
-    private const int DexterityBonus = 7;
+    private const int DexterityBonus = 6;
 
     private int _strengthBonus = StrengthBonus;
     private int _dexterityBonus = DexterityBonus;

@@ -14,7 +14,7 @@ namespace KakarotMod.KakarotCode.Cards.Common;
 
 public class KakarotProvokeWildness() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
-    public override int CanonicalStarCost => 1;
+    public override int CanonicalStarCost => 2;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Strength", 2m)];
 
@@ -23,7 +23,6 @@ public class KakarotProvokeWildness() : KakarotCard(1, CardType.Skill, CardRarit
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await KakarotPowerCmd.Apply<StrengthPower>(choiceContext, Owner.Creature, DynamicVars["Strength"].BaseValue, Owner.Creature, this);
-        await KakarotPowerCmd.Apply<DexterityPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
 
         if (Owner.PlayerCombatState.Hand.Cards.Count == 0)
         {

@@ -16,7 +16,7 @@ public class KakarotPotentialRelease() : KakarotCard(0, CardType.Power, CardRari
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new DynamicVar("Energy", 2m),
+        new DynamicVar("Energy", 1m),
         new PowerVar<KakarotBattleRhythmPower>(1m),
     ];
 

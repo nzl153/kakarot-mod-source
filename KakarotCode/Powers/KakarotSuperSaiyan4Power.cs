@@ -20,7 +20,7 @@ public sealed class KakarotSuperSaiyan4Power : KakarotPower
 {
     // Use constants so removal always reverses exactly what application added.
     private const int StrengthBonus = 10;
-    private const int DexterityBonus = 6;
+    private const int DexterityBonus = 5;
 
     public override MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType InstanceType => MegaCrit.Sts2.Core.Entities.Powers.PowerInstanceType.Instanced;
     public override PowerType Type => PowerType.Buff;
