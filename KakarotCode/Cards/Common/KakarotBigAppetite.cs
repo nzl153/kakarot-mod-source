@@ -20,7 +20,7 @@ public class KakarotBigAppetite() : KakarotCard(0, CardType.Skill, CardRarity.Co
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        var healAmount = ResolveEnergyXValue() + DynamicVars["BonusHeal"].IntValue;
+        var healAmount = ResolveEnergyXValue() * 2 + DynamicVars["BonusHeal"].IntValue;
         if (healAmount > 0)
         {
             await CreatureCmd.Heal(Owner.Creature, healAmount);

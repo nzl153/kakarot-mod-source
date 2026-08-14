@@ -22,7 +22,7 @@
   "KAKAROTMOD-KAKAROT_EYE_BEAM.title": "Eye Beam",
   "KAKAROTMOD-KAKAROT_EYE_BEAM.description": "Deal {Damage:diff()} damage. Apply {WeakPower:diff()} [gold]Weak[/gold].",
   "KAKAROTMOD-KAKAROT_BIG_APPETITE.title": "Big Appetite",
-  "KAKAROTMOD-KAKAROT_BIG_APPETITE.description": "Heal X+{BonusHeal:diff()} HP.",
+  "KAKAROTMOD-KAKAROT_BIG_APPETITE.description": "Heal 2X+{BonusHeal:diff()} HP.",
   "KAKAROTMOD-KAKAROT_GRAVITY_TRAINING.title": "Gravity Training",
   "KAKAROTMOD-KAKAROT_GRAVITY_TRAINING.description": "Lose {ResolvedHpLoss} HP. Gain {SCells} [gold]S-Cells[/gold]. Gain {Stars} [gold]rage[/gold], {Block:diff()} [gold]Block[/gold], and {StrengthTemp} temporary [gold]Strength[/gold] until end of your turn. While [gold]Super Saiyan[/gold], intentional HP loss from this card is reduced.",
   "KAKAROTMOD-KAKAROT_EXTREME_TRAINING.title": "Extreme Training",

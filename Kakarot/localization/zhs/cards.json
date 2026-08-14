@@ -22,7 +22,7 @@
   "KAKAROTMOD-KAKAROT_EYE_BEAM.title": "眼射线",
   "KAKAROTMOD-KAKAROT_EYE_BEAM.description": "造成{Damage:diff()}点伤害。施加{WeakPower:diff()}层[gold]虚弱[/gold]。",
   "KAKAROTMOD-KAKAROT_BIG_APPETITE.title": "大胃袋",
-  "KAKAROTMOD-KAKAROT_BIG_APPETITE.description": "回复X+{BonusHeal:diff()}点生命。",
+  "KAKAROTMOD-KAKAROT_BIG_APPETITE.description": "回复2X+{BonusHeal:diff()}点生命。",
   "KAKAROTMOD-KAKAROT_GRAVITY_TRAINING.title": "重力训练",
   "KAKAROTMOD-KAKAROT_GRAVITY_TRAINING.description": "失去{ResolvedHpLoss}点生命，获得{SCells}个[gold]S细胞[/gold]。获得{Stars}点[gold]怒气[/gold]、{Block:diff()}点[gold]格挡[/gold]与{StrengthTemp}点[gold]临时力量[/gold]。[gold]超级赛亚人[/gold]状态下此类扣血会减少。",
   "KAKAROTMOD-KAKAROT_EXTREME_TRAINING.title": "极限特训",

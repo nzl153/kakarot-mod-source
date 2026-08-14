@@ -109,7 +109,7 @@
   "KAKAROTMOD-KAKAROT_QIQI_MEAL_POWER.smartDescription": "あなたのターン開始時、HPを{Amount}回復し、その後これを1減らす。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_POWER.title": "超サイヤ人4",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_POWER.description": "原始の力：野性カードはアップグレード済みとして扱われる。ターン開始時、手札のカードを1枚選び野性を与える。",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_POWER.smartDescription": "筋力を{Strength}、敏捷性を{Dexterity}得る。あなたのターン開始時、手札のカード1枚に野性を付与する。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_POWER.smartDescription": "筋力を{Strength}、敏捷性を{Dexterity}得る。野性カードはアップグレード済みとして扱われる。あなたのターン開始時、手札のカード1枚に野性を付与する。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_ENERGY_CAP_POWER.title": "原始の高まり",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_ENERGY_CAP_POWER.description": "この戦闘中、最大エナジーが増加している。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN4_ENERGY_CAP_POWER.smartDescription": "この戦闘中、最大エナジーが{Amount}増える。",
