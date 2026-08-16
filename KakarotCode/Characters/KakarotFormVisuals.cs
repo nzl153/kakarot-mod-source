@@ -103,6 +103,7 @@ public static class KakarotFormVisuals
             return;
         }
 
+        KakarotAuraVfx.Stop(staticModel);
         KakarotCombatPresentation.TryRestoreFromKamehamehaPose(staticModel);
 
         if (ResourceLoader.Exists(DeadModelPath))
@@ -162,6 +163,7 @@ public static class KakarotFormVisuals
 
             ApplyFacing(creature, staticModel);
             KakarotCombatPresentation.StartIdleBreathing(staticModel, AlivePosition, AliveScale);
+            KakarotAuraVfx.NotifyFormChangedDeferred(staticModel, creature);
         }
         catch
         {
