@@ -152,4 +152,7 @@
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "黑金威压"
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "每回合前3张非基础牌可以正常打出；从第4张开始，这些牌结算后都会被消耗。基础牌不计入张数。"
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "本回合已打出{Played}张非基础牌。前{SafeCards}张安全，从第4张开始会在结算后被消耗。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "并肩作战"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "本回合，队友打出攻击牌时使你获得怒气；你消耗怒气时使所有队友获得格挡。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "每层：队友每打出1张攻击牌，获得1点怒气；每消耗1点怒气，所有队友获得2点格挡。当前{Amount}层。"
 }

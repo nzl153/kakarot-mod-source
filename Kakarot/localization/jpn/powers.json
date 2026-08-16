@@ -152,4 +152,7 @@
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "ブラックフリーザの威圧"
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "各ターン、基本でないカードの最初の3枚は安全。4枚目以降は解決後に廃棄される。基本カードは枚数に数えない。"
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "このターンに基本でないカードを{Played}枚使用。最初の{SafeCards}枚は安全で、4枚目以降は解決後に廃棄される。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "共闘"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "このターン、仲間のアタックで怒りを得て、怒りを消費するたびすべての仲間がブロックを得る。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "1スタックにつき、仲間がアタックを1枚プレイするたび怒りを1得る。怒りを1消費するたび、すべての仲間はブロックを2得る。現在{Amount}スタック。"
 }

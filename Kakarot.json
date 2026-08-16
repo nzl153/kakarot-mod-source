@@ -3,7 +3,7 @@
   "name": "Kakarot",
   "author": "nzl",
   "description": "Playable Kakarot character with starter relic and basic card pool.",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "has_pck": true,
   "has_dll": true,
   "min_game_version": "v0.107.1",

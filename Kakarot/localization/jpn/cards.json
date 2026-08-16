@@ -202,4 +202,6 @@
   "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "[gold]無形[/gold]を{IntangiblePower:diff()}得る。"
 , "KAKAROTMOD-FRIEZA_QI_LEAK.title": "気漏れ"
 , "KAKAROTMOD-FRIEZA_QI_LEAK.description": "効果なし。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "共闘"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "このターン、仲間がアタックカードを1枚プレイするたび、[gold]怒り[/gold]を{RagePerAttack}得る。あなたが[gold]怒り[/gold]を消費するたび、1点につきすべての仲間は{BlockPerRage}[gold]ブロック[/gold]を得る。"
 }

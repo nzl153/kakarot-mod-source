@@ -152,4 +152,7 @@
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "Black Frieza's Pressure"
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "The first 3 non-Basic cards you play each turn are safe. Starting with the fourth, each one Exhausts after resolving. Basic cards do not count."
 , "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "{Played} non-Basic card(s) played this turn. The first {SafeCards} are safe; the fourth and later Exhaust after resolving."
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "Fighting Side by Side"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "This turn, teammates' Attacks grant you rage, and spending rage grants Block to all teammates."
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "Per stack: gain 1 rage whenever a teammate plays an Attack; whenever you spend 1 rage, all teammates gain 2 Block. {Amount} stack(s)."
 }

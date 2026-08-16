@@ -202,4 +202,6 @@
   "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "获得{IntangiblePower:diff()}层[gold]无实体[/gold]。"
 , "KAKAROTMOD-FRIEZA_QI_LEAK.title": "气泄"
 , "KAKAROTMOD-FRIEZA_QI_LEAK.description": "没有效果。"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "并肩作战"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "本回合，每当一名队友打出一张攻击牌，获得{RagePerAttack}点[gold]怒气[/gold]。每当你消耗[gold]怒气[/gold]时，每消耗1点，所有队友获得{BlockPerRage}点[gold]格挡[/gold]。"
 }

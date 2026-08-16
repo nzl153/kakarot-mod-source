@@ -202,4 +202,6 @@
   "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "Gain {IntangiblePower:diff()} [gold]Intangible[/gold]."
 , "KAKAROTMOD-FRIEZA_QI_LEAK.title": "Ki Leak"
 , "KAKAROTMOD-FRIEZA_QI_LEAK.description": "Does nothing."
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "Fighting Side by Side"
+, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "This turn, whenever a teammate plays an Attack, gain {RagePerAttack} [gold]rage[/gold]. Whenever you spend [gold]rage[/gold], for each point spent, all teammates gain {BlockPerRage} [gold]Block[/gold]."
 }
