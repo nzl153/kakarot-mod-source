@@ -28,7 +28,6 @@ internal readonly record struct KakarotAuraPalette(
     Color Lightning,
     bool HasLightning);
 
-// 所有气焰调参集中在这里，避免表现逻辑散落魔法数字。
 internal static class KakarotAuraConfig
 {
     internal const string ShaderPath = "res://Kakarot/Shaders/kakarot_charge_aura.gdshader";

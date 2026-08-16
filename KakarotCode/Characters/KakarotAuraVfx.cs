@@ -310,7 +310,6 @@ internal sealed partial class KakarotAuraVfx : Node2D
             return;
         }
 
-        // 爆发末段已经淡出，非驻留形态可直接回收。
         QueueFree();
     }
 
