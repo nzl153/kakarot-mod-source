@@ -15,7 +15,7 @@ public class KakarotStrike() : KakarotCard(1, CardType.Attack, CardRarity.Basic,
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
     }
 
     protected override void OnUpgrade()

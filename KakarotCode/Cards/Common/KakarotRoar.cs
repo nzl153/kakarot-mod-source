@@ -25,7 +25,7 @@ public class KakarotRoar() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon,
         }
 
         var target = cardPlay.Target;
-        await CreatureCmd.LoseBlock(target, target.Block);
+        await KakarotBetaCompat.LoseBlock(choiceContext, target, target.Block, Owner.Creature);
         await PowerCmd.Remove<ArtifactPower>(target);
         await KakarotPowerCmd.Apply<WeakPower>(choiceContext, target, DynamicVars.Weak.BaseValue, Owner.Creature, this);
         await PlayerCmd.GainStars(2m, Owner);

@@ -16,7 +16,7 @@ public class KakarotWolfFangFist() : KakarotCard(2, CardType.Attack, CardRarity.
     {
         for (var i = 0; i < 4; i++)
         {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
         }

@@ -78,7 +78,7 @@ public sealed class KaiokenPower : KakarotPower
         }
 
         Flash();
-        await CreatureCmd.Damage(choiceContext, Owner, _hpLossPerTurn, ValueProp.Unblockable | ValueProp.Unpowered, Owner, null);
+        await CreatureCmd.Damage(choiceContext, Owner, _hpLossPerTurn, ValueProp.Unblockable | ValueProp.Unpowered, Owner);
         await PowerCmd.Decrement(this);
     }
 

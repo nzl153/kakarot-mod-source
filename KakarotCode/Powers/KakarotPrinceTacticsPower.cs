@@ -70,6 +70,6 @@ public sealed class KakarotPrinceTacticsPower : KakarotPower
         var idx = (hash & 0x7FFFFFFF) % CombatState.HittableEnemies.Count;
         var target = CombatState.HittableEnemies[idx];
         Flash();
-        await CreatureCmd.Damage(choiceContext, target, Damage, ValueProp.Unpowered, Owner, null);
+        await CreatureCmd.Damage(choiceContext, target, Damage, ValueProp.Unpowered, Owner);
     }
 }

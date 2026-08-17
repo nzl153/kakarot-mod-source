@@ -25,7 +25,7 @@ public class KakarotDragonBallWishMoney() : KakarotCard(2, CardType.Attack, Card
             return;
         }
 
-        var attack = await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).Targeting(cardPlay.Target)
+        var attack = await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).Targeting(cardPlay.Target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
         var kills = attack.Results.SelectMany(r => r).Count(r => r.WasTargetKilled);

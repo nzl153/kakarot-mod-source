@@ -30,10 +30,10 @@ public class KakarotCombo() : KakarotCard(1, CardType.Attack, CardRarity.Common,
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         bool repeat = WasLastCardPlayedAttack;
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
         if (repeat)
         {
-            await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+            await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
         }
     }
 

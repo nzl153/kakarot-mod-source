@@ -36,13 +36,14 @@ public class KakarotRockPaperScissors() : KakarotCard(0, CardType.Skill, CardRar
 
         if (roll < DynamicVars["BuffChance"].IntValue + DynamicVars["SelfDamageChance"].IntValue)
         {
-            await CreatureCmd.Damage(
+            await KakarotBetaCompat.DamageFromCard(
                 choiceContext,
                 Owner.Creature,
                 DynamicVars["SelfDamage"].BaseValue,
                 ValueProp.Unblockable | ValueProp.Unpowered,
                 Owner.Creature,
-                this);
+                this,
+                cardPlay);
             return;
         }
 

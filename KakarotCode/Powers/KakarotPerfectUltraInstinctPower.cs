@@ -52,7 +52,11 @@ public sealed class KakarotPerfectUltraInstinctPower : KakarotPower
         KakarotFormVisuals.Refresh(oldOwner);
     }
 
+#if STS2_BETA
+    public override decimal ModifyDamageMultiplicative(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource, CardPlay cardPlay)
+#else
     public override decimal ModifyDamageMultiplicative(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource)
+#endif
     {
         if (target != Owner || amount <= 0)
         {

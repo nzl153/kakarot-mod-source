@@ -222,12 +222,22 @@ public sealed class SuperSaiyanFormPower : KakarotPower
         }
     }
 
+#if STS2_BETA
+    public override decimal ModifyDamageMultiplicative(
+        Creature target,
+        decimal amount,
+        ValueProp props,
+        Creature dealer,
+        CardModel cardSource,
+        CardPlay cardPlay)
+#else
     public override decimal ModifyDamageMultiplicative(
         Creature target,
         decimal amount,
         ValueProp props,
         Creature dealer,
         CardModel cardSource)
+#endif
     {
         var isPoweredAttack = IsPoweredAttackSafe(props);
         if (_tier != 3

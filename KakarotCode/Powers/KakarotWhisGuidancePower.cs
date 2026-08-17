@@ -42,7 +42,11 @@ public sealed class KakarotWhisGuidancePower : KakarotPower
         return base.AfterApplied(applier, cardSource);
     }
 
+#if STS2_BETA
+    public override decimal ModifyDamageMultiplicative(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource, CardPlay cardPlay)
+#else
     public override decimal ModifyDamageMultiplicative(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource)
+#endif
     {
         if (target != Owner || amount <= 0)
         {

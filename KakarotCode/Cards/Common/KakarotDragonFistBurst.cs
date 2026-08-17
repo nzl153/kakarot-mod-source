@@ -31,7 +31,7 @@ public class KakarotDragonFistBurst() : KakarotCard(1, CardType.Attack, CardRari
         var hits = (int)DynamicVars["Hits"].BaseValue;
         for (var i = 0; i < hits; i++)
         {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
                 .WithHitFx("vfx/vfx_attack_blunt")
                 .Execute(choiceContext);
         }

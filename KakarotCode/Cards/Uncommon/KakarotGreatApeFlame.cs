@@ -19,7 +19,7 @@ public class KakarotGreatApeFlame() : KakarotCard(1, CardType.Attack, CardRarity
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
 
         if (Owner.PlayerCombatState.Hand.Cards.Count > 0)
         {

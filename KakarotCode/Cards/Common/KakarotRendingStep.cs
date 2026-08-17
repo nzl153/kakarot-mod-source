@@ -25,12 +25,16 @@ public class KakarotRendingStep() : KakarotCard(1, CardType.Attack, CardRarity.C
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
         await CommonActions.CardBlock(this, cardPlay);
 
         if (KakarotWildHelper.HasWild(this))
         {
-            await CommonActions.CardAttack(this, cardPlay.Target, DynamicVars["BonusDamage"].BaseValue).Execute(choiceContext);
+            await KakarotBetaCompat.CardAttack(
+                this,
+                cardPlay,
+                DynamicVars["BonusDamage"].BaseValue,
+                ValueProp.Move).Execute(choiceContext);
         }
     }
 

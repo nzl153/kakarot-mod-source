@@ -37,8 +37,7 @@ public sealed class KakarotTemporaryThornsPower : KakarotPower
                 dealer,
                 Amount,
                 ValueProp.Unpowered | ValueProp.SkipHurtAnim,
-                Owner,
-                null);
+                Owner);
         }
     }
 

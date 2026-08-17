@@ -28,7 +28,7 @@ public class KakarotDragonFist() : KakarotCard(3, CardType.Attack, CardRarity.Ra
                 break;
             }
 
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
                 .WithHitFx("vfx/vfx_attack_blunt", null, "blunt_attack.mp3")
                 .Execute(choiceContext);
             await PlayerCmd.GainStars(DynamicVars["Stars"].BaseValue, Owner);

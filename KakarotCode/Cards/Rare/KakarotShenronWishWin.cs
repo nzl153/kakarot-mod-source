@@ -29,7 +29,7 @@ public class KakarotShenronWishWin() : KakarotCard(4, CardType.Attack, CardRarit
             return;
         }
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_blunt")
             .Execute(choiceContext);
     }

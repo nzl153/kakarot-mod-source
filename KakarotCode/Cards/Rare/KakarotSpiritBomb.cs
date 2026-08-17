@@ -34,7 +34,7 @@ public class KakarotSpiritBomb() : KakarotCard(3, CardType.Attack, CardRarity.Ra
             return;
         }
 
-        await DamageCmd.Attack(totalDamage).FromCard(this).TargetingAllOpponents(CombatState)
+        await DamageCmd.Attack(totalDamage).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_blunt")
             .Execute(choiceContext);
     }

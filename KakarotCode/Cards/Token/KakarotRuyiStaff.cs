@@ -23,12 +23,25 @@ public class KakarotRuyiStaff() : KakarotCard(0, CardType.Attack, CardRarity.Tok
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }
 
+#if STS2_BETA
+    protected override CardLocation GetResultLocationForCardPlay()
+    {
+        var result = base.GetResultLocationForCardPlay();
+        if (result.pileType == PileType.Discard)
+        {
+            result.pileType = PileType.Hand;
+        }
+
+        return result;
+    }
+#else
     protected override PileType GetResultPileTypeForCardPlay() => PileType.Hand;
+#endif
 
     protected override void OnUpgrade()
     {

@@ -606,7 +606,10 @@ public sealed class FriezaBoss : CustomMonsterModel
         await WithdrawSummons();
         if (Creature.Block > 0)
         {
-            await CreatureCmd.LoseBlock(Creature, Creature.Block);
+            await KakarotBetaCompat.LoseBlock(
+                new ThrowingPlayerChoiceContext(),
+                Creature,
+                Creature.Block);
         }
 
         await ClearPhasePowers();
@@ -773,8 +776,7 @@ public sealed class FriezaBoss : CustomMonsterModel
                 Creature,
                 50m,
                 ValueProp.Unpowered,
-                Creature,
-                null);
+                Creature);
         }
         else
         {
@@ -791,8 +793,7 @@ public sealed class FriezaBoss : CustomMonsterModel
                         target.Creature,
                         22m,
                         ValueProp.Move,
-                        Creature,
-                        null);
+                        Creature);
                 }
             }
         }

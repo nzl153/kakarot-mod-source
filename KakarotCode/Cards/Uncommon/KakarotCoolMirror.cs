@@ -25,10 +25,10 @@ public class KakarotCoolMirror() : KakarotCard(1, CardType.Attack, CardRarity.Un
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         var trigger = IsRightmostCardWild();
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
         if (trigger)
         {
-            await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+            await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
             await CardPileCmd.Draw(choiceContext, 1, Owner);
         }
     }

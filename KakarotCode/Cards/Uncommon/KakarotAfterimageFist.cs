@@ -26,7 +26,7 @@ public class KakarotAfterimageFist() : KakarotCard(0, CardType.Attack, CardRarit
 
         for (var i = 0; i < energyX; i++)
         {
-            await DamageCmd.Attack(starX).FromCard(this).TargetingAllOpponents(CombatState)
+            await DamageCmd.Attack(starX).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
                 .WithHitFx("vfx/vfx_attack_blunt")
                 .Execute(choiceContext);
         }

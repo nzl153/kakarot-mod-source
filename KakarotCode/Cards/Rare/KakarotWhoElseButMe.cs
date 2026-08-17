@@ -35,15 +35,22 @@ public class KakarotWhoElseButMe() : KakarotCard(0, CardType.Attack, CardRarity.
     {
         var hpCost = KakarotTrainingSelfHpCost.Resolve(HpCostBase, Owner.Creature);
 
-        await CreatureCmd.Damage(choiceContext, Owner.Creature, hpCost, ValueProp.Unblockable | ValueProp.Unpowered, Owner.Creature, this);
+        await KakarotBetaCompat.DamageFromCard(
+            choiceContext,
+            Owner.Creature,
+            hpCost,
+            ValueProp.Unblockable | ValueProp.Unpowered,
+            Owner.Creature,
+            this,
+            cardPlay);
 
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_blunt", null, "blunt_attack.mp3")
             .Execute(choiceContext);
 
         if (IsAtOrBelowHalfHp(Owner.Creature))
         {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
+            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
                 .WithHitFx("vfx/vfx_attack_blunt", null, "blunt_attack.mp3")
                 .Execute(choiceContext);
         }

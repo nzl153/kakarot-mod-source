@@ -29,7 +29,14 @@ public class KakarotHyperbolicTimeChamber() : KakarotCard(0, CardType.Skill, Car
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         var hpLoss = KakarotTrainingSelfHpCost.Resolve(HpCost, Owner.Creature);
-        await CreatureCmd.Damage(choiceContext, Owner.Creature, hpLoss, ValueProp.Unblockable | ValueProp.Unpowered, Owner.Creature, this);
+        await KakarotBetaCompat.DamageFromCard(
+            choiceContext,
+            Owner.Creature,
+            hpLoss,
+            ValueProp.Unblockable | ValueProp.Unpowered,
+            Owner.Creature,
+            this,
+            cardPlay);
 
         var power = (KakarotHyperbolicNextTurnPower)ModelDb.Power<KakarotHyperbolicNextTurnPower>().ToMutable();
         power.Configure(3m, DynamicVars["Stars"].BaseValue, DynamicVars["Draw"].BaseValue);

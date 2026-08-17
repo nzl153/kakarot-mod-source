@@ -22,12 +22,22 @@ public sealed class FriezaEmperorGuardPower : KakarotPower
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Reduction", 25m)];
 
+#if STS2_BETA
+    public override decimal ModifyDamageMultiplicative(
+        Creature? target,
+        decimal amount,
+        ValueProp props,
+        Creature? dealer,
+        CardModel? cardSource,
+        CardPlay? cardPlay)
+#else
     public override decimal ModifyDamageMultiplicative(
         Creature? target,
         decimal amount,
         ValueProp props,
         Creature? dealer,
         CardModel? cardSource)
+#endif
     {
         if (target != Owner || cardSource?.Type != CardType.Attack)
         {

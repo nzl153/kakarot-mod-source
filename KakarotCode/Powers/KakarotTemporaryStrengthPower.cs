@@ -28,7 +28,11 @@ public sealed class KakarotTemporaryStrengthPower : KakarotPower
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Strength", 0m)];
 
+#if STS2_BETA
+    public override decimal ModifyDamageAdditive(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource, CardPlay cardPlay)
+#else
     public override decimal ModifyDamageAdditive(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource)
+#endif
     {
         if (dealer == null || Owner != dealer || !props.IsPoweredAttack())
         {

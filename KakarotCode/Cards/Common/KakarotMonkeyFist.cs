@@ -21,7 +21,7 @@ public class KakarotMonkeyFist() : KakarotCard(1, CardType.Attack, CardRarity.Co
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardAttack(this, cardPlay.Target).Execute(choiceContext);
+        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
         await CardPileCmd.Draw(choiceContext, DynamicVars["Draw"].IntValue, Owner);
     }
 
