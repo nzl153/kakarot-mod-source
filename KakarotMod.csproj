@@ -6,6 +6,13 @@
     <Sts2WorkshopContentDir Condition="'$(Sts2WorkshopContentDir)'==''">$(Sts2GameRoot)\..\..\workshop\content\2868840</Sts2WorkshopContentDir>
     <BaseLibDll Condition="'$(BaseLibDll)'=='' And Exists('$(Sts2GameRoot)\mods\BaseLib.3.3.0\BaseLib.dll')">$(Sts2GameRoot)\mods\BaseLib.3.3.0\BaseLib.dll</BaseLibDll>
     <BaseLibDll Condition="'$(BaseLibDll)'=='' And Exists('$(Sts2WorkshopContentDir)\3737335127\BaseLib\BaseLib.dll')">$(Sts2WorkshopContentDir)\3737335127\BaseLib\BaseLib.dll</BaseLibDll>
+    <!-- beta 分支构建开关：dotnet build -p:Sts2Beta=true 出 beta 版 dll，不传就是正式版。
+         唯一差异全部收在源码里的 #if STS2_BETA 内，绝不复制源码目录（复制必漂移）。
+         注意这里是「追加」而不是覆盖 DefineConstants：直接传
+         -p:DefineConstants=STS2_BETA 会把 TRACE / DEBUG 一起冲掉，
+         导致 beta 构建静默少掉条件编译的行为，且极难联想到是构建参数所致。 -->
+    <Sts2Beta Condition="'$(Sts2Beta)'==''">false</Sts2Beta>
+    <DefineConstants Condition="'$(Sts2Beta)'=='true'">$(DefineConstants);STS2_BETA</DefineConstants>
     <Version>3.4.0</Version>
     <AssemblyVersion>3.4.0.0</AssemblyVersion>
     <FileVersion>3.4.0.0</FileVersion>

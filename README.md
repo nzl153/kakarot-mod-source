@@ -14,7 +14,7 @@
 两个分支共用同一份源码，靠条件编译产出两份 dll，差异全部收在 `#if STS2_BETA` 内，不复制源码目录。
 
 ```bash
-dotnet build -p:DefineConstants=STS2_BETA   # beta 分支
+dotnet build -p:Sts2Beta=true   # beta 分支
 dotnet build                                 # 正式版（默认）
 ```
 
