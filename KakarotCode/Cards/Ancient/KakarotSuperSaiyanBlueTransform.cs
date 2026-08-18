@@ -49,6 +49,16 @@ public class KakarotSuperSaiyanBlueTransform() : KakarotCard(0, CardType.Skill, 
             return;
         }
 
+        // 对标原版「神化 Apotheosis」：只动战斗内实例，不污染跑图卡组；
+        // IsUpgradable 会挡掉不可升级与已满级的牌。变身后新生成的牌不在此列。
+        foreach (var card in playerCombatState.AllCards)
+        {
+            if (card != this && card.IsUpgradable)
+            {
+                CardCmd.Upgrade(card);
+            }
+        }
+
         var godKi = combatState.CreateCard<KakarotGodKi>(Owner);
         await CardPileCmd.AddGeneratedCardToCombat(godKi, PileType.Hand, Owner);
         KakarotGodKi.UpgradeAllInstancesInCombat(Owner);

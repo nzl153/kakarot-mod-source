@@ -69,8 +69,8 @@
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.description": "记录本场战斗中「神之气」的打出次数。",
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.smartDescription": "神之气 {Progress}/2。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.title": "超级赛亚人蓝色",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "究极觉醒：替换超级赛亚人之神的力量。受伤触发「自在极意兆」入手的概率+10%。",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "受伤触发自在极意兆概率+10%。获得{Strength}点力量和{Dexterity}点敏捷。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "究极觉醒：替换超级赛亚人之神的力量。变身时，本场战斗中你的所有牌[gold]升级[/gold]。每回合开始时获得{Rage}点[gold]怒气[/gold]。受伤触发「自在极意兆」入手的概率+10%。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "变身时全部牌升级。每回合开始获得{Rage}点怒气。受伤触发自在极意兆概率+10%。获得{Strength}点力量和{Dexterity}点敏捷。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.title": "自在极意调度",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.description": "用于在回合开始时清除「神之气」带来的临时领悟极易概率。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.smartDescription": "调度用状态。",
@@ -136,23 +136,23 @@
   "KAKAROTMOD-KAKAROT_S_CELL_POWER.smartDescription": "S细胞计数：{SCells}。激活训练卡可积累S细胞。",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.title": "S细胞本局累计",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.description": "内部：战斗中保持血脉修炼进度。",
-  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "内部持久化。"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "帝王庇护"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "只要还有基纽特战队成员存活，弗利萨受到的攻击牌伤害就会降低25%。击败所有队员后，庇护消失。"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "基纽特战队仍在保护弗利萨：攻击牌对他造成的伤害降低{Reduction}%。"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "黄金耐力"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "黄金形态会带来4点额外力量，但弗利萨每行动一次就会失去其中1点。撑过最初的猛攻，他会越来越弱。"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "黄金形态还剩{Amount}点额外力量。弗利萨下次行动后会再失去1点。"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "死亡飞盘"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "死亡飞盘已经锁定目标。它返回前，靠卡牌伤害打到要求便能反弹，令弗利萨受到50点伤害；否则目标会受到22点伤害两次。"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "反弹进度：{Damage}/{Threshold}。达标后弗利萨受到50点伤害；未达标则被锁定者受到22点伤害两次。"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "超新星蓄力"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "弗利萨正在制造超新星。蓄力结束前，用卡牌造成足够伤害即可打断；否则全队受到70点伤害，每人的弃牌堆再加入2张气泄。"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "还剩{Turns}次蓄力，打断进度：{Damage}/{Threshold}。未能打断时，全队受到70点伤害并各获得2张气泄。"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "黑金威压"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "每回合前3张非基础牌可以正常打出；从第4张开始，这些牌结算后都会被消耗。基础牌不计入张数。"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "本回合已打出{Played}张非基础牌。前{SafeCards}张安全，从第4张开始会在结算后被消耗。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "并肩作战"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "本回合，队友打出攻击牌时使你获得怒气；你消耗怒气时使所有队友获得格挡。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "每层：队友每打出1张攻击牌，获得1点怒气；每消耗1点怒气，所有队友获得2点格挡。当前{Amount}层。"
+  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "内部持久化。",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "帝王庇护",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "只要还有基纽特战队成员存活，弗利萨受到的攻击牌伤害就会降低25%。击败所有队员后，庇护消失。",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "基纽特战队仍在保护弗利萨：攻击牌对他造成的伤害降低{Reduction}%。",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "黄金耐力",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "黄金形态会带来4点额外力量，但弗利萨每行动一次就会失去其中1点。撑过最初的猛攻，他会越来越弱。",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "黄金形态还剩{Amount}点额外力量。弗利萨下次行动后会再失去1点。",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "死亡飞盘",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "死亡飞盘已经锁定目标。它返回前，靠卡牌伤害打到要求便能反弹，令弗利萨受到50点伤害；否则目标会受到22点伤害两次。",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "反弹进度：{Damage}/{Threshold}。达标后弗利萨受到50点伤害；未达标则被锁定者受到22点伤害两次。",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "超新星蓄力",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "弗利萨正在制造超新星。蓄力结束前，用卡牌造成足够伤害即可打断；否则全队受到70点伤害，每人的弃牌堆再加入2张气泄。",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "还剩{Turns}次蓄力，打断进度：{Damage}/{Threshold}。未能打断时，全队受到70点伤害并各获得2张气泄。",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "黑金威压",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "每回合前3张非基础牌可以正常打出；从第4张开始，这些牌结算后都会被消耗。基础牌不计入张数。",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "本回合已打出{Played}张非基础牌。前{SafeCards}张安全，从第4张开始会在结算后被消耗。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "并肩作战",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "本回合，队友打出攻击牌时使你获得怒气；你消耗怒气时使所有队友获得格挡。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "每层：队友每打出1张攻击牌，获得1点怒气；每消耗1点怒气，所有队友获得2点格挡。当前{Amount}层。"
 }

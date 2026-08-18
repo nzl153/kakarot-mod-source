@@ -24,12 +24,13 @@ public class KakarotAfterimageFist() : KakarotCard(0, CardType.Attack, CardRarit
             return;
         }
 
-        for (var i = 0; i < energyX; i++)
-        {
-            await DamageCmd.Attack(starX).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-                .WithHitFx("vfx/vfx_attack_blunt")
-                .Execute(choiceContext);
-        }
+        // 多段攻击必须共用一条带 HitCount 的命令，避免超巨化提前消耗并保留段数 Hook。
+        await DamageCmd.Attack(starX)
+            .WithHitCount(energyX)
+            .FromKakarotCard(this, cardPlay)
+            .TargetingAllOpponents(CombatState)
+            .WithHitFx("vfx/vfx_attack_blunt")
+            .Execute(choiceContext);
     }
 
     protected override void OnUpgrade()

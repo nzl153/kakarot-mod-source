@@ -29,12 +29,13 @@ public class KakarotDragonFistBurst() : KakarotCard(1, CardType.Attack, CardRari
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         var hits = (int)DynamicVars["Hits"].BaseValue;
-        for (var i = 0; i < hits; i++)
-        {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-                .WithHitFx("vfx/vfx_attack_blunt")
-                .Execute(choiceContext);
-        }
+        // 多段攻击必须共用一条带 HitCount 的命令，避免超巨化提前消耗并保留段数 Hook。
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
+            .WithHitCount(hits)
+            .FromKakarotCard(this, cardPlay)
+            .TargetingAllOpponents(CombatState)
+            .WithHitFx("vfx/vfx_attack_blunt")
+            .Execute(choiceContext);
     }
 
     protected override void OnUpgrade()

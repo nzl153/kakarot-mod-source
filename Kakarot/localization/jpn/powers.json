@@ -69,8 +69,8 @@
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.description": "この戦闘中にプレイした神の気を記録する。",
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.smartDescription": "神の気 {Progress}/2。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.title": "超サイヤ人ブルー",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "究極形態パワー：超サイヤ人ゴッドを置き換える。HPを失った時、身勝手の極意“兆”が手札に加わる確率がさらに+10%。",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "HP損失時の身勝手の極意発動+10%。筋力を{Strength}、敏捷性を{Dexterity}得る。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "究極形態パワー：超サイヤ人ゴッドを置き換える。変身時、この戦闘中の自分のカードをすべて[gold]アップグレード[/gold]する。各ターン開始時に[gold]怒り[/gold]を{Rage}得る。HPを失った時、身勝手の極意“兆”が手札に加わる確率がさらに+10%。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "変身時に全カードをアップグレード。各ターン開始時に怒りを{Rage}得る。HP損失時の身勝手の極意発動+10%。筋力を{Strength}、敏捷性を{Dexterity}得る。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.title": "身勝手の極意スケジューラー",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.description": "あなたのターン開始時、一時的な神の気による身勝手の極意発動ボーナスを消去する。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.smartDescription": "内部用スケジューラーバフ。",
@@ -136,23 +136,23 @@
   "KAKAROTMOD-KAKAROT_S_CELL_POWER.smartDescription": "この戦闘のS細胞：{SCells}。修業カードでS細胞を得る。",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.title": "S細胞ラン記録",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.description": "内部用：戦闘中の血統修業進行を保持する。",
-  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "内部保持。"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "帝王の守護"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "ギニュー特戦隊が1人でも生きている間、フリーザがアタックカードから受けるダメージは25%減少する。全員倒すと守りは消える。"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "ギニュー特戦隊がフリーザを守っている。アタックカードから受けるダメージが{Reduction}%減少する。"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "ゴールデンの持久力"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "ゴールデン形態は筋力を4得るが、フリーザが行動するたびに1ずつ失われる。最初の猛攻を耐えれば、次第に弱くなる。"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "追加筋力は残り{Amount}。フリーザの次の行動後に1失う。"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "デスソーサー"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "デスソーサーが標的を捉えた。戻る前にカードで必要なダメージを与えれば、反射してフリーザに50ダメージ。失敗すると標的が22ダメージを2回受ける。"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "反射進行：{Damage}/{Threshold}。成功するとフリーザに50ダメージ、失敗すると標的に22ダメージを2回与える。"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "スーパーノヴァ充填"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "フリーザがスーパーノヴァを作っている。充填が終わる前にカードで必要なダメージを与えれば中断できる。失敗すると全員が70ダメージを受け、各自の捨て札に気漏れが2枚加わる。"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "残り充填行動：{Turns}。中断進行：{Damage}/{Threshold}。失敗すると全員に70ダメージ、各自に気漏れ2枚。"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "ブラックフリーザの威圧"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "各ターン、基本でないカードの最初の3枚は安全。4枚目以降は解決後に廃棄される。基本カードは枚数に数えない。"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "このターンに基本でないカードを{Played}枚使用。最初の{SafeCards}枚は安全で、4枚目以降は解決後に廃棄される。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "共闘"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "このターン、仲間のアタックで怒りを得て、怒りを消費するたびすべての仲間がブロックを得る。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "1スタックにつき、仲間がアタックを1枚プレイするたび怒りを1得る。怒りを1消費するたび、すべての仲間はブロックを2得る。現在{Amount}スタック。"
+  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "内部保持。",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "帝王の守護",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "ギニュー特戦隊が1人でも生きている間、フリーザがアタックカードから受けるダメージは25%減少する。全員倒すと守りは消える。",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "ギニュー特戦隊がフリーザを守っている。アタックカードから受けるダメージが{Reduction}%減少する。",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "ゴールデンの持久力",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "ゴールデン形態は筋力を4得るが、フリーザが行動するたびに1ずつ失われる。最初の猛攻を耐えれば、次第に弱くなる。",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "追加筋力は残り{Amount}。フリーザの次の行動後に1失う。",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "デスソーサー",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "デスソーサーが標的を捉えた。戻る前にカードで必要なダメージを与えれば、反射してフリーザに50ダメージ。失敗すると標的が22ダメージを2回受ける。",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "反射進行：{Damage}/{Threshold}。成功するとフリーザに50ダメージ、失敗すると標的に22ダメージを2回与える。",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "スーパーノヴァ充填",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "フリーザがスーパーノヴァを作っている。充填が終わる前にカードで必要なダメージを与えれば中断できる。失敗すると全員が70ダメージを受け、各自の捨て札に気漏れが2枚加わる。",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "残り充填行動：{Turns}。中断進行：{Damage}/{Threshold}。失敗すると全員に70ダメージ、各自に気漏れ2枚。",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "ブラックフリーザの威圧",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "各ターン、基本でないカードの最初の3枚は安全。4枚目以降は解決後に廃棄される。基本カードは枚数に数えない。",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "このターンに基本でないカードを{Played}枚使用。最初の{SafeCards}枚は安全で、4枚目以降は解決後に廃棄される。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "共闘",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "このターン、仲間のアタックで怒りを得て、怒りを消費するたびすべての仲間がブロックを得る。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "1スタックにつき、仲間がアタックを1枚プレイするたび怒りを1得る。怒りを1消費するたび、すべての仲間はブロックを2得る。現在{Amount}スタック。"
 }

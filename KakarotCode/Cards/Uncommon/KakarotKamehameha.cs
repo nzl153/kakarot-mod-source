@@ -10,7 +10,7 @@ namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
 public class KakarotKamehameha() : KakarotCard(1, CardType.Attack, CardRarity.Uncommon, TargetType.AllEnemies)
 {
-    public override int CanonicalStarCost => 3;
+    public override int CanonicalStarCost => 4;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(25m, ValueProp.Move)];
 

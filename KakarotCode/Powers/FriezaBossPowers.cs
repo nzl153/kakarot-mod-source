@@ -116,7 +116,7 @@ public sealed class FriezaSupernovaChargePower : KakarotPower
 
 public sealed class FriezaBlackPressurePower : KakarotPower
 {
-    public override PowerType Type => PowerType.None;
+    public override PowerType Type => PowerType.Debuff;
     public override PowerStackType StackType => PowerStackType.Single;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>

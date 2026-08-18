@@ -209,19 +209,33 @@ public sealed class FriezaBoss : CustomMonsterModel
         await KakarotPowerCmd.Apply<FriezaEmperorGuardPower>(Creature, 1m, Creature, null);
     }
 
-    public override Task AfterSideTurnStart(
+    public override async Task AfterSideTurnStart(
         CombatSide side,
         IReadOnlyList<Creature> participants,
         ICombatState combatState)
     {
-        if (ReferenceEquals(combatState, CombatState))
+        if (!ReferenceEquals(combatState, CombatState))
         {
-            FriezaBossVisuals.SetPhase(Creature, Phase, animate: false);
-            FriezaBossVisuals.EnsureBreathing(Creature, 3.5f);
-            FriezaBossVisuals.SyncSaucerTarget(this);
+            return;
         }
 
-        return Task.CompletedTask;
+        FriezaBossVisuals.SetPhase(Creature, Phase, animate: false);
+        FriezaBossVisuals.EnsureBreathing(Creature, 3.5f);
+        FriezaBossVisuals.SyncSaucerTarget(this);
+
+        if (side != Creature.Side || Phase != 3)
+        {
+            return;
+        }
+
+        // 仙豆或神器只提供一回合喘息；黑金阶段下回合补回威压，但不覆盖现有计数。
+        foreach (Player player in CombatState.Players.Where(static player => player.Creature.IsAlive))
+        {
+            if (!player.Creature.HasPower<FriezaBlackPressurePower>())
+            {
+                await KakarotPowerCmd.Apply<FriezaBlackPressurePower>(player.Creature, 1m, Creature, null);
+            }
+        }
     }
 
     protected override MonsterMoveStateMachine GenerateMoveStateMachine()

@@ -1,34 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KakarotCharacter = KakarotMod.KakarotCode.Characters.Kakarot;
 using KakarotMod.KakarotCode.Powers;
-using KakarotMod.KakarotCode.Wild;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
-public class KakarotSaiyanPowerBank() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
+public class KakarotAwakeningTrigger() : KakarotCard(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
 {
-    // 联机专属化既补足协作卡结构，也移除单人野性成型后近乎无门槛的资源乘数。
+    // S 细胞推进超级赛亚人路线，与赛亚充电宝推进野性仪式的超级赛亚人 4 路线形成对称。
     public override CardMultiplayerConstraint MultiplayerConstraint => CardMultiplayerConstraint.MultiplayerOnly;
+
+    public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
 
     protected override bool IsPlayable => base.IsPlayable && TryGetTeammate() != null;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
-        new DynamicVar("Strength", 1m),
-        new DynamicVar("Dexterity", 1m),
-        new DynamicVar("RitualProgress", 1m),
+        new DynamicVar("Heal", 5m),
+        new DynamicVar("SCells", 3m),
     ];
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<KakarotWildRitualPower>()];
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => [HoverTipFactory.FromPower<KakarotSCellPower>()];
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
@@ -38,26 +37,14 @@ public class KakarotSaiyanPowerBank() : KakarotCard(1, CardType.Skill, CardRarit
             return;
         }
 
-        await KakarotPowerCmd.Apply<StrengthPower>(
-            choiceContext,
-            teammate.Creature,
-            DynamicVars["Strength"].BaseValue,
-            Owner.Creature,
-            this);
-        await KakarotPowerCmd.Apply<DexterityPower>(
-            choiceContext,
-            teammate.Creature,
-            DynamicVars["Dexterity"].BaseValue,
-            Owner.Creature,
-            this);
-
+        await CreatureCmd.Heal(teammate.Creature, DynamicVars["Heal"].BaseValue);
         if (teammate.Character is KakarotCharacter)
         {
-            await KakarotWildRitualHandler.AddRitualProgress(
+            await KakarotSCellPower.TryGrantCellsAsync(
                 choiceContext,
                 teammate,
-                this,
-                DynamicVars["RitualProgress"].IntValue);
+                DynamicVars["SCells"].IntValue,
+                this);
         }
     }
 

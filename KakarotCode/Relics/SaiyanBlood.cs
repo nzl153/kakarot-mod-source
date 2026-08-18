@@ -57,7 +57,7 @@ public class SaiyanBlood : KakarotRelic
     }
 
     [SavedProperty(SerializationCondition.SaveIfNotTypeDefault)]
-    private int _dragonFistBurstBonusThisRun { get; set; }
+    private int _dragonFistBurstBonusThisRun;
 
     private int _wishGoldPendingThisCombat;
 
@@ -71,7 +71,7 @@ public class SaiyanBlood : KakarotRelic
     private int _ultraInstinctHpLossRollCounterThisCombat;
 
     [SavedProperty(SerializationCondition.SaveIfNotTypeDefault)]
-    private int _whoElseButMePlayCountThisRun { get; set; }
+    private int _whoElseButMePlayCountThisRun;
 
     public int DragonFistBurstBonusThisRun => _dragonFistBurstBonusThisRun;
 

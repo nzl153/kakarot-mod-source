@@ -14,12 +14,13 @@ public class KakarotWolfFangFist() : KakarotCard(2, CardType.Attack, CardRarity.
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        for (var i = 0; i < 4; i++)
-        {
-            await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-                .WithHitFx("vfx/vfx_attack_slash")
-                .Execute(choiceContext);
-        }
+        // 多段攻击必须共用一条带 HitCount 的命令，避免超巨化提前消耗并保留段数 Hook。
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
+            .WithHitCount(4)
+            .FromKakarotCard(this, cardPlay)
+            .TargetingAllOpponents(CombatState)
+            .WithHitFx("vfx/vfx_attack_slash")
+            .Execute(choiceContext);
     }
 
     protected override void OnUpgrade()

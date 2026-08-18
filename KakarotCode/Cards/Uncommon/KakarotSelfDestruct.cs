@@ -24,18 +24,11 @@ public class KakarotSelfDestruct() : KakarotCard(1, CardType.Skill, CardRarity.U
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        await KakarotBetaCompat.DamageFromCard(
-            choiceContext,
-            Owner.Creature,
-            SelfDamage,
-            ValueProp.Unblockable | ValueProp.Unpowered,
-            Owner.Creature,
-            this,
-            cardPlay);
+        await CreatureCmd.Damage(choiceContext, Owner.Creature, SelfDamage, ValueProp.Unblockable | ValueProp.Unpowered, Owner.Creature, this);
     }
 
     // Exhaust callbacks are awaited, preserving rage and ritual command order.

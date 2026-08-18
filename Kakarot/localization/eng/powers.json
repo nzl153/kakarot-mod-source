@@ -69,8 +69,8 @@
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.description": "Tracks God Ki plays this combat.",
   "KAKAROTMOD-KAKAROT_GOD_KI_RITUAL_POWER.smartDescription": "God Ki {Progress}/2.",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.title": "Super Saiyan Blue",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "Ultimate form power: replaces Super Saiyan God. When you lose HP, Ultra Instinct Omen is added to your hand +10% more often.",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "HP-loss Ultra Instinct proc +10%. Gain {Strength} Strength and {Dexterity} Dexterity.",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.description": "Ultimate form power: replaces Super Saiyan God. On transforming, [gold]upgrade[/gold] all of your cards for the rest of combat. At the start of each turn, gain {Rage} [gold]rage[/gold]. When you lose HP, Ultra Instinct Omen is added to your hand +10% more often.",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_POWER.smartDescription": "Upgrades all your cards on transforming. Gain {Rage} rage each turn. HP-loss Ultra Instinct proc +10%. Gain {Strength} Strength and {Dexterity} Dexterity.",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.title": "Ultra Instinct Scheduler",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.description": "Clears the temporary God Ki Ultra Instinct proc bonus at the start of your turn.",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_TURN_CLEANUP_POWER.smartDescription": "Internal scheduler buff.",
@@ -136,23 +136,23 @@
   "KAKAROTMOD-KAKAROT_S_CELL_POWER.smartDescription": "S-Cells this combat: {SCells}. Training cards add S-Cells.",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.title": "S-Cell Run Tally",
   "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.description": "Internal: persists bloodline training progress during combat.",
-  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "Internal persistence."
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "Emperor's Guard"
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "While any Ginyu Force member is alive, Frieza takes 25% less damage from Attack cards. Defeat them all to remove this protection."
-, "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "The Ginyu Force is still protecting Frieza. He takes {Reduction}% less damage from Attack cards."
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "Golden Stamina"
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "Golden Frieza begins with 4 bonus Strength, then loses 1 after each of his actions. Survive the opening assault and he will steadily weaken."
-, "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "{Amount} bonus Strength remains. Frieza will lose 1 after his next action."
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "Death Saucer"
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "The saucer has locked onto a target. Deal enough card damage before it returns to reflect it for 50 damage to Frieza. Fail, and the target takes 22 damage twice."
-, "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "Reflect progress: {Damage}/{Threshold}. Success deals 50 damage to Frieza; failure deals 22 damage twice to the target."
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "Supernova Charge"
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "Frieza is forming a Supernova. Deal enough card damage before the charge ends to interrupt it. Otherwise, the team takes 70 damage and each player gains 2 Ki Leaks in their discard pile."
-, "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "{Turns} charge action(s) remain. Interrupt progress: {Damage}/{Threshold}. Failure deals 70 damage to the team and gives each player 2 Ki Leaks."
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "Black Frieza's Pressure"
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "The first 3 non-Basic cards you play each turn are safe. Starting with the fourth, each one Exhausts after resolving. Basic cards do not count."
-, "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "{Played} non-Basic card(s) played this turn. The first {SafeCards} are safe; the fourth and later Exhaust after resolving."
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "Fighting Side by Side"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "This turn, teammates' Attacks grant you rage, and spending rage grants Block to all teammates."
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "Per stack: gain 1 rage whenever a teammate plays an Attack; whenever you spend 1 rage, all teammates gain 2 Block. {Amount} stack(s)."
+  "KAKAROTMOD-KAKAROT_BLOODLINE_TRAINING_PERSIST_POWER.smartDescription": "Internal persistence.",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.title": "Emperor's Guard",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.description": "While any Ginyu Force member is alive, Frieza takes 25% less damage from Attack cards. Defeat them all to remove this protection.",
+  "KAKAROTMOD-FRIEZA_EMPEROR_GUARD_POWER.smartDescription": "The Ginyu Force is still protecting Frieza. He takes {Reduction}% less damage from Attack cards.",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.title": "Golden Stamina",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.description": "Golden Frieza begins with 4 bonus Strength, then loses 1 after each of his actions. Survive the opening assault and he will steadily weaken.",
+  "KAKAROTMOD-FRIEZA_GOLDEN_STAMINA_POWER.smartDescription": "{Amount} bonus Strength remains. Frieza will lose 1 after his next action.",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.title": "Death Saucer",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.description": "The saucer has locked onto a target. Deal enough card damage before it returns to reflect it for 50 damage to Frieza. Fail, and the target takes 22 damage twice.",
+  "KAKAROTMOD-FRIEZA_DEATH_SAUCER_POWER.smartDescription": "Reflect progress: {Damage}/{Threshold}. Success deals 50 damage to Frieza; failure deals 22 damage twice to the target.",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.title": "Supernova Charge",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.description": "Frieza is forming a Supernova. Deal enough card damage before the charge ends to interrupt it. Otherwise, the team takes 70 damage and each player gains 2 Ki Leaks in their discard pile.",
+  "KAKAROTMOD-FRIEZA_SUPERNOVA_CHARGE_POWER.smartDescription": "{Turns} charge action(s) remain. Interrupt progress: {Damage}/{Threshold}. Failure deals 70 damage to the team and gives each player 2 Ki Leaks.",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.title": "Black Frieza's Pressure",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.description": "The first 3 non-Basic cards you play each turn are safe. Starting with the fourth, each one Exhausts after resolving. Basic cards do not count.",
+  "KAKAROTMOD-FRIEZA_BLACK_PRESSURE_POWER.smartDescription": "{Played} non-Basic card(s) played this turn. The first {SafeCards} are safe; the fourth and later Exhaust after resolving.",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.title": "Fighting Side by Side",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.description": "This turn, teammates' Attacks grant you rage, and spending rage grants Block to all teammates.",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER_POWER.smartDescription": "Per stack: gain 1 rage whenever a teammate plays an Attack; whenever you spend 1 rage, all teammates gain 2 Block. {Amount} stack(s)."
 }
