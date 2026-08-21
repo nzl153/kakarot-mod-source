@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
@@ -28,7 +29,7 @@ public class KakarotEightArmedFist() : KakarotCard(0, CardType.Attack, CardRarit
             .WithHitCount(hits)
             .FromKakarotCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_slash")
+            .WithHitVfxNode(KakarotCombatPresentation.CreateEightArmedHitVfx)
             .Execute(choiceContext);
         await CardPileCmd.Draw(choiceContext, DynamicVars["Draw"].BaseValue, Owner);
     }

@@ -20,7 +20,6 @@ public class KakarotWolfFangFist() : KakarotCard(2, CardType.Attack, CardRarity.
             .WithHitCount(4)
             .FromKakarotCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_slash")
             .WithHitVfxNode(KakarotCombatPresentation.CreateWolfFangHitVfx)
             .Execute(choiceContext);
     }

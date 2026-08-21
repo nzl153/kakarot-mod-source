@@ -23,6 +23,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Monsters.Frieza;
 
@@ -687,8 +688,9 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlayFriezaBeam(
             Creature,
             LivingPlayerCreatures(),
-            Colors.White,
-            thickness: 0.15f);
+            PhaseBeamColor,
+            thickness: 0.15f,
+            dark: PhaseBeamIsDark);
         await Attack(17, hitFx: "vfx/vfx_attack_lightning");
         await KakarotPowerCmd.Apply<WeakPower>(targets, 1m, Creature, null);
         await KakarotPowerCmd.Apply<FrailPower>(targets, 1m, Creature, null);
@@ -700,9 +702,10 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlayFriezaBeam(
             Creature,
             LivingPlayerCreatures(),
-            Colors.White,
+            PhaseBeamColor,
             bursts: 2,
-            thickness: 0.11f);
+            thickness: 0.11f,
+            dark: PhaseBeamIsDark);
         await Attack(14, 2, "vfx/vfx_attack_lightning");
         await KakarotPowerCmd.Apply<VulnerablePower>(targets, 2m, Creature, null);
         AdvanceMove();
@@ -713,10 +716,9 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlayFriezaBeam(
             Creature,
             LivingPlayerCreatures(),
-            Phase == 1
-                ? Colors.White
-                : new Color(1.35f, 1.05f, 0.38f, 1f),
-            thickness: Phase == 1 ? 0.20f : 0.24f);
+            PhaseBeamColor,
+            thickness: Phase == 1 ? 0.20f : 0.24f,
+            dark: PhaseBeamIsDark);
         await Attack(Phase == 1 ? 24 : 30, hitFx: "vfx/vfx_attack_lightning");
         AdvanceMove();
         await FinishGoldenMove();
@@ -738,13 +740,12 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         GoldenOpeningDone = true;
         FriezaBossVisuals.PlayAttackMotion(Creature, 30f);
-        FriezaBossVisuals.PlayEnergyBolts(
+        FriezaVfxKit.PlayBolts(
             Creature,
             LivingPlayerCreatures(),
-            new Color(1.55f, 1.05f, 0.18f, 1f),
-            new Color(1.5f, 1.5f, 1.2f, 1f),
+            PhaseKiColor,
             hits: 5,
-            sizeMultiplier: 1.05f,
+            size: 1.05f,
             arcHeight: 72f);
         await Attack(8, 5, "vfx/vfx_attack_blunt");
         await FinishGoldenMove();
@@ -871,6 +872,11 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         BlackOpeningDone = true;
         FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
+        foreach (Creature flashTarget in LivingPlayerCreatures())
+        {
+            FriezaVfxKit.PlayBlackFlash(flashTarget, PhaseKiColor);
+        }
+
         await Attack(
             40,
             hitFx: "vfx/vfx_giant_horizontal_slash",
@@ -881,13 +887,12 @@ public sealed class FriezaBoss : CustomMonsterModel
     private async Task BlackBurst(IReadOnlyList<Creature> _)
     {
         FriezaBossVisuals.PlayAttackMotion(Creature, 34f);
-        FriezaBossVisuals.PlayEnergyBolts(
+        FriezaVfxKit.PlayBolts(
             Creature,
             LivingPlayerCreatures(),
-            new Color(1.45f, 0.12f, 0.18f, 1f),
-            new Color(1.45f, 1.45f, 1.45f, 1f),
+            PhaseKiColor,
             hits: 4,
-            sizeMultiplier: 1.15f,
+            size: 1.15f,
             arcHeight: 115f);
         await Attack(10, 4, "vfx/vfx_attack_blunt");
         FinishBlackNormalAction();
@@ -914,8 +919,9 @@ public sealed class FriezaBoss : CustomMonsterModel
         FriezaBossVisuals.PlayFriezaBeam(
             Creature,
             LivingPlayerCreatures(),
-            new Color(1.35f, 0.22f, 0.18f, 1f),
-            thickness: 0.31f);
+            PhaseBeamColor,
+            thickness: 0.31f,
+            dark: PhaseBeamIsDark);
         await Attack(40, hitFx: "vfx/vfx_starry_impact");
         foreach (Player player in CombatState.Players.Where(static player => player.Creature.IsAlive))
         {
@@ -932,35 +938,32 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         const int initialChargeTurns = 2;
         await CreatureCmd.GainBlock(Creature, 35m, ValueProp.Move, null);
-        FriezaBossVisuals.PlayEnergyBolts(
+        FriezaVfxKit.PlayBolts(
             Creature,
             LivingPlayerCreatures(),
-            new Color(1.5f, 0.35f, 0.08f, 1f),
-            new Color(1.5f, 1.1f, 0.2f, 1f),
-            sizeMultiplier: 1.2f,
+            PhaseKiColor,
+            hits: 1,
+            size: 1.2f,
             arcHeight: 135f);
         await Attack(15, hitFx: "vfx/vfx_attack_blunt");
         int remainingChargeTurns = initialChargeTurns - 1;
         var power = (FriezaSupernovaChargePower)ModelDb.Power<FriezaSupernovaChargePower>().ToMutable();
         await KakarotPowerCmd.Apply(power, Creature, 1m, Creature, null);
         GetSupernovaPower()?.SetProgress(remainingChargeTurns, 0, SupernovaThreshold);
-        FriezaBossVisuals.PlayEffect(
-            Creature,
-            "res://Kakarot/Images/Frieza/supernova_charge.png",
-            new Vector2(0.26f, 0.26f),
-            1.2f,
-            new Vector2(-20f, -180f));
+        FriezaSupernovaVfx.PlayCharge(Creature, level: 1);
     }
 
     private async Task SupernovaCharge(IReadOnlyList<Creature> _)
     {
-        FriezaBossVisuals.PlayEnergyBolts(
+        FriezaVfxKit.PlayBolts(
             Creature,
             LivingPlayerCreatures(),
-            new Color(1.5f, 0.35f, 0.08f, 1f),
-            new Color(1.5f, 1.1f, 0.2f, 1f),
-            sizeMultiplier: 1.2f,
+            PhaseKiColor,
+            hits: 1,
+            size: 1.2f,
             arcHeight: 135f);
+        // 第二回合的球更大更亮，读作「快满了」。
+        FriezaSupernovaVfx.PlayCharge(Creature, level: 2);
         await Attack(15, hitFx: "vfx/vfx_attack_blunt");
         FriezaSupernovaChargePower? power = GetSupernovaPower();
         if (power != null)
@@ -971,12 +974,11 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task SupernovaDetonate(IReadOnlyList<Creature> _)
     {
-        FriezaBossVisuals.PlayEffect(
-            Creature,
-            "res://Kakarot/Images/Frieza/supernova_vfx.png",
-            new Vector2(0.36f, 0.36f),
-            1.1f,
-            new Vector2(-220f, -100f));
+        foreach (Creature blastTarget in LivingPlayerCreatures())
+        {
+            FriezaSupernovaVfx.PlayDetonate(blastTarget);
+        }
+
         FriezaBossVisuals.PlayShockwave(
             Creature,
             new Color(1.5f, 0.35f, 0.05f, 1f),
@@ -1027,17 +1029,64 @@ public sealed class FriezaBoss : CustomMonsterModel
         string? fallbackSfx = null,
         bool hitVfxAtBase = false)
     {
+        // 原版 hitFx 是「金属打击」的语言，弗利萨全套是气。
+        // 所有招式都从这一个方法出去，所以在这里换掉就等于全阶段一起换。
+        // 音效保留：WithHitFx 的 sfx/tmpSfx 和 vfx 是独立字段。
         AttackCommand command = DamageCmd.Attack(damage)
             .WithHitCount(hits)
             .FromMonster(this)
             .WithNoAttackerAnim()
-            .WithHitFx(hitFx, null, fallbackSfx);
+            .WithHitFx(null, null, fallbackSfx)
+            .WithHitVfxNode(ResolveHitVfx(hitFx));
         if (hitVfxAtBase)
         {
             command.WithHitVfxSpawnedAtBase();
         }
 
         await command.Execute(null);
+    }
+
+    // 弗利萨各形态的气色：淡紫 → 亮紫 → 暗紫。
+    //
+    // 🔴 黄金形态原本用金色，飞过来的粒子在战斗背景上几乎看不出来——
+    // 背景本身偏暖偏亮，暖色气弹会被吃掉。整条线改走紫，靠明度分形态。
+    // 形态之间的区分不能只靠色相，要靠明度：淡 → 亮 → 暗。
+    // 死亡光线的配色：一阶段紫、二阶段黄、三阶段黑。
+    //
+    // 和 PhaseKiColor 是两套：光束又大又亮，暖色不会被背景吃掉，
+    // 所以二阶段可以用黄；小颗粒子不行，那边整条线走紫。
+    private Color PhaseBeamColor => Phase switch
+    {
+        2 => new Color(1.00f, 0.82f, 0.22f),
+        3 => new Color(0.72f, 0.30f, 1.00f),
+        _ => new Color(0.66f, 0.32f, 1.00f),
+    };
+
+    // 三阶段的光束是黑柱，需要非加法的暗层打底。
+    private bool PhaseBeamIsDark => Phase >= 3;
+
+    private Color PhaseKiColor => Phase switch
+    {
+        2 => new Color(0.78f, 0.30f, 1.00f),
+        3 => new Color(0.52f, 0.12f, 0.88f),
+        _ => new Color(0.86f, 0.56f, 1.00f),
+    };
+
+    // 按原本挂的原版特效反推这一招是什么手感，形状和大小跟着走。
+    // 这样每招的意图（气弹 / 拳 / 重击 / 横扫 / 大招）不用逐个重标。
+    private Func<Creature, Node2D> ResolveHitVfx(string? vanillaHitFx)
+    {
+        (KiHitStyle Style, float Size) shape = vanillaHitFx switch
+        {
+            "vfx/vfx_attack_lightning" => (KiHitStyle.Palm, 1.05f),
+            "vfx/vfx_heavy_blunt" => (KiHitStyle.Fist, 1.45f),
+            "vfx/vfx_giant_horizontal_slash" => (KiHitStyle.Slash, 1.55f),
+            "vfx/vfx_starry_impact" => (KiHitStyle.Palm, 1.70f),
+            _ => (KiHitStyle.Fist, 1.05f),
+        };
+
+        // 弗利萨在右侧朝左打，火星要跟着翻。
+        return KakarotCombatPresentation.KiHit(shape.Style, shape.Size, PhaseKiColor, facing: -1f);
     }
 
     private IEnumerable<Creature> LivingPlayerCreatures()

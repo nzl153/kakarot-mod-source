@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BaseLib.Abstracts;
 using KakarotMod.KakarotCode.Powers;
@@ -72,7 +72,9 @@ public class KakarotDestruction() : KakarotCard(3, CardType.Attack, CardRarity.T
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).Targeting(cardPlay.Target)
-            .WithHitFx("vfx/vfx_heavy_blunt")
+            // 不挂原版命中特效：破坏有自己的紫色抹除演出（KakarotCombatPresentation），
+            // 叠上 vfx_heavy_blunt 会在紫球中间多出一个原版重击图形。
+            // HitVfx 为 null 时引擎直接跳过，不需要传空串。
             .Execute(choiceContext);
         await KakarotPowerCmd.Apply<VulnerablePower>(choiceContext, cardPlay.Target, DynamicVars.Vulnerable.BaseValue, Owner.Creature, this);
         await KakarotPowerCmd.Apply<DarkShacklesPower>(choiceContext, cardPlay.Target, DynamicVars["StrengthLoss"].BaseValue, Owner.Creature, this);

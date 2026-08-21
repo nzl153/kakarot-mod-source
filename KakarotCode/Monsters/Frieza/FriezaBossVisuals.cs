@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Utilities;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Monsters.Frieza;
 
@@ -37,6 +38,9 @@ internal static class FriezaBossVisuals
 
     private static void SetPhaseInternal(Creature creature, int phase, bool animate)
     {
+        // 黑金形态贴身缠绕的暗气。只有第三形态有，切走就撤掉。
+        FriezaVfxKit.EnsureDarkAura(creature, phase >= 3, new Color(0.52f, 0.12f, 0.88f));
+
         var sprite = NCombatRoom.Instance?
             .GetCreatureNode(creature)?
             .Visuals
@@ -174,7 +178,7 @@ internal static class FriezaBossVisuals
         tween.TweenProperty(visualRoot, "scale", targetScale, 0.32f);
         Tween fade = sprite.CreateTween();
         fade.TweenProperty(sprite, "modulate", Colors.White, 0.28f);
-        PlayPulse(creature, new Color(0.75f, 0.35f, 1f, 0.9f), 0.48f);
+        FriezaVfxKit.PlaySummonSwirl(creature, new Color(0.75f, 0.35f, 1f));
         EnsureBreathing(creature);
     }
 
@@ -188,12 +192,8 @@ internal static class FriezaBossVisuals
         Color color = phase == 2
             ? new Color(1.65f, 1.3f, 0.35f, 1f)
             : new Color(0.7f, 0.25f, 1.5f, 1f);
-        PlayPulse(creature, color, 0.6f);
-        PlayEffect(
-            creature,
-            "res://Kakarot/Images/Frieza/supernova_charge.png",
-            new Vector2(0.22f, 0.22f),
-            0.55f);
+        // 最后一处静态贴图用法也去掉了。
+        FriezaVfxKit.PlayTransformFlash(creature, color);
     }
 
     public static void PlayEffect(
@@ -211,19 +211,23 @@ internal static class FriezaBossVisuals
             globalOffset ?? Vector2.Zero));
     }
 
+    // dark：黑金形态的光束。加法混合画不出黑，走 blend_mix 的暗色 shader
+    // 打底再叠一层发光的芯，才读得出「一道黑柱」。
     public static void PlayFriezaBeam(
         Creature creature,
         IEnumerable<Creature> targets,
         Color tint,
         int bursts = 1,
-        float thickness = 0.18f)
+        float thickness = 0.18f,
+        bool dark = false)
     {
         TryVisual(() => PlayFriezaBeamInternal(
             creature,
             targets.Where(static target => target.IsAlive).ToArray(),
             tint,
             bursts,
-            thickness));
+            thickness,
+            dark));
     }
 
     private static void PlayFriezaBeamInternal(
@@ -231,18 +235,22 @@ internal static class FriezaBossVisuals
         Creature[] targets,
         Color tint,
         int bursts,
-        float thickness)
+        float thickness,
+        bool dark)
     {
         Node? container = NCombatRoom.Instance?.CombatVfxContainer;
         NCreature? sourceNode = NCombatRoom.Instance?.GetCreatureNode(creature);
-        Texture2D? beamTexture = ResourceLoader.Load<Texture2D>(DeathBeamTexturePath);
-        if (container == null || sourceNode == null || beamTexture == null)
+        if (container == null || sourceNode == null)
         {
             return;
         }
 
         Vector2 sourcePosition = sourceNode.VfxSpawnPosition + new Vector2(-48f, -42f);
         int visibleBursts = Math.Clamp(bursts, 1, 3);
+
+        // 指尖先攒一个点，整条光束顺延。没有前摇的话光是「凭空出现」的。
+        const float chargeSeconds = 0.26f;
+        FriezaVfxKit.PlayBeamCharge(container, sourcePosition, tint, chargeSeconds);
         foreach (Creature target in targets)
         {
             NCreature? targetNode = NCombatRoom.Instance?.GetCreatureNode(target);
@@ -254,58 +262,75 @@ internal static class FriezaBossVisuals
             Vector2 targetPosition = targetNode.VfxSpawnPosition;
             for (int burst = 0; burst < visibleBursts; burst++)
             {
-                SpawnFittedBeam(
+                SpawnShaderBeam(
                     container,
-                    beamTexture,
                     sourcePosition,
                     targetPosition,
                     tint,
                     thickness,
-                    burst * 0.11f);
+                    chargeSeconds + burst * 0.11f,
+                    dark);
             }
         }
 
         SpawnImpact(container, sourcePosition, tint, 1.15f, 0f);
     }
 
-    private static void SpawnFittedBeam(
+    // 死亡光线 = 龟波那根程序化光束，改细、改成弗利萨的配色。
+    // 原来是一张 death_beam_vfx.png 拉伸出来的，静态图两端永远是齐口，
+    // 而且粗细一变就糊。走 shader 后两端自带半圆收口。
+    private static void SpawnShaderBeam(
         Node container,
-        Texture2D texture,
         Vector2 origin,
         Vector2 end,
         Color tint,
         float thickness,
-        float delay)
+        float delay,
+        bool dark)
     {
-        Vector2 direction = end - origin;
-        float distance = direction.Length();
-        if (distance < 1f || texture.GetWidth() <= 0)
+        if ((end - origin).LengthSquared() < 1f)
         {
             return;
         }
 
-        var beam = new Sprite2D
-        {
-            Texture = texture,
-            Centered = true,
-            Rotation = direction.Angle() - Mathf.Pi,
-            Scale = new Vector2(distance / texture.GetWidth(), thickness * 0.28f),
-            Modulate = new Color(tint.R, tint.G, tint.B, 0f),
-            ZIndex = 36,
-        };
-        container.AddChildSafely(beam);
-        beam.GlobalPosition = (origin + end) * 0.5f;
+        // tint 是招式配色，芯往白推一截，读作烧穿而不是染色。
+        Color core = tint.Lerp(new Color(1f, 1f, 1f), 0.62f);
+        core.A = 1f;
+        Color beam = tint;
+        beam.A = 1f;
 
-        Tween tween = beam.CreateTween();
-        tween.TweenInterval(delay);
-        tween.TweenProperty(beam, "modulate:a", tint.A, 0.035f);
-        tween.Parallel().TweenProperty(beam, "scale:y", thickness, 0.055f)
-            .SetTrans(Tween.TransitionType.Back)
-            .SetEase(Tween.EaseType.Out);
-        tween.TweenInterval(0.15f);
-        tween.TweenProperty(beam, "modulate:a", 0f, 0.13f);
-        tween.Parallel().TweenProperty(beam, "scale:y", thickness * 0.45f, 0.13f);
-        tween.TweenCallback(Callable.From(beam.QueueFreeSafely));
+        // thickness 原本是贴图的 scale:y（0.18 量级），这里要的是像素高度。
+        // 系数 620 换算出来 90~190px，比龟波还接近——死亡光线是「一根针」，
+        // 不是龟波那种能量洪流，收到 400。
+        float pixels = Mathf.Clamp(thickness * 400f, 34f, 132f);
+
+        void Spawn()
+        {
+            if (dark)
+            {
+                // 暗层打底：真正遮住背景的那根黑柱，比亮芯宽一圈。
+                KakarotCombatPresentation.SpawnEnergyBeam(
+                    container, origin, end,
+                    new Color(0.05f, 0.01f, 0.08f, 1f),
+                    new Color(0.16f, 0.04f, 0.24f, 1f),
+                    pixels * 1.35f, 0.10f, 0.12f, 0.16f, dark: true);
+            }
+
+            // 亮芯：暗层上面这一道才是「能量」。
+            KakarotCombatPresentation.SpawnEnergyBeam(
+                container, origin, end, beam, core,
+                dark ? pixels * 0.55f : pixels, 0.10f, 0.12f, 0.16f);
+        }
+
+        var timer = container.GetTree()?.CreateTimer(delay);
+        if (timer == null)
+        {
+            Spawn();
+        }
+        else
+        {
+            timer.Timeout += Spawn;
+        }
 
         SpawnImpact(container, end, tint, 1.55f, delay + 0.05f);
     }
@@ -483,6 +508,13 @@ internal static class FriezaBossVisuals
         container.AddChildSafely(saucer);
         saucer.GlobalPosition = origin;
 
+        // 拖尾用同一条贝塞尔，飞盘划过时逐段点亮。
+        FriezaVfxKit.SpawnSaucerTrail(
+            container,
+            p => MathHelper.BezierCurve(origin, end, control, p),
+            reflected ? new Color(1f, 0.72f, 0.20f) : new Color(0.86f, 0.24f, 1f),
+            0.58f);
+
         Tween tween = saucer.CreateTween();
         tween.SetParallel();
         tween.TweenProperty(saucer, "modulate:a", 1f, 0.08f);
@@ -525,15 +557,8 @@ internal static class FriezaBossVisuals
 
     public static void PlayShockwave(Creature creature, Color color, float sizeMultiplier = 1f)
     {
-        TryVisual(() =>
-        {
-            PlayPulse(creature, color, 0.42f, 0.44f * sizeMultiplier);
-            PlayPulse(
-                creature,
-                new Color(1.45f, 1.45f, 1.45f, 0.75f),
-                0.30f,
-                0.25f * sizeMultiplier);
-        });
+        // 原本是两个放大的 dot.png。一个点再怎么放大也还是一个点。
+        FriezaVfxKit.PlayShockwave(creature, color, sizeMultiplier);
     }
 
     public static void PlayHeavyWindup(Creature creature, bool strongest = false)

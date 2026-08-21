@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -14,7 +14,7 @@ using MegaCrit.Sts2.Core.Nodes.Vfx.Utilities;
 namespace KakarotMod.KakarotCode.Characters;
 
 // Combat presentation is isolated from synchronized gameplay state.
-public static class KakarotCombatPresentation
+public static partial class KakarotCombatPresentation
 {
     private const string AttackSfxPath = "res://Kakarot/Audio/sfx/combat/attack_windup/sfx_attack_windup_a.wav";
     private const string HitSfxPath = "res://Kakarot/Audio/sfx/combat/hit/sfx_hit_light_a.wav";
@@ -57,12 +57,18 @@ public static class KakarotCombatPresentation
     private static readonly Dictionary<ulong, Vector2> KamehamehaPoseOriginalPositions = new();
     private static readonly Dictionary<ulong, Vector2> KamehamehaPoseOriginalScales = new();
 
-    // Cards that use the beam-casting pose.
+    // 用发波姿势的卡。光束也由这个集合控——见 useKamehamehaPose。
+    //
+    // 🔴 KAKAROT_DRAGON_FIST 在游戏里叫「全力龟派气功」，不是龙拳。
+    // 类名 KakarotDragonFist 是早期留下的命名错配，「龙拳爆发」才是
+    // KakarotDragonFistBurst。类名改不得（Id.Entry 由类名派生，改名毁存档），
+    // 真名只存在于 localization/zhs/cards.json，读代码一定会认错，认准这条注释。
     private static readonly HashSet<string> KamehamehaPoseCardIds = new(StringComparer.OrdinalIgnoreCase)
     {
         "KAKAROTMOD-KAKAROT_KAMEHAMEHA",
         "KAKAROTMOD-KAKAROT_TENFOLD_KAMEHAMEHA",
         "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE",
+        "KAKAROTMOD-KAKAROT_DRAGON_FIST",
     };
 
     // 光束配色。未列出的一律走蓝色默认值。
@@ -212,6 +218,17 @@ public static class KakarotCombatPresentation
                         TryPlayRuyiStaffVfx(player, cardPlay, visualsRoot, staticModel);
                     }
 
+                    if (string.Equals(cardEntryId, DestructionCardId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        TryPlayDestructionVfx(player, cardPlay, visualsRoot, staticModel);
+                    }
+
+                    // 自爆的炸点在自己身上，所以走这里而不是 WithHitVfxNode。
+                    if (string.Equals(cardEntryId, SelfDestructCardId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        TryPlaySelfDestructVfx(player, visualsRoot, staticModel);
+                    }
+
                     if (string.Equals(cardEntryId, AfterimageFistCardId, StringComparison.OrdinalIgnoreCase))
                     {
                         _afterimageCaster = player.Creature;
@@ -294,6 +311,19 @@ public static class KakarotCombatPresentation
 
     private const string RuyiStaffCardId = "KAKAROTMOD-KAKAROT_RUYI_STAFF";
 
+    private const string DestructionCardId = "KAKAROTMOD-KAKAROT_DESTRUCTION";
+
+    // 破坏（破壊）：紫色的「抹除」。动作仍是普通攻击，特效落在目标那一侧。
+    private const int DestructionMoteCount = 20;
+
+    private const int DestructionEmberCount = 14;
+
+    private const int DestructionShardCount = 16;
+
+    private static readonly Color DestructionCoreColor = new(0.78f, 0.42f, 1f);
+
+    private static readonly Color DestructionEdgeColor = new(0.34f, 0.03f, 0.52f);
+
     private const string AfterimageFistCardId = "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST";
 
     private const float RuyiStaffThickness = 15f;
@@ -321,6 +351,9 @@ public static class KakarotCombatPresentation
 
     private const float WolfFangHeadHeight = 260f;
 
+    // 狼牙每段命中的白光强度。调这一个数就行，0 就是完全没有白光。
+    private const float WolfFangFlashAlpha = 0.34f;
+
     // 每段命中位置递进，靠这个计数器实现（纯表现层，不进同步状态）。
     private static int _wolfFangHitIndex;
 
@@ -339,10 +372,13 @@ public static class KakarotCombatPresentation
 
     private const string KamehamehaBeamShaderPath = "res://Kakarot/Shaders/kakarot_kamehameha_beam.gdshader";
 
+    // 暗色变体：blend_mix，能真正遮住背景。加法混合画不出黑。
+    private const string DarkBeamShaderPath = "res://Kakarot/Shaders/kakarot_energy_beam_dark.gdshader";
+
     // 调试开关：true 走程序化 shader，false 退回原来的贴图/场景路径。
     private const bool KamehamehaUseShaderBeam = true;
 
-    private const float KamehamehaShaderBeamThickness = 230f;
+    private const float KamehamehaShaderBeamThickness = 292f;
 
     private const float KamehamehaShaderBeamGrowSeconds = 0.26f;
 
@@ -559,14 +595,13 @@ public static class KakarotCombatPresentation
                 spawned = true;
             }
 
-            if (spawned)
-            {
-                var impactScheduleTree = staticModel.GetTree();
-                if (impactScheduleTree != null)
-                {
-                    ScheduleKamehamehaImpactBursts(impactScheduleTree, player, cardPlay, KamehamehaImpactDelaySeconds);
-                }
-            }
+            // 🔴 光束不再补命中爆点。
+            //
+            // 试过两版：逐敌人播（位置取精灵基点＝脚底，群体光束时其余敌人
+            // 身上成了「凭空在脚下炸一下」）、只在光束落点播一次（位置对了，
+            // 但那一下和光束本身抢读，反而把光束的干净感破坏掉）。
+            // 结论是这里不需要爆点——光束打到人身上这件事，光束自己已经说清楚了。
+            // 别再加回来。
         }
         catch (Exception ex)
         {
@@ -615,6 +650,17 @@ public static class KakarotCombatPresentation
         }
 
         var enemyStatic = enemyVisuals.GetNodeOrNull<Sprite2D>("StaticModel");
+        if (enemyStatic?.Texture != null)
+        {
+            // 🔴 精灵的 GlobalPosition 是它的基点，不是身体中心。
+            // 原来一律加固定的 -36：高个子勉强对得上，矮个子（比如蜥蜴那种）
+            // 爆点就落在脚底甚至地面下。按贴图矩形取真实中心，高矮自适应。
+            // Centered=true 的精灵矩形中心就是原点，行为与原来一致。
+            Rect2 rect = enemyStatic.GetRect();
+            world = enemyStatic.ToGlobal(rect.GetCenter()) + new Vector2(0f, -8f);
+            return true;
+        }
+
         Vector2 basePos = enemyStatic?.GlobalPosition ?? enemyVisuals.GlobalPosition;
         world = basePos + KamehamehaBeamEnemyOffset;
         return true;
@@ -1104,6 +1150,26 @@ public static class KakarotCombatPresentation
                 };
             }
 
+            // 原版 vfx_attack_slash 的白爆亮度改不了，4 段 × 全体敌人会叠成一片，
+            // 把狼头盖住。改成自己画一层，亮度在这一个数上。
+            var flash = new Sprite2D
+            {
+                Texture = GetKiGlowTexture(),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(0.86f, 0.92f, 1f, WolfFangFlashAlpha),
+                Scale = new Vector2(0.55f, 0.55f),
+                ZIndex = -1,
+            };
+            holder.AddChild(flash);
+            var flashTween = flash.CreateTween();
+            flashTween.SetParallel(true);
+            flashTween.TweenProperty(flash, "scale", new Vector2(1.15f, 0.95f), 0.16)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            flashTween.TweenProperty(flash, "modulate:a", 0f, 0.20)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            flashTween.Chain().TweenCallback(Callable.From(() => FreeIfValid(flash)));
+
             float scale = WolfFangHeadHeight / Math.Max(texture.GetHeight(), 1);
             var sprite = new Sprite2D
             {
@@ -1261,13 +1327,41 @@ public static class KakarotCombatPresentation
 
     private static bool TryPlayKamehamehaBeamShader(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Color beamColor, Color coreColor)
     {
-        if (!ResourceLoader.Exists(KamehamehaBeamShaderPath))
+        return SpawnEnergyBeam(
+            anchor,
+            originWorld,
+            endWorld,
+            beamColor,
+            coreColor,
+            KamehamehaShaderBeamThickness,
+            KamehamehaShaderBeamGrowSeconds,
+            KamehamehaShaderBeamHoldSeconds,
+            KamehamehaShaderBeamFadeSeconds);
+    }
+
+    // 程序化能量束。龟波和弗利萨的死亡光线共用这一份实现——
+    // 两套分叉的结果就是修好一边另一边还是墙。粗细与三段时长是唯一区别。
+    // container 收 Node 而不是 Node2D：战斗特效容器是 Control。
+    internal static bool SpawnEnergyBeam(
+        Node container,
+        Vector2 originWorld,
+        Vector2 endWorld,
+        Color beamColor,
+        Color coreColor,
+        float thicknessPixels,
+        float growSeconds,
+        float holdSeconds,
+        float fadeSeconds,
+        bool dark = false)
+    {
+        string shaderPath = dark ? DarkBeamShaderPath : KamehamehaBeamShaderPath;
+        if (!ResourceLoader.Exists(shaderPath))
         {
-            GD.PrintErr($"[Kakarot][Vfx] beam shader missing: {KamehamehaBeamShaderPath}");
+            GD.PrintErr($"[Kakarot][Vfx] beam shader missing: {shaderPath}");
             return false;
         }
 
-        var shader = ResourceLoader.Load<Shader>(KamehamehaBeamShaderPath);
+        var shader = ResourceLoader.Load<Shader>(shaderPath);
         if (shader == null)
         {
             GD.PrintErr("[Kakarot][Vfx] beam shader failed to load.");
@@ -1294,8 +1388,8 @@ public static class KakarotCombatPresentation
         material.SetShaderParameter("progress", 0f);
         material.SetShaderParameter("intensity", 1f);
 
-        var holder = new Node2D { Name = "KamehamehaBeamShaderFx", ZIndex = 24 };
-        anchor.AddChild(holder);
+        var holder = new Node2D { Name = "KakarotEnergyBeamFx", ZIndex = 24 };
+        container.AddChild(holder);
         holder.GlobalPosition = originWorld;
         // originWorld / endWorld 是世界坐标，而 Scale 走的是局部坐标。
         // anchor 自身带缩放时两者不等价，光束会又细又长，所以先把继承缩放归一。
@@ -1318,16 +1412,16 @@ public static class KakarotCombatPresentation
             Centered = true,
             Offset = new Vector2(canvasWidth * 0.5f, 0f),
             Material = material,
-            Scale = new Vector2(distance / canvasWidth, KamehamehaShaderBeamThickness / canvasHeight),
+            Scale = new Vector2(distance / canvasWidth, thicknessPixels / canvasHeight),
         };
         holder.AddChild(sprite);
 
         var tween = holder.CreateTween();
-        tween.TweenProperty(material, "shader_parameter/progress", 1f, KamehamehaShaderBeamGrowSeconds)
+        tween.TweenProperty(material, "shader_parameter/progress", 1f, growSeconds)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
-        tween.TweenInterval(KamehamehaShaderBeamHoldSeconds);
-        tween.TweenProperty(material, "shader_parameter/intensity", 0f, KamehamehaShaderBeamFadeSeconds);
+        tween.TweenInterval(holdSeconds);
+        tween.TweenProperty(material, "shader_parameter/intensity", 0f, fadeSeconds);
         tween.Finished += () =>
         {
             if (GodotObject.IsInstanceValid(holder))
@@ -1380,7 +1474,7 @@ public static class KakarotCombatPresentation
         };
     }
 
-    private static CanvasItemMaterial CreateAdditiveMaterial()
+    internal static CanvasItemMaterial CreateAdditiveMaterial()
     {
         return new CanvasItemMaterial { BlendMode = CanvasItemMaterial.BlendModeEnum.Add };
     }
@@ -1573,6 +1667,380 @@ public static class KakarotCombatPresentation
     }
 
     // 元气从四面八方飞向汇聚点。偏下半圈生成，读起来像"从大地和众人身上升起"。
+    // 破坏：紫色能量向目标收束 → 球体吞没 → 塌缩抹除 → 余烬升腾。
+    // 动作沿用普通攻击，所以整段必须压在近战命中的节奏内（约 0.35s 到塌缩），
+    // 拖长了就会变成「打完了特效才演」。
+    private static void TryPlayDestructionVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
+    {
+        try
+        {
+            if (visualsRoot is not Node2D anchor || staticModel == null)
+            {
+                return;
+            }
+
+            Creature target = cardPlay.Target ?? ResolvePrimaryBeamTarget(player, cardPlay);
+            if (target == null || !TryGetCreatureChestWorld(target, out Vector2 targetWorld))
+            {
+                return;
+            }
+
+            var holder = new Node2D { Name = "KakarotDestructionFx", ZIndex = 41 };
+            anchor.AddChild(holder);
+            holder.GlobalScale = Vector2.One;
+            holder.GlobalPosition = targetWorld;
+
+            // 吞没球：加法混合，从零胀到盖住目标。
+            var sphere = new Sprite2D
+            {
+                Texture = CreateRadialGlowTexture(128, DestructionCoreColor, DestructionEdgeColor),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Scale = new Vector2(0.05f, 0.05f),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+            };
+            holder.AddChild(sphere);
+
+            // 塌缩瞬间的白紫核闪。
+            var flash = new Sprite2D
+            {
+                Texture = CreateRadialGlowTexture(128, new Color(1f, 0.93f, 1f), DestructionCoreColor),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Scale = new Vector2(0.05f, 0.05f),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+            };
+            holder.AddChild(flash);
+
+            SpawnDestructionMotes(anchor, targetWorld);
+            TintCreatureDuringErasure(target);
+
+            var tween = holder.CreateTween();
+            tween.SetParallel(false);
+
+            // ① 收束成型
+            tween.TweenProperty(sphere, "modulate:a", 0.70f, 0.10);
+            tween.Parallel().TweenProperty(sphere, "scale", new Vector2(2.2f, 2.2f), 0.16)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+
+            // ② 吞没：涨到最大压住目标
+            tween.TweenProperty(sphere, "scale", new Vector2(3.2f, 3.2f), 0.10)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+
+            // ③ 抹除：向内塌缩——「被压成一点然后消失」
+            tween.TweenProperty(sphere, "scale", new Vector2(0.28f, 0.28f), 0.08)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.In);
+            // 塌缩期间反而提亮：同步淡出会变成「凭空消失」，中间还会空一帧。
+            tween.Parallel().TweenProperty(sphere, "modulate:a", 1f, 0.08);
+
+            tween.TweenCallback(Callable.From(() =>
+            {
+                PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
+                // 不用通用的 SpawnRadialBurst：那是白色的，会把紫色冲淡。
+                SpawnDestructionImpact(anchor, targetWorld);
+                SpawnDestructionEmbers(anchor, targetWorld);
+            }));
+
+            tween.TweenProperty(flash, "modulate:a", 1f, 0.05);
+            tween.Parallel().TweenProperty(sphere, "modulate:a", 0f, 0.06);
+            tween.Parallel().TweenProperty(flash, "scale", new Vector2(6.2f, 6.2f), 0.20)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(flash, "modulate:a", 0f, 0.22);
+
+            tween.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(holder))
+                {
+                    holder.QueueFree();
+                }
+            }));
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Destruction failed: {ex}");
+        }
+    }
+
+    // 紫色碎片从四面八方收束到目标身上。
+    private static void SpawnDestructionMotes(Node2D anchor, Vector2 targetWorld)
+    {
+        var moteTex = CreateRadialGlowTexture(64, DestructionCoreColor, DestructionEdgeColor);
+
+        for (int i = 0; i < DestructionMoteCount; i++)
+        {
+            float angle = Mathf.Tau * (i / (float)DestructionMoteCount) + GD.Randf() * 0.22f;
+            float radius = Mathf.Lerp(210f, 430f, GD.Randf());
+
+            var mote = new Sprite2D
+            {
+                Texture = moteTex,
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+                ZIndex = 40,
+            };
+            anchor.AddChild(mote);
+            // holder 之外的散件同样要做 GlobalScale 归一，否则被父级缩放吃掉。
+            float size = 0.5f * Mathf.Lerp(0.5f, 1.1f, GD.Randf());
+            mote.GlobalScale = new Vector2(size, size);
+            mote.GlobalPosition = targetWorld + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+
+            var tw = mote.CreateTween();
+            tw.SetParallel(false);
+            tw.TweenInterval(GD.Randf() * 0.06);
+            tw.TweenProperty(mote, "modulate:a", 1f, 0.05);
+            tw.Parallel().TweenProperty(mote, "global_position", targetWorld, Mathf.Lerp(0.18f, 0.26f, GD.Randf()))
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.In);
+            tw.TweenProperty(mote, "modulate:a", 0f, 0.05);
+            tw.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(mote))
+                {
+                    mote.QueueFree();
+                }
+            }));
+        }
+    }
+
+    // 抹除瞬间的陨石式炸开：横向铺开的冲击波环 + 向外飞的碎片。
+    // 去掉原版 vfx_heavy_blunt 之后这一下没有实体，只剩核闪，打击感撑不住。
+    private static void SpawnDestructionImpact(Node2D anchor, Vector2 targetWorld)
+    {
+        // 冲击波环：纵向压扁成 0.42，读作贴地扩散而不是一个正圆气泡。
+        var ring = new Sprite2D
+        {
+            Texture = CreateRingTexture(160, 0.085f, new Color(1f, 0.85f, 1f), DestructionCoreColor),
+            Centered = true,
+            Material = CreateAdditiveMaterial(),
+            Modulate = new Color(1f, 1f, 1f, 0.95f),
+            ZIndex = 42,
+        };
+        anchor.AddChild(ring);
+        ring.GlobalScale = new Vector2(0.35f, 0.35f * 0.42f);
+        ring.GlobalPosition = targetWorld + new Vector2(0f, 10f);
+
+        var ringTween = ring.CreateTween();
+        ringTween.SetParallel(true);
+        ringTween.TweenProperty(ring, "global_scale", new Vector2(3.95f, 3.95f * 0.42f), 0.26)
+            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+        ringTween.TweenProperty(ring, "modulate:a", 0f, 0.26)
+            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+        ringTween.Chain().TweenCallback(Callable.From(() =>
+        {
+            if (GodotObject.IsInstanceValid(ring))
+            {
+                ring.QueueFree();
+            }
+        }));
+
+        // 放射碎片：尖端朝外。贴图 u=0 宽、u=1 尖，Sprite2D 的 +X 就是 Rotation 指向，
+        // 所以直接把 Rotation 设成飞出方向，尖端自然朝外。
+        var shardTex = CreateShardTexture(64, 16, DestructionCoreColor, DestructionEdgeColor);
+
+        for (int i = 0; i < DestructionShardCount; i++)
+        {
+            float angle = Mathf.Tau * (i / (float)DestructionShardCount) + GD.Randf() * 0.30f;
+            float speed = Mathf.Lerp(150f, 340f, GD.Randf());
+            float size = Mathf.Lerp(0.5f, 1.2f, GD.Randf());
+
+            var shard = new Sprite2D
+            {
+                Texture = shardTex,
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Rotation = angle,
+                Modulate = new Color(1f, 1f, 1f, 1f),
+                ZIndex = 42,
+            };
+            anchor.AddChild(shard);
+            shard.GlobalScale = new Vector2(size * 1.1f, size * 0.9f);
+            shard.GlobalPosition = targetWorld;
+
+            // 纵向按 0.72 压扁飞散，和冲击波环的透视保持一致。
+            var to = targetWorld + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle) * 0.72f) * speed;
+
+            var tw = shard.CreateTween();
+            tw.SetParallel(true);
+            tw.TweenProperty(shard, "global_position", to, 0.24)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(shard, "modulate:a", 0f, 0.24)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+            tw.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(shard))
+                {
+                    shard.QueueFree();
+                }
+            }));
+        }
+    }
+
+    // 环形冲击波贴图：距中心 0.78 处最亮，两侧高斯衰减。
+    internal static ImageTexture CreateRingTexture(int size, float thickness, Color inner, Color outer)
+    {
+        var img = Image.CreateEmpty(size, size, false, Image.Format.Rgba8);
+        float half = size * 0.5f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f - half) / half;
+                float dy = (y + 0.5f - half) / half;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+
+                if (d >= 1f)
+                {
+                    img.SetPixel(x, y, new Color(0f, 0f, 0f, 0f));
+                    continue;
+                }
+
+                float band = Mathf.Exp(-Mathf.Pow((d - 0.78f) / thickness, 2f));
+                Color c = inner.Lerp(outer, Mathf.Clamp((d - 0.5f) / 0.5f, 0f, 1f));
+                c.A = band;
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    // 碎片贴图：横向拉长、一端收成尖。
+    internal static ImageTexture CreateShardTexture(int width, int height, Color inner, Color outer)
+    {
+        var img = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                float u = width <= 1 ? 0f : x / (float)(width - 1);
+                float v = height <= 1 ? 0f : Math.Abs(y - (height - 1) * 0.5f) / ((height - 1) * 0.5f);
+
+                float taper = Mathf.Pow(Mathf.Clamp(1f - u, 0f, 1f), 0.6f);
+                float a = Mathf.Pow(Mathf.Clamp(taper - v * 0.9f, 0f, 1f), 1.4f);
+
+                Color c = inner.Lerp(outer, u);
+                c.A = a;
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    // 抹除之后往上飘散的余烬——读作「化为尘埃」。
+    private static void SpawnDestructionEmbers(Node2D anchor, Vector2 targetWorld)
+    {
+        var emberTex = CreateRadialGlowTexture(64, DestructionCoreColor, DestructionEdgeColor);
+
+        for (int i = 0; i < DestructionEmberCount; i++)
+        {
+            var ember = new Sprite2D
+            {
+                Texture = emberTex,
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0.9f),
+                ZIndex = 40,
+            };
+            anchor.AddChild(ember);
+            float size = Mathf.Lerp(0.16f, 0.42f, GD.Randf());
+            ember.GlobalScale = new Vector2(size, size);
+            ember.GlobalPosition = targetWorld + new Vector2(
+                (GD.Randf() - 0.5f) * 150f,
+                (GD.Randf() - 0.5f) * 130f);
+
+            var rise = ember.GlobalPosition + new Vector2((GD.Randf() - 0.5f) * 90f, -Mathf.Lerp(120f, 260f, GD.Randf()));
+
+            var tw = ember.CreateTween();
+            tw.SetParallel(true);
+            tw.TweenProperty(ember, "global_position", rise, Mathf.Lerp(0.42f, 0.70f, GD.Randf()))
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(ember, "modulate:a", 0f, Mathf.Lerp(0.38f, 0.64f, GD.Randf()));
+            tw.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(ember))
+                {
+                    ember.QueueFree();
+                }
+            }));
+        }
+    }
+
+    // 抹除期间把目标染成紫色再还原。
+    // 这是唯一碰到「不属于我们」的节点的地方：目标很可能当场被打死、节点随即被释放，
+    // 所以取节点、还原都要验活；tween 挂在 sprite 自己身上，节点没了 tween 一起没，不会留残影。
+    private static void TintCreatureDuringErasure(Creature target)
+    {
+        try
+        {
+            var node = NCombatRoom.Instance?.GetCreatureNode(target);
+            if (node?.Visuals is not Node2D visuals)
+            {
+                return;
+            }
+
+            var sprite = visuals.GetNodeOrNull<Sprite2D>("StaticModel");
+            if (sprite == null)
+            {
+                return;
+            }
+
+            Color original = sprite.Modulate;
+
+            var tw = sprite.CreateTween();
+            tw.SetParallel(false);
+            tw.TweenProperty(sprite, "modulate", new Color(0.62f, 0.30f, 0.95f, original.A), 0.16);
+            tw.TweenInterval(0.10);
+            tw.TweenProperty(sprite, "modulate", original, 0.22);
+            tw.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(sprite))
+                {
+                    sprite.Modulate = original;
+                }
+            }));
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Destruction tint failed: {ex}");
+        }
+    }
+
+    // 程序生成的径向辉光。用 ImageTexture 而不是 GradientTexture2D——
+    // 后者是异步生成的，就绪前采样会退化（龟波光束踩过这个坑）。
+    internal static ImageTexture CreateRadialGlowTexture(int size, Color inner, Color outer)
+    {
+        var img = Image.CreateEmpty(size, size, false, Image.Format.Rgba8);
+        float half = size * 0.5f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f - half) / half;
+                float dy = (y + 0.5f - half) / half;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+
+                if (d >= 1f)
+                {
+                    img.SetPixel(x, y, new Color(0f, 0f, 0f, 0f));
+                    continue;
+                }
+
+                Color c = inner.Lerp(outer, Mathf.Pow(d, 0.85f));
+                // 外圈用 3.2 次方快速收掉，再叠一个高斯实心核。
+                // 只有幂衰减时加法混合会糊成一大团紫雾，球心也读不出来。
+                float core = 0.55f * Mathf.Exp(-((d / 0.17f) * (d / 0.17f)));
+                c.A = Mathf.Min(1f, Mathf.Pow(1f - d, 3.2f) + core);
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
+    }
+
     private static void SpawnSpiritBombMotes(Node2D anchor, Vector2 gatherWorld)
     {
         for (int i = 0; i < SpiritBombMoteCount; i++)
@@ -2043,144 +2511,9 @@ public static class KakarotCombatPresentation
         return cs.HittableEnemies.Where(alive).ToList();
     }
 
-    private static void ScheduleKamehamehaImpactBursts(SceneTree tree, Player player, CardPlay cardPlay, float delaySeconds)
-    {
-        if (tree == null)
-        {
-            return;
-        }
-
-        tree.CreateTimer(delaySeconds).Timeout += () =>
-        {
-            try
-            {
-                // 一次齐射只震一次：放进逐敌人循环会让群体龟波在同一帧叠加多次震动。
-                PlayImpactFeedback(ShakeStrength.Medium, ShakeDuration.Short, hitStop: true);
-                foreach (Creature enemy in ResolveKamehamehaImpactTargets(player, cardPlay))
-                {
-                    TrySpawnKamehamehaImpactBurst(enemy);
-                }
-            }
-            catch
-            {
-            }
-        };
-    }
-
-    private static void TrySpawnKamehamehaImpactBurst(Creature enemy)
-    {
-        try
-        {
-            if (enemy == null || enemy.CurrentHp <= 0)
-            {
-                return;
-            }
-
-            if (ResourceLoader.Exists(KamehamehaImpactPackedScenePath))
-            {
-                var packed = ResourceLoader.Load<PackedScene>(KamehamehaImpactPackedScenePath);
-                var instance = packed?.Instantiate<Node2D>();
-                if (instance == null)
-                {
-                    TrySpawnKamehamehaImpactBurstProcedural(enemy);
-                    return;
-                }
-
-                var creatureNode = NCombatRoom.Instance?.GetCreatureNode(enemy);
-                if (creatureNode?.Visuals is not Node2D ev)
-                {
-                    instance.QueueFree();
-                    return;
-                }
-
-                var sm = ev.GetNodeOrNull<Sprite2D>("StaticModel");
-                ev.AddChild(instance);
-                instance.GlobalPosition = (sm?.GlobalPosition ?? ev.GlobalPosition) + new Vector2(0f, -24f);
-                instance.ZIndex = 32;
-
-                var impactSceneTree = instance.GetTree();
-                if (impactSceneTree != null)
-                {
-                    impactSceneTree.CreateTimer(2.0).Timeout += () =>
-                    {
-                        if (GodotObject.IsInstanceValid(instance))
-                        {
-                            instance.QueueFree();
-                        }
-                    };
-                }
-
-                return;
-            }
-
-            TrySpawnKamehamehaImpactBurstProcedural(enemy);
-        }
-        catch
-        {
-        }
-    }
-
-    private static void TrySpawnKamehamehaImpactBurstProcedural(Creature enemy)
-    {
-
-        var creatureNode = NCombatRoom.Instance?.GetCreatureNode(enemy);
-        if (creatureNode?.Visuals is not Node2D ev)
-        {
-            return;
-        }
-
-        var sm = ev.GetNodeOrNull<Sprite2D>("StaticModel");
-        var holder = new Node2D { Name = "KamehamehaImpactFx" };
-        holder.ZIndex = 32;
-        ev.AddChild(holder);
-        holder.GlobalPosition = (sm?.GlobalPosition ?? ev.GlobalPosition) + new Vector2(0f, -28f);
-
-        var matAdd = CreateAdditiveMaterial();
-
-        for (var i = 0; i < 4; i++)
-        {
-            var ring = new Sprite2D { Centered = true, Material = matAdd };
-            var gt = new GradientTexture2D
-            {
-                Width = 72,
-                Height = 72,
-                Fill = GradientTexture2D.FillEnum.Radial,
-                FillFrom = new Vector2(0.5f, 0.5f),
-                FillTo = new Vector2(0.5f, 0f),
-            };
-            var g = new Gradient();
-            g.SetColor(0, new Color(1f, 1f, 1f, 0.75f));
-            g.SetColor(1, new Color(0.35f, 0.75f, 1f, 0f));
-            gt.Gradient = g;
-            ring.Texture = gt;
-
-            float phase = i * 0.04f;
-            ring.Scale = Vector2.One * (0.18f + i * 0.04f);
-            ring.Rotation = i * 0.35f;
-            holder.AddChild(ring);
-
-            var ringTween = ring.CreateTween();
-            ringTween.SetParallel(true);
-            ringTween.TweenProperty(ring, "scale", Vector2.One * (1.6f + i * 0.35f), 0.28)
-                .SetDelay(phase)
-                .SetTrans(Tween.TransitionType.Quad)
-                .SetEase(Tween.EaseType.Out);
-            ringTween.TweenProperty(ring, "modulate:a", 0f, 0.38)
-                .SetDelay(0.06f + phase);
-        }
-
-        var cleanupTree = holder.GetTree();
-        if (cleanupTree != null)
-        {
-            cleanupTree.CreateTimer(0.55).Timeout += () =>
-            {
-                if (GodotObject.IsInstanceValid(holder))
-                {
-                    holder.QueueFree();
-                }
-            };
-        }
-    }
+    // 旧的逐敌人命中爆点实现已删除。它取 StaticModel 基点＝脚底做位置，
+    // 又对每个敌人各播一次——群体光束只指向中间那个敌人，其余敌人身上就是
+    // 「凭空在脚下炸一下」。替代品是 SpawnBeamImpact，只在光束真正的落点炸一次。
 
     private static void PlayWindupTween(
         Sprite2D staticModel,

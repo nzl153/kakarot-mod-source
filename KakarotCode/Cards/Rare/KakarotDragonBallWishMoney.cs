@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using KakarotMod.KakarotCode.Relics;
 using MegaCrit.Sts2.Core.Commands;
@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
@@ -26,7 +27,7 @@ public class KakarotDragonBallWishMoney() : KakarotCard(2, CardType.Attack, Card
         }
 
         var attack = await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).Targeting(cardPlay.Target)
-            .WithHitFx("vfx/vfx_attack_slash")
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Slash, 1.00f))
             .Execute(choiceContext);
         var kills = attack.Results.SelectMany(r => r).Count(r => r.WasTargetKilled);
 

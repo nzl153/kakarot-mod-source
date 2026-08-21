@@ -1,10 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
@@ -30,7 +31,7 @@ public class KakarotShenronWishWin() : KakarotCard(4, CardType.Attack, CardRarit
         }
 
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_blunt")
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Fist, 1.00f))
             .Execute(choiceContext);
     }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using KakarotMod.KakarotCode.DynamicVars;
@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Rare;
 
@@ -45,13 +46,15 @@ public class KakarotWhoElseButMe() : KakarotCard(0, CardType.Attack, CardRarity.
             cardPlay);
 
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_blunt", null, "blunt_attack.mp3")
+            .WithHitFx(null, null, "blunt_attack.mp3")
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Fist, 1.20f))
             .Execute(choiceContext);
 
         if (IsAtOrBelowHalfHp(Owner.Creature))
         {
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-                .WithHitFx("vfx/vfx_attack_blunt", null, "blunt_attack.mp3")
+                .WithHitFx(null, null, "blunt_attack.mp3")
+                .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Fist, 1.20f))
                 .Execute(choiceContext);
         }
 
