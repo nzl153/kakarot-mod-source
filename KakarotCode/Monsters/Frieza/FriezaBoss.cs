@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +33,11 @@ public sealed class FriezaBoss : CustomMonsterModel
     private const int GoldenHp = 450;
     private const int BlackHp = 520;
     private const int GoldenPhaseStrength = 4;
-    private const int SaucerDamagePerPlayer = 55;
-    private const int SupernovaDamagePerPlayer = 135;
+    private const int SaucerDamagePerPlayer = 65;
+    private const decimal SupernovaThresholdRatio = 0.25m;
+
+    // 引爆是直接扣血，不是攻击，所以不参与力量/易伤结算。
+    private const decimal SupernovaDetonateHpLoss = 70m;
 
     private int _phase = 1;
     private int _phaseMoveIndex;
@@ -46,7 +49,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     private bool _goldenOpeningDone;
     private bool _blackOpeningDone;
     private int _goldenStrengthRemaining;
-    private int _blackNormalActionsUntilSupernova = 3;
+    private int _blackNormalActionsUntilSupernova = 2;
 
     private MoveState? _whiteSummon;
     private MoveState? _goldenTransform;
@@ -201,7 +204,8 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private int PlayerCount => Math.Max(1, CombatState.Players.Count);
     private int SaucerThreshold => SaucerDamagePerPlayer * PlayerCount;
-    private int SupernovaThreshold => SupernovaDamagePerPlayer * PlayerCount;
+    // 血量上限本身已经过 ScaleHpForMultiplayer 按人数缩放，所以这里不再乘 PlayerCount。
+    private int SupernovaThreshold => (int)Math.Ceiling(Creature.MaxHp * SupernovaThresholdRatio);
 
     public override async Task AfterAddedToRoom()
     {
@@ -261,38 +265,38 @@ public sealed class FriezaBoss : CustomMonsterModel
             ContemptuousFinger,
             new MultiAttackIntent(14, 2),
             new DebuffIntent());
-        _deathBeam = new MoveState("DEATH_BEAM", DeathBeam, new SingleAttackIntent(24));
+        _deathBeam = new MoveState("DEATH_BEAM", DeathBeam, new SingleAttackIntent(() => Phase == 1 ? 24m : 30m));
         _emperorOrder = new MoveState("EMPEROR_ORDER", EmperorOrder, new BuffIntent(), new DefendIntent());
 
-        _goldenBarrage = new MoveState("GOLDEN_BARRAGE", GoldenBarrage, new MultiAttackIntent(6, 5));
+        _goldenBarrage = new MoveState("GOLDEN_BARRAGE", GoldenBarrage, new MultiAttackIntent(8, 5));
         _deathSaucer = new MoveState("DEATH_SAUCER", DeathSaucer, new DebuffIntent());
         _resolveSaucer = new MoveState("DEATH_SAUCER_RETURN", ResolveDeathSaucer, new UnknownIntent());
         _goldenHeavy = new MoveState(
             "GOLDEN_HEAVY",
             GoldenHeavy,
-            new SingleAttackIntent(28),
+            new SingleAttackIntent(34),
             new DebuffIntent());
 
-        _blackFlash = new MoveState("BLACK_FLASH", BlackFlash, new SingleAttackIntent(38));
-        _blackBurst = new MoveState("BLACK_BURST", BlackBurst, new MultiAttackIntent(12, 4));
+        _blackFlash = new MoveState("BLACK_FLASH", BlackFlash, new SingleAttackIntent(40));
+        _blackBurst = new MoveState("BLACK_BURST", BlackBurst, new MultiAttackIntent(10, 4));
         _emperorShockwave = new MoveState(
             "EMPEROR_SHOCKWAVE",
             EmperorShockwave,
             new SingleAttackIntent(34),
             new DebuffIntent());
-        _finalBeam = new MoveState("FINAL_BEAM", FinalBeam, new SingleAttackIntent(45), new CardDebuffIntent());
+        _finalBeam = new MoveState("FINAL_BEAM", FinalBeam, new SingleAttackIntent(40), new CardDebuffIntent());
         _supernovaStart = new MoveState(
             "SUPERNOVA_START",
             SupernovaStart,
-            new SingleAttackIntent(14),
+            new SingleAttackIntent(15),
             new DefendIntent(),
             new BuffIntent());
         _supernovaCharge = new MoveState(
             "SUPERNOVA_CHARGE",
             SupernovaCharge,
-            new SingleAttackIntent(14),
+            new SingleAttackIntent(15),
             new BuffIntent());
-        _supernovaDetonate = new MoveState("SUPERNOVA_DETONATE", SupernovaDetonate, new SingleAttackIntent(70));
+        _supernovaDetonate = new MoveState("SUPERNOVA_DETONATE", SupernovaDetonate, new DeathBlowIntent(() => SupernovaDetonateHpLoss));
         _supernovaStun = new MoveState("SUPERNOVA_BROKEN", SupernovaStun, new StunIntent());
 
         MoveState[] moves =
@@ -338,13 +342,13 @@ public sealed class FriezaBoss : CustomMonsterModel
         decision.AddState(_goldenHeavy, () => Phase == 2);
 
         decision.AddState(_blackFlash, () => Phase == 3 && !BlackOpeningDone);
+        // 超新星 = 黑金阶段的爆发检测，必须排在黑金普通招式之前，否则永远轮不到。
         decision.AddState(_supernovaStun, () => Phase == 3 && IsSupernovaBroken());
         decision.AddState(_supernovaCharge, () => Phase == 3 && GetSupernovaPower()?.Turns > 0);
         decision.AddState(_supernovaDetonate, () =>
             Phase == 3 && GetSupernovaPower() is { Turns: 0 });
         decision.AddState(_supernovaStart, () => Phase == 3 && BlackNormalActionsUntilSupernova <= 0);
-        decision.AddState(_blackBurst, () => Phase == 3 && PhaseMoveIndex % 3 == 0);
-        decision.AddState(_emperorShockwave, () => Phase == 3 && PhaseMoveIndex % 3 == 1);
+        decision.AddState(_blackBurst, () => Phase == 3 && PhaseMoveIndex % 2 == 0);
         decision.AddState(_finalBeam, () => Phase == 3);
 
         return new MonsterMoveStateMachine([decision, .. moves], decision);
@@ -367,7 +371,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             return 0m;
         }
 
-        int floor = Phase == 1 ? 1 : (int)Math.Ceiling(Creature.MaxHp * 0.40m);
+        int floor = Phase == 1 ? 1 : (int)Math.Ceiling(Creature.MaxHp * 0.20m);
         return Math.Min(amount, Math.Max(0, Creature.CurrentHp - floor));
     }
 
@@ -375,7 +379,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         if (creature == Creature && delta < 0m && Phase < 3)
         {
-            int floor = Phase == 1 ? 1 : (int)Math.Ceiling(Creature.MaxHp * 0.40m);
+            int floor = Phase == 1 ? 1 : (int)Math.Ceiling(Creature.MaxHp * 0.20m);
             if (Creature.CurrentHp <= floor)
             {
                 PhaseTransitionPending = true;
@@ -463,7 +467,9 @@ public sealed class FriezaBoss : CustomMonsterModel
             FriezaSupernovaChargePower? supernova = GetSupernovaPower();
             if (supernova != null)
             {
-                int accumulatedDamage = supernova.Damage + dealt;
+                // 打断只认真正掉的血：打在弗利萨格挡上的部分不计入进度。
+                int unblocked = result.UnblockedDamage + result.OverkillDamage;
+                int accumulatedDamage = supernova.Damage + unblocked;
                 supernova.SetProgress(
                     supernova.Turns,
                     accumulatedDamage,
@@ -711,7 +717,7 @@ public sealed class FriezaBoss : CustomMonsterModel
                 ? Colors.White
                 : new Color(1.35f, 1.05f, 0.38f, 1f),
             thickness: Phase == 1 ? 0.20f : 0.24f);
-        await Attack(24, hitFx: "vfx/vfx_attack_lightning");
+        await Attack(Phase == 1 ? 24 : 30, hitFx: "vfx/vfx_attack_lightning");
         AdvanceMove();
         await FinishGoldenMove();
     }
@@ -740,7 +746,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             hits: 5,
             sizeMultiplier: 1.05f,
             arcHeight: 72f);
-        await Attack(6, 5, "vfx/vfx_attack_blunt");
+        await Attack(8, 5, "vfx/vfx_attack_blunt");
         await FinishGoldenMove();
     }
 
@@ -805,7 +811,7 @@ public sealed class FriezaBoss : CustomMonsterModel
                     await CreatureCmd.Damage(
                         new ThrowingPlayerChoiceContext(),
                         target.Creature,
-                        22m,
+                        26m,
                         ValueProp.Move,
                         Creature);
                 }
@@ -820,7 +826,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         FriezaBossVisuals.PlayHeavyWindup(Creature);
         await Attack(
-            28,
+            34,
             hitFx: "vfx/vfx_heavy_blunt",
             fallbackSfx: "heavy_attack.mp3",
             hitVfxAtBase: true);
@@ -866,7 +872,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         BlackOpeningDone = true;
         FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
         await Attack(
-            38,
+            40,
             hitFx: "vfx/vfx_giant_horizontal_slash",
             fallbackSfx: "heavy_attack.mp3");
         FriezaBossVisuals.PlayHitStop(strongest: true);
@@ -883,7 +889,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             hits: 4,
             sizeMultiplier: 1.15f,
             arcHeight: 115f);
-        await Attack(12, 4, "vfx/vfx_attack_blunt");
+        await Attack(10, 4, "vfx/vfx_attack_blunt");
         FinishBlackNormalAction();
     }
 
@@ -910,7 +916,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             LivingPlayerCreatures(),
             new Color(1.35f, 0.22f, 0.18f, 1f),
             thickness: 0.31f);
-        await Attack(45, hitFx: "vfx/vfx_starry_impact");
+        await Attack(40, hitFx: "vfx/vfx_starry_impact");
         foreach (Player player in CombatState.Players.Where(static player => player.Creature.IsAlive))
         {
             for (int i = 0; i < 2; i++)
@@ -924,8 +930,8 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task SupernovaStart(IReadOnlyList<Creature> _)
     {
-        const int initialChargeTurns = 3;
-        await CreatureCmd.GainBlock(Creature, 50m, ValueProp.Move, null);
+        const int initialChargeTurns = 2;
+        await CreatureCmd.GainBlock(Creature, 35m, ValueProp.Move, null);
         FriezaBossVisuals.PlayEnergyBolts(
             Creature,
             LivingPlayerCreatures(),
@@ -933,7 +939,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             new Color(1.5f, 1.1f, 0.2f, 1f),
             sizeMultiplier: 1.2f,
             arcHeight: 135f);
-        await Attack(14, hitFx: "vfx/vfx_attack_blunt");
+        await Attack(15, hitFx: "vfx/vfx_attack_blunt");
         int remainingChargeTurns = initialChargeTurns - 1;
         var power = (FriezaSupernovaChargePower)ModelDb.Power<FriezaSupernovaChargePower>().ToMutable();
         await KakarotPowerCmd.Apply(power, Creature, 1m, Creature, null);
@@ -955,7 +961,7 @@ public sealed class FriezaBoss : CustomMonsterModel
             new Color(1.5f, 1.1f, 0.2f, 1f),
             sizeMultiplier: 1.2f,
             arcHeight: 135f);
-        await Attack(14, hitFx: "vfx/vfx_attack_blunt");
+        await Attack(15, hitFx: "vfx/vfx_attack_blunt");
         FriezaSupernovaChargePower? power = GetSupernovaPower();
         if (power != null)
         {
@@ -976,11 +982,16 @@ public sealed class FriezaBoss : CustomMonsterModel
             new Color(1.5f, 0.35f, 0.05f, 1f),
             1.65f);
         FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
-        await Attack(
-            70,
-            hitFx: "vfx/vfx_heavy_blunt",
-            fallbackSfx: "heavy_attack.mp3",
-            hitVfxAtBase: true);
+        // 处决：绕过格挡直接扣血，否则 2 回合蓄力会被一个格挡完全消化。
+        foreach (Creature supernovaTarget in LivingPlayerCreatures())
+        {
+            await CreatureCmd.Damage(
+                new ThrowingPlayerChoiceContext(),
+                supernovaTarget,
+                SupernovaDetonateHpLoss,
+                ValueProp.Unblockable | ValueProp.Unpowered,
+                Creature);
+        }
         FriezaBossVisuals.PlayHitStop(strongest: true);
         await AddQiLeakToDiscards();
         await EndSupernova();
@@ -993,7 +1004,7 @@ public sealed class FriezaBoss : CustomMonsterModel
 
     private async Task EndSupernova()
     {
-        BlackNormalActionsUntilSupernova = 3;
+        BlackNormalActionsUntilSupernova = 2;
         await PowerCmd.Remove<FriezaSupernovaChargePower>(Creature);
     }
 

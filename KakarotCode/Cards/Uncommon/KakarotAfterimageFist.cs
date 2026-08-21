@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using KakarotMod.KakarotCode.Characters;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -29,7 +30,8 @@ public class KakarotAfterimageFist() : KakarotCard(0, CardType.Attack, CardRarit
             .WithHitCount(energyX)
             .FromKakarotCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_blunt")
+            .WithHitFx("vfx/vfx_attack_slash")
+            .WithHitVfxNode(KakarotCombatPresentation.CreateAfterimageHitVfx)
             .Execute(choiceContext);
     }
 

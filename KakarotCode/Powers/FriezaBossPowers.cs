@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace KakarotMod.KakarotCode.Powers;
 
@@ -125,15 +126,20 @@ public sealed class FriezaBlackPressurePower : KakarotPower
         new DynamicVar("Played", 0m),
     ];
 
-    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
-        if (player == Owner.Player)
+        if (player != Owner.Player)
         {
-            SetAmount(1);
-            DynamicVars["Played"].BaseValue = 0m;
+            return;
         }
 
-        return Task.CompletedTask;
+        SetAmount(1);
+        DynamicVars["Played"].BaseValue = 0m;
+
+        // 阶段 3 的持续压力：每回合补 1 层。虚弱/易伤是回合计数，回合结束会自动扣 1，
+        // 所以这里是"维持常驻 1 层"，不是叠强度（倍率写死 0.75 / 1.5）。
+        await KakarotPowerCmd.Apply<WeakPower>(choiceContext, player.Creature, 1m, Owner, null);
+        await KakarotPowerCmd.Apply<VulnerablePower>(choiceContext, player.Creature, 1m, Owner, null);
     }
 
     public override async Task AfterCardPlayedLate(PlayerChoiceContext choiceContext, CardPlay cardPlay)

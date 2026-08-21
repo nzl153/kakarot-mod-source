@@ -1,5 +1,7 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Godot;
 using HarmonyLib;
@@ -46,13 +48,17 @@ public static class KakarotWildGetDescriptionForPilePatch
         }
     });
 
-    private static MethodBase TargetMethod()
+    // 卡面使用公开重载，升级预览使用私有重载；两个入口都必须补上自定义 Wild 文本。
+    private static IEnumerable<MethodBase> TargetMethods()
     {
-        var previewType = typeof(CardModel).GetNestedType("DescriptionPreviewType", BindingFlags.NonPublic);
-        return AccessTools.Method(
-            typeof(CardModel),
-            nameof(CardModel.GetDescriptionForPile),
-            [typeof(PileType), previewType!, typeof(Creature)]);
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+        return typeof(CardModel)
+            .GetMethods(flags)
+            .Where(method =>
+                method.Name == nameof(CardModel.GetDescriptionForPile)
+                && method.ReturnType == typeof(string)
+                && method.GetParameters().Length >= 2
+                && method.GetParameters()[0].ParameterType == typeof(PileType));
     }
 
     [HarmonyPostfix]

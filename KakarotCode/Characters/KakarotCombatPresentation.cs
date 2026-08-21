@@ -7,7 +7,9 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.Nodes.Vfx.Utilities;
 
 namespace KakarotMod.KakarotCode.Characters;
 
@@ -26,6 +28,9 @@ public static class KakarotCombatPresentation
     private const string SuperSaiyan4TransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_ss4_a.wav";
     private const string UltraInstinctTransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_ui_a.wav";
     private const string SkillSfxPath = "res://Kakarot/Audio/sfx/combat/skill/sfx_skill_generic_a.wav";
+
+    private const string NimbusCloudSfxPath = "res://Kakarot/Audio/sfx/combat/skill/sfx_nimbus_cloud.wav";
+    private const string SpiritBombSfxNodeName = "SpiritBombSfx";
     private const string AttackSfxNodeName = "AttackSfx";
     private const string HitSfxNodeName = "HitSfx";
     private const string DefendSfxNodeName = "DefendSfx";
@@ -38,6 +43,10 @@ public static class KakarotCombatPresentation
     private const string SuperSaiyan4TransformSfxNodeName = "Ss4TransformSfx";
     private const string UltraInstinctTransformSfxNodeName = "UiTransformSfx";
     private const string SkillSfxNodeName = "SkillSfx";
+
+    private const string NimbusCloudSfxNodeName = "NimbusCloudSfx";
+
+    private const string NimbusCloudCardId = "KAKAROTMOD-KAKAROT_NIMBUS_CLOUD";
 
     private static readonly Dictionary<ulong, Tween> ActiveTweens = new();
     private static readonly Dictionary<ulong, Tween> IdleTweens = new();
@@ -55,6 +64,16 @@ public static class KakarotCombatPresentation
         "KAKAROTMOD-KAKAROT_TENFOLD_KAMEHAMEHA",
         "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE",
     };
+
+    // 光束配色。未列出的一律走蓝色默认值。
+    private static readonly Color KamehamehaBeamColorDefault = new(0.25f, 0.62f, 1.0f);
+    private static readonly Color KamehamehaCoreColorDefault = new(0.88f, 0.97f, 1.0f);
+
+    private static readonly Dictionary<string, (Color Beam, Color Core)> KamehamehaBeamPalette =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["KAKAROTMOD-KAKAROT_TENFOLD_KAMEHAMEHA"] = (new Color(1.0f, 0.12f, 0.05f), new Color(1.0f, 0.75f, 0.45f)),
+        };
 
     private const float KamehamehaPoseDurationSeconds = 0.55f;
     private const float KamehamehaPoseScaleMultiplier = 1.12f;
@@ -83,22 +102,6 @@ public static class KakarotCombatPresentation
         "KAKAROTMOD-KAKAROT_CANCEL_SUPER_SAIYAN_FORM",
     };
 
-    // Transformation and charge cards share the aura burst.
-    private static readonly HashSet<string> TransformAuraCardIds = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_TRANSFORM",
-        "KAKAROTMOD-KAKAROT_KAIOKEN",
-        "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM",
-        "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_GOD_TRANSFORM",
-        "KAKAROTMOD-KAKAROT_GOD_KI",
-        "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN",
-        "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT",
-        "KAKAROTMOD-KAKAROT_GREAT_APE_FORM",
-        "KAKAROTMOD-KAKAROT_SHENRON_WISH_TRANSFORM",
-        "KAKAROTMOD-KAKAROT_RETURN_TO_ORIGIN",
-        "KAKAROTMOD-KAKAROT_CHARGE_UP",
-    };
-
     private const string SpiritBombCardId = "KAKAROTMOD-KAKAROT_SPIRIT_BOMB";
     private const string SolarFistCardId = "KAKAROTMOD-KAKAROT_SOLAR_FIST";
     private static readonly Dictionary<string, (string Path, string NodeName, float VolumeDb)> SpecialAttackSfxOverrides = new(StringComparer.OrdinalIgnoreCase)
@@ -118,6 +121,7 @@ public static class KakarotCombatPresentation
         ["KAKAROTMOD-KAKAROT_RETURN_TO_ORIGIN"] = (SuperSaiyan4TransformSfxPath, SuperSaiyan4TransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN"] = (UltraInstinctTransformSfxPath, UltraInstinctTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT"] = (UltraInstinctTransformSfxPath, UltraInstinctTransformSfxNodeName),
+        ["KAKAROTMOD-KAKAROT_NIMBUS_CLOUD"] = (NimbusCloudSfxPath, NimbusCloudSfxNodeName),
     };
 
     public static void TryPlayAttackWindup(Player player, CardPlay cardPlay)
@@ -165,7 +169,12 @@ public static class KakarotCombatPresentation
                 var useKamehamehaPose = !string.IsNullOrWhiteSpace(cardEntryId)
                     && KamehamehaPoseCardIds.Contains(cardEntryId);
                 var windupScaleMultiplier = useKamehamehaPose ? KamehamehaPoseScaleMultiplier : 1f;
-                PlayWindupTween(staticModel, repeatCount, windupRest.Pos, windupRest.Scale, windupScaleMultiplier);
+                // 元气弹是"举起来蓄力再扔"，不该有近战前冲，也不该切出拳姿势。
+                var isSpiritBomb = string.Equals(cardEntryId, SpiritBombCardId, StringComparison.OrdinalIgnoreCase);
+                if (!isSpiritBomb)
+                {
+                    PlayWindupTween(staticModel, repeatCount, windupRest.Pos, windupRest.Scale, windupScaleMultiplier);
+                }
 
                 if (!string.IsNullOrWhiteSpace(cardEntryId) && SpecialAttackSfxOverrides.TryGetValue(cardEntryId, out var special))
                 {
@@ -179,32 +188,46 @@ public static class KakarotCombatPresentation
                         }
                         TryPlayKamehamehaBeamVfx(player, cardPlay, visualsRoot, staticModel);
                     }
+                    else if (string.Equals(cardEntryId, DragonFistBurstCardId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // 这条分支原本只给龟波切姿势，龙拳落进来就成了"站着不动放大招"。
+                        TrySwapToPose(
+                            player.Creature,
+                            staticModel,
+                            KakarotFormVisuals.ResolveAttackPosePath(player.Creature),
+                            0.42f);
+                        TryPlayDragonFistVfx(player, cardPlay, visualsRoot, staticModel);
+                    }
                 }
-                else
+                else if (!isSpiritBomb)
                 {
                     PlaySfx(visualsRoot, AttackSfxNodeName, AttackSfxPath, -4f, true);
                     // Keep the attack pose active across the full multi-hit lunge.
                     var attackPoseDuration = 0.14f * Math.Clamp(repeatCount, 1, 5) + 0.12f;
                     TrySwapToPose(player.Creature, staticModel, KakarotFormVisuals.ResolveAttackPosePath(player.Creature), attackPoseDuration);
+                    ScheduleMeleeImpactFx(staticModel, visualsRoot, player, cardPlay, repeatCount);
 
-                    // Spirit Bomb has its own impact sequence.
-                    if (!string.Equals(cardEntryId, SpiritBombCardId, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(cardEntryId, RuyiStaffCardId, StringComparison.OrdinalIgnoreCase))
                     {
-                        ScheduleMeleeImpactFx(staticModel, visualsRoot, player, cardPlay, repeatCount);
+                        TryPlayRuyiStaffVfx(player, cardPlay, visualsRoot, staticModel);
+                    }
+
+                    if (string.Equals(cardEntryId, AfterimageFistCardId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _afterimageCaster = player.Creature;
+                        _afterimageCasterModel = staticModel;
                     }
                 }
 
-                if (string.Equals(cardEntryId, SpiritBombCardId, StringComparison.OrdinalIgnoreCase))
+                if (isSpiritBomb)
                 {
                     PlaySpiritBombVfx(player, cardPlay, visualsRoot, staticModel);
                 }
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(cardEntryId) && TransformAuraCardIds.Contains(cardEntryId))
-            {
-                PlayTransformAura(staticModel);
-            }
+            // 解析器会过滤无关卡牌；这里只发起纯表现播放。
+            KakarotAuraVfx.TryPlay(staticModel, player.Creature, cardEntryId);
 
             if (string.Equals(cardEntryId, SolarFistCardId, StringComparison.OrdinalIgnoreCase))
             {
@@ -223,10 +246,15 @@ public static class KakarotCombatPresentation
 
             if (!string.IsNullOrWhiteSpace(cardEntryId) && SpecialSkillSfxOverrides.TryGetValue(cardEntryId, out var skillSfx))
             {
-                PlaySfx(visualsRoot, skillSfx.NodeName, skillSfx.Path, -4f, true);
+                // 筋斗云是一条平直无起音的持续哨音，没有瞬态穿不透战斗混音，
+                // 源文件已归一到 -1dBFS，播放再单独抬到 0dB；其余专属音维持 -4dB。
+                float db = string.Equals(cardEntryId, NimbusCloudCardId, StringComparison.OrdinalIgnoreCase) ? 0f : -4f;
+                PlaySfx(visualsRoot, skillSfx.NodeName, skillSfx.Path, db, true);
             }
-            else if (cardPlay.Card.Type == CardType.Skill)
+            else if (cardPlay.Card.Type is CardType.Skill or CardType.Power)
             {
+                // Power 类型原本完全没有音效分支，筋斗云/战斗节奏/赛亚觉醒等一整类卡是哑的。
+                // 通用技能音先兜底；需要专属音的卡往 SpecialSkillSfxOverrides 里加一行即可。
                 PlaySfx(visualsRoot, SkillSfxNodeName, SkillSfxPath, -5f, true);
             }
         }
@@ -264,13 +292,78 @@ public static class KakarotCombatPresentation
 
     private const string KamehamehaBeamTexturePath = "res://Kakarot/Images/Vfx/kamehameha_beam.png";
 
+    private const string RuyiStaffCardId = "KAKAROTMOD-KAKAROT_RUYI_STAFF";
+
+    private const string AfterimageFistCardId = "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST";
+
+    private const float RuyiStaffThickness = 15f;
+
+    private const float RuyiStaffCapThickness = 21f;
+
+    // 龙珠的如意棒是纯红一根，两端没有金箍（有金箍的是西游记的金箍棒）。
+    // 端箍实现保留着，想换回去把这里改 true 即可。
+    // 金箍造型做好了但龙珠原作的如意棒是纯红无箍，按原作走。
+    // 用 static readonly 而不是 const：const 会被常量折叠，让下面整块变成不可达代码触发 CS0162。
+    private static readonly bool RuyiStaffShowCaps = false;
+
+    private static int _afterimageHitIndex;
+
+    // 残像拳段数由 energyX 决定，打牌时算不出总时长。
+    // 记住施法者，每段命中把攻击立绘的保持时间往后顶一次。
+    private static Creature _afterimageCaster;
+
+    private static Sprite2D _afterimageCasterModel;
+
+    private const string WolfFangHeadTexturePath = "res://Kakarot/Images/Vfx/kakarot_wolf_fang_head.png";
+
+    // 残影观感：很淡、偏冷灰。数值故意压得低，宁可不够也不要糊成一团。
+    private static readonly Color WolfFangTint = new(0.78f, 0.80f, 0.86f, 0.42f);
+
+    private const float WolfFangHeadHeight = 260f;
+
+    // 每段命中位置递进，靠这个计数器实现（纯表现层，不进同步状态）。
+    private static int _wolfFangHitIndex;
+
+    private const string SpiritBombRaisePosePath = "res://Kakarot/Images/Charui/kakarot_combat_model_spirit_bomb_raise_pose.png";
+
+    private const string SpiritBombThrowPosePath = "res://Kakarot/Images/Charui/kakarot_combat_model_spirit_bomb_throw_pose.png";
+
+    private const string DragonFistDragonTexturePath = "res://Kakarot/Images/Vfx/kakarot_dragon_fist_dragon.png";
+
+    private const string DragonFistBurstCardId = "KAKAROTMOD-KAKAROT_DRAGON_FIST_BURST";
+
+    // 龙头贴在画面右端，所以锚点放在龙头上、龙身向后拖。
+    private const float DragonFistTargetHeight = 300f;
+
+    private const float DragonFistFlightSeconds = 0.34f;
+
+    private const string KamehamehaBeamShaderPath = "res://Kakarot/Shaders/kakarot_kamehameha_beam.gdshader";
+
+    // 调试开关：true 走程序化 shader，false 退回原来的贴图/场景路径。
+    private const bool KamehamehaUseShaderBeam = true;
+
+    private const float KamehamehaShaderBeamThickness = 230f;
+
+    private const float KamehamehaShaderBeamGrowSeconds = 0.26f;
+
+    private const float KamehamehaShaderBeamHoldSeconds = 0.34f;
+
+    private const float KamehamehaShaderBeamFadeSeconds = 0.30f;
+
     private const string KamehamehaBeamPackedScenePath = "res://Kakarot/Vfx/kakarot_kamehameha_beam.tscn";
 
     private const string KamehamehaImpactPackedScenePath = "res://Kakarot/Vfx/kakarot_kamehameha_impact.tscn";
 
     private const float KamehamehaImpactDelaySeconds = 0.17f;
 
-    private static readonly Vector2 KamehamehaBeamCharacterOffset = new(50f, -29f);
+    private static readonly Vector2 KamehamehaBeamCharacterOffset = new(50f, -58f);
+
+    // 各形态立绘的手心位置不同，只列出跟默认值有偏差的形态，其余走默认。
+    private static readonly Dictionary<KakarotAuraForm, Vector2> KamehamehaBeamOffsetByForm = new()
+    {
+        [KakarotAuraForm.SuperSaiyan3] = new Vector2(105f, -58f),
+        [KakarotAuraForm.SuperSaiyan4] = new Vector2(50f, -43f),
+    };
 
     private static readonly Vector2 KamehamehaBeamEnemyOffset = new(0f, -36f);
 
@@ -398,7 +491,15 @@ public static class KakarotCombatPresentation
             }
 
             Creature primaryTarget = ResolvePrimaryBeamTarget(player, cardPlay);
-            Vector2 beamOriginWorld = ComputeKamehamehaBeamOriginWorld(staticModel);
+
+            // 群体技绝不改朝向：玩家朝哪边就朝哪边，特效去找那一侧的敌人。
+            // 单体技才按选中的目标转身。
+            if (cardPlay.Target != null)
+            {
+                KakarotFormVisuals.RefreshFacingToTarget(player.Creature, cardPlay.Target);
+            }
+
+            Vector2 beamOriginWorld = ComputeKamehamehaBeamOriginWorld(staticModel, player?.Creature);
             Vector2 beamEndWorld = ComputeKamehamehaBeamEndWorld(staticModel, primaryTarget, beamOriginWorld);
 
             bool spawned = false;
@@ -431,6 +532,17 @@ public static class KakarotCombatPresentation
                 }
             }
 
+            if (KamehamehaUseShaderBeam && !spawned)
+            {
+                var beamEntry = cardPlay.Card?.Id.Entry ?? string.Empty;
+                if (!KamehamehaBeamPalette.TryGetValue(beamEntry, out var palette))
+                {
+                    palette = (KamehamehaBeamColorDefault, KamehamehaCoreColorDefault);
+                }
+
+                spawned = TryPlayKamehamehaBeamShader(anchor, beamOriginWorld, beamEndWorld, palette.Beam, palette.Core);
+            }
+
             if (!spawned && ResourceLoader.Exists(KamehamehaBeamTexturePath))
             {
                 var tex = ResourceLoader.Load<Texture2D>(KamehamehaBeamTexturePath);
@@ -456,16 +568,23 @@ public static class KakarotCombatPresentation
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
+            GD.PrintErr($"[Kakarot][Vfx] Kamehameha beam failed: {ex}");
         }
     }
 
-    private static Vector2 ComputeKamehamehaBeamOriginWorld(Sprite2D staticModel)
+    private static Vector2 ComputeKamehamehaBeamOriginWorld(Sprite2D staticModel, Creature caster)
     {
+        var offset = KamehamehaBeamCharacterOffset;
+        if (caster != null
+            && KamehamehaBeamOffsetByForm.TryGetValue(KakarotAuraFormResolver.ResolveCurrent(caster), out var formOffset))
+        {
+            offset = formOffset;
+        }
+
         float dir = staticModel.FlipH ? -1f : 1f;
-        return staticModel.GlobalPosition +
-            new Vector2(KamehamehaBeamCharacterOffset.X * dir, KamehamehaBeamCharacterOffset.Y);
+        return staticModel.GlobalPosition + new Vector2(offset.X * dir, offset.Y);
     }
 
     // Horizontal beams keep the caster's hand height.
@@ -526,7 +645,698 @@ public static class KakarotCombatPresentation
             return null;
         }
 
-        return enemies[enemies.Count / 2];
+        // 取"最近的敌人"而不是"中间那个"。朝向逻辑（ApplyFacing）用的就是最近敌人，
+        // 两边必须同源，否则群体技会把人物强行拧向队列中间那只。
+        var room = NCombatRoom.Instance;
+        var selfNode = room?.GetCreatureNode(player.Creature);
+        if (selfNode == null)
+        {
+            return enemies[0];
+        }
+
+        // 群体技不转身，所以特效必须自己去找「当前朝向那一侧」最近的敌人，
+        // 否则人朝右、特效却飞向左边的敌人。同侧没人时才退回全场最近的。
+        var casterModel = selfNode.Visuals?.GetNodeOrNull<Sprite2D>("StaticModel");
+        float facing = casterModel != null && casterModel.FlipH ? -1f : 1f;
+        float selfX = selfNode.GlobalPosition.X;
+
+        Creature nearestFacing = null;
+        float nearestFacingDx = float.MaxValue;
+        Creature nearestAny = enemies[0];
+        float nearestAnyDx = float.MaxValue;
+
+        foreach (Creature candidate in enemies)
+        {
+            var candidateNode = room.GetCreatureNode(candidate);
+            if (candidateNode == null)
+            {
+                continue;
+            }
+
+            float delta = candidateNode.GlobalPosition.X - selfX;
+            float dx = Math.Abs(delta);
+
+            if (dx < nearestAnyDx)
+            {
+                nearestAnyDx = dx;
+                nearestAny = candidate;
+            }
+
+            if (delta * facing >= 0f && dx < nearestFacingDx)
+            {
+                nearestFacingDx = dx;
+                nearestFacing = candidate;
+            }
+        }
+
+        return nearestFacing ?? nearestAny;
+    }
+
+    // 程序化光束：形状与辉光全部由 shader 计算，不依赖 kamehameha_beam.png。
+    // 失败时返回 false，调用方会自动退回贴图路径。
+    // 横向棍贴图：宽度只有 4 像素（沿长度方向拉伸），明暗做在高度方向上，
+    // 也就是棍子的粗细方向。这样 sprite 不用旋转，长宽缩放各管各的。
+    private static ImageTexture CreateCylinderTextureH(
+        int thicknessPixels,
+        Color edge,
+        Color body,
+        Color highlight,
+        float highlightAt)
+    {
+        const int width = 4;
+        var img = Image.CreateEmpty(width, thicknessPixels, false, Image.Format.Rgba8);
+        for (int y = 0; y < thicknessPixels; y++)
+        {
+            float t = thicknessPixels <= 1 ? 0.5f : y / (float)(thicknessPixels - 1);
+            float rim = Mathf.Pow(Math.Abs(t - 0.5f) * 2f, 1.5f);
+            Color c = body.Lerp(edge, rim);
+            float spec = Mathf.Exp(-Mathf.Pow((t - highlightAt) / 0.13f, 2f));
+            c = c.Lerp(highlight, spec * 0.85f);
+            for (int x = 0; x < width; x++)
+            {
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    // 沿宽度做圆柱明暗的贴图：边缘压暗 → 本体 → 偏一侧的高光。
+    // 一根纯色矩形读起来是纸片，加上这条明暗曲线才像一根圆棍。
+    private static ImageTexture CreateCylinderTexture(
+        int width,
+        Color edge,
+        Color body,
+        Color highlight,
+        float highlightAt)
+    {
+        const int height = 4;
+        var img = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
+        for (int x = 0; x < width; x++)
+        {
+            float t = width <= 1 ? 0.5f : x / (float)(width - 1);
+
+            // 到中轴的距离决定明暗，边缘最暗
+            float rim = Mathf.Pow(Math.Abs(t - 0.5f) * 2f, 1.5f);
+            Color c = body.Lerp(edge, rim);
+
+            // 高光带：偏离中轴一点，才有受光方向
+            float spec = Mathf.Exp(-Mathf.Pow((t - highlightAt) / 0.13f, 2f));
+            c = c.Lerp(highlight, spec * 0.85f);
+
+            for (int y = 0; y < height; y++)
+            {
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    // 纯色硬边贴图。GradientTexture2D 是异步生成的，就绪前 UV 会退化，别用它。
+    private static ImageTexture CreateSolidTexture(int width, int height)
+    {
+        var img = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
+        img.Fill(Colors.White);
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    // 沿飞行路径按时间撒光点，跟着龙头走，视觉上是拖尾。
+    private static void SpawnDragonFistTrail(Node2D anchor, Vector2 originWorld, Vector2 impactWorld)
+    {
+        const int trailCount = 10;
+        for (int i = 0; i < trailCount; i++)
+        {
+            float t = (i + 1f) / (trailCount + 1f);
+            Vector2 at = originWorld.Lerp(impactWorld, t) + new Vector2(0f, Mathf.Sin(t * 6.28318f) * 18f);
+
+            var mote = CreateRadialGlowSprite(0.9f, 0f);
+            float size = Mathf.Lerp(0.10f, 0.20f, 1f - t);
+            mote.Scale = new Vector2(size, size);
+            mote.Modulate = new Color(1f, 0.82f, 0.35f, 0f);
+            mote.ZIndex = 25;
+            anchor.AddChild(mote);
+            mote.GlobalPosition = at;
+
+            var tw = mote.CreateTween();
+            tw.SetParallel(false);
+            tw.TweenInterval(t * DragonFistFlightSeconds);
+            tw.TweenProperty(mote, "modulate:a", 0.85f, 0.05);
+            tw.TweenProperty(mote, "modulate:a", 0f, 0.30);
+            tw.Parallel().TweenProperty(mote, "scale", new Vector2(size * 0.3f, size * 0.3f), 0.30);
+            tw.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(mote))
+                {
+                    mote.QueueFree();
+                }
+            }));
+        }
+    }
+
+    // 量出存活敌人的横向跨度，让如意棒横跨整排而不是只压住一只。
+    private static float ResolveRuyiStaffSpan(Player player, out float centerX)
+    {
+        const float baseLength = 460f;
+        const float maxLength = 980f;
+        const float padding = 150f;
+
+        centerX = 0f;
+        var combatState = player?.Creature?.CombatState;
+        var room = NCombatRoom.Instance;
+        if (combatState == null || room == null)
+        {
+            return baseLength;
+        }
+
+        float minX = float.MaxValue;
+        float maxX = float.MinValue;
+        foreach (Creature enemy in combatState.HittableEnemies)
+        {
+            if (enemy is not { CurrentHp: > 0 })
+            {
+                continue;
+            }
+
+            var node = room.GetCreatureNode(enemy);
+            if (node == null)
+            {
+                continue;
+            }
+
+            minX = Math.Min(minX, node.GlobalPosition.X);
+            maxX = Math.Max(maxX, node.GlobalPosition.X);
+        }
+
+        if (minX > maxX)
+        {
+            return baseLength;
+        }
+
+        centerX = (minX + maxX) * 0.5f;
+        return Math.Clamp(maxX - minX + padding, baseLength, maxLength);
+    }
+
+    // 如意棒：在敌人正前方横空出现一根长棍，高高扬起后劈下，最终砸成水平。
+    // 🔴 holder 必须做 GlobalScale 归一：长度/粗细都是世界像素，
+    // 而父节点（角色 visuals）带缩放，不归一会被缩成一根牙签。
+    private static void TryPlayRuyiStaffVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
+    {
+        try
+        {
+            if (visualsRoot is not Node2D anchor || staticModel == null)
+            {
+                return;
+            }
+
+            Creature target = ResolvePrimaryBeamTarget(player, cardPlay);
+            if (target == null || !TryGetCreatureChestWorld(target, out Vector2 chestWorld))
+            {
+                return;
+            }
+
+            // 棍长随敌人阵型走：单只时是基础长度，一群时横跨整排。
+            float staffLength = ResolveRuyiStaffSpan(player, out float spanCenterX);
+
+            var holder = new Node2D { Name = "KakarotRuyiStaffFx", ZIndex = 40 };
+            anchor.AddChild(holder);
+            holder.GlobalScale = Vector2.One;
+            holder.GlobalPosition = new Vector2(spanCenterX, chestWorld.Y - 26f);
+            holder.GlobalRotation = Mathf.DegToRad(-78f);
+
+            // 棍身沿局部 X 铺开 —— 旋转 0 度就是水平，正好是"劈到水平"的终点姿态。
+            const int shadeRes = 48;
+            var shaftTex = CreateCylinderTextureH(
+                shadeRes,
+                new Color(0.20f, 0.03f, 0.04f),
+                new Color(0.80f, 0.12f, 0.11f),
+                new Color(1.0f, 0.66f, 0.58f),
+                0.36f);
+
+            ImageTexture capTex = RuyiStaffShowCaps
+                ? CreateCylinderTextureH(
+                    shadeRes,
+                    new Color(0.28f, 0.17f, 0.03f),
+                    new Color(0.95f, 0.74f, 0.22f),
+                    new Color(1.0f, 0.98f, 0.80f),
+                    0.36f)
+                : null;
+
+            var shaft = new Sprite2D
+            {
+                Texture = shaftTex,
+                Centered = true,
+                // 贴图宽 4 高 shadeRes：X 铺长度，Y 铺粗细，不用旋转
+                Scale = new Vector2(staffLength / 4f, RuyiStaffThickness / shadeRes),
+            };
+            holder.AddChild(shaft);
+
+            Sprite2D capLeft = null;
+            Sprite2D capRight = null;
+            if (RuyiStaffShowCaps)
+            {
+                Sprite2D MakeCap(float x) => new()
+                {
+                    Texture = capTex,
+                    Centered = true,
+                    Scale = new Vector2(14f / 4f, RuyiStaffCapThickness / shadeRes),
+                    Position = new Vector2(x, 0f),
+                };
+
+                capLeft = MakeCap(-staffLength * 0.5f + 7f);
+                holder.AddChild(capLeft);
+
+                capRight = MakeCap(staffLength * 0.5f - 7f);
+                holder.AddChild(capRight);
+            }
+
+            // 出现时从零长度弹出，避免凭空贴一根棍子上去
+            shaft.Scale = new Vector2(0.5f, RuyiStaffThickness / shadeRes);
+
+            var tween = holder.CreateTween();
+            tween.SetParallel(false);
+
+            // ① 成形：棍身横向拉满
+            tween.TweenProperty(shaft, "scale", new Vector2(staffLength / 4f, RuyiStaffThickness / shadeRes), 0.14)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+
+            // ② 扬起蓄力
+            tween.TweenProperty(holder, "rotation", Mathf.DegToRad(-96f), 0.10)
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.Out);
+
+            // ③ 劈下，砸成水平
+            tween.TweenProperty(holder, "rotation", 0f, 0.08)
+                .SetTrans(Tween.TransitionType.Expo)
+                .SetEase(Tween.EaseType.In);
+
+            tween.TweenCallback(Callable.From(() =>
+            {
+                SpawnRuyiSwingArc(anchor, chestWorld, staffLength);
+                PlayImpactFeedback(ShakeStrength.Medium, ShakeDuration.Short, hitStop: true);
+                SpawnRadialBurst(anchor, chestWorld, 2.4f, 0.30f);
+            }));
+
+            // ④ 砸实后的余震，再淡出
+            tween.TweenProperty(holder, "rotation", Mathf.DegToRad(4f), 0.06)
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenInterval(0.08);
+            tween.TweenProperty(shaft, "modulate:a", 0f, 0.18);
+            if (capLeft != null)
+            {
+                tween.Parallel().TweenProperty(capLeft, "modulate:a", 0f, 0.18);
+            }
+
+            if (capRight != null)
+            {
+                tween.Parallel().TweenProperty(capRight, "modulate:a", 0f, 0.18);
+            }
+            tween.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(holder))
+                {
+                    holder.QueueFree();
+                }
+            }));
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Ruyi staff failed: {ex}");
+        }
+    }
+
+    // 劈下瞬间在落点甩一道弧形残影，读作"挥过去的轨迹"。
+    private static void SpawnRuyiSwingArc(Node2D anchor, Vector2 atWorld, float staffLength)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            var ghost = new Sprite2D
+            {
+                Texture = CreateStreakTexture(),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 0.55f, 0.45f, 0.34f - i * 0.09f),
+                Scale = new Vector2(staffLength / 128f * 0.9f, 0.55f),
+                Rotation = Mathf.DegToRad(-52f + i * 22f),
+                ZIndex = 32,
+            };
+            anchor.AddChild(ghost);
+            ghost.GlobalPosition = atWorld + new Vector2(0f, -staffLength * 0.22f);
+
+            var tw = ghost.CreateTween();
+            tw.SetParallel(true);
+            tw.TweenProperty(ghost, "modulate:a", 0f, 0.18 + i * 0.03);
+            tw.TweenProperty(ghost, "rotation", Mathf.DegToRad(6f + i * 10f), 0.14);
+            tw.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(ghost))
+                {
+                    ghost.QueueFree();
+                }
+            }));
+        }
+    }
+
+    // 残像拳：每段命中留一道拳风。段数由 energyX 决定，只能走逐段回调。
+    public static Node2D CreateAfterimageHitVfx(Creature enemy)
+    {
+        try
+        {
+            int index = _afterimageHitIndex++;
+
+            // 每段命中把攻击姿势续期，打完最后一段后 0.45 秒才切回站姿。
+            if (_afterimageCaster != null && GodotObject.IsInstanceValid(_afterimageCasterModel))
+            {
+                TrySwapToPose(
+                    _afterimageCaster,
+                    _afterimageCasterModel,
+                    KakarotFormVisuals.ResolveAttackPosePath(_afterimageCaster),
+                    0.45f);
+            }
+
+            var holder = new Node2D { Name = "KakarotAfterimageFx", ZIndex = 31 };
+
+            if (TryGetCreatureChestWorld(enemy, out Vector2 chestWorld))
+            {
+                holder.TreeEntered += () =>
+                {
+                    if (GodotObject.IsInstanceValid(holder))
+                    {
+                        holder.GlobalPosition = chestWorld;
+                    }
+                };
+            }
+
+            // 角度与高度逐段交替，读起来像连打而不是同一道风重复播放。
+            float angle = Mathf.DegToRad(index % 2 == 0 ? -22f : 18f);
+            float offsetY = -30f + (index % 3) * 26f;
+
+            var streak = new Sprite2D
+            {
+                Texture = CreateStreakTexture(),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(0.92f, 0.96f, 1f, 0.75f),
+                Scale = new Vector2(1.5f, 0.9f),
+                Position = new Vector2(-40f, offsetY),
+                Rotation = angle,
+            };
+            holder.AddChild(streak);
+
+            var tween = holder.CreateTween();
+            tween.SetParallel(true);
+            tween.TweenProperty(streak, "position", new Vector2(46f, offsetY), 0.16)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(streak, "modulate:a", 0f, 0.18);
+            tween.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(holder))
+                {
+                    holder.QueueFree();
+                }
+            }));
+
+            return holder;
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Afterimage vfx failed: {ex}");
+            return null;
+        }
+    }
+
+    // 狼牙风风拳每一段命中生成一个狼头残影。
+    // 由引擎的 WithHitVfxNode 逐段调用 —— 这是唯一能与真实段数同步的挂点，
+    // 在 OnPlay 里播 4 次会因为多段共用一条 AttackCommand 而对不上。
+    public static Node2D CreateWolfFangHitVfx(Creature enemy)
+    {
+        try
+        {
+            if (!ResourceLoader.Exists(WolfFangHeadTexturePath))
+            {
+                GD.PrintErr($"[Kakarot][Vfx] wolf head missing: {WolfFangHeadTexturePath}");
+                return null;
+            }
+
+            var texture = ResourceLoader.Load<Texture2D>(WolfFangHeadTexturePath);
+            if (texture == null)
+            {
+                return null;
+            }
+
+            int index = _wolfFangHitIndex++ & 3;
+
+            var holder = new Node2D { Name = "KakarotWolfFangFx", ZIndex = 31 };
+
+            // 引擎会把这个节点挂到自己选的父节点上，不一定是敌人。
+            // 不主动定位的话 (0,0) 会落在画布原点——表现就是特效跑到屏幕左上角。
+            // 入树后再设全局坐标，此时父链才成立。
+            if (TryGetCreatureChestWorld(enemy, out Vector2 enemyChestWorld))
+            {
+                holder.TreeEntered += () =>
+                {
+                    if (GodotObject.IsInstanceValid(holder))
+                    {
+                        holder.GlobalPosition = enemyChestWorld;
+                    }
+                };
+            }
+
+            float scale = WolfFangHeadHeight / Math.Max(texture.GetHeight(), 1);
+            var sprite = new Sprite2D
+            {
+                Texture = texture,
+                Centered = true,
+                Modulate = WolfFangTint,
+                Scale = new Vector2(scale * 0.82f, scale * 0.82f),
+                // 四段沿斜向递进，读起来像连续扑咬而不是原地闪四下。
+                Position = new Vector2(-70f + index * 34f, -46f + index * 24f),
+                Rotation = Mathf.DegToRad(-10f + index * 6f),
+            };
+            holder.AddChild(sprite);
+
+            var tween = holder.CreateTween();
+            tween.SetParallel(true);
+            tween.TweenProperty(sprite, "scale", new Vector2(scale * 1.12f, scale * 1.12f), 0.20)
+                .SetTrans(Tween.TransitionType.Cubic)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(sprite, "position", sprite.Position + new Vector2(38f, -8f), 0.20)
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(sprite, "modulate:a", 0f, 0.24).SetDelay(0.06);
+            tween.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(holder))
+                {
+                    holder.QueueFree();
+                }
+            }));
+
+            return holder;
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Wolf fang vfx failed: {ex}");
+            return null;
+        }
+    }
+
+    // 龙拳爆发：金龙从施法者拳头窜出，龙头咬向目标。
+    private static void TryPlayDragonFistVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
+    {
+        try
+        {
+            if (visualsRoot is not Node2D anchor || staticModel == null)
+            {
+                return;
+            }
+
+            if (!ResourceLoader.Exists(DragonFistDragonTexturePath))
+            {
+                GD.PrintErr($"[Kakarot][Vfx] dragon texture missing: {DragonFistDragonTexturePath}");
+                return;
+            }
+
+            var texture = ResourceLoader.Load<Texture2D>(DragonFistDragonTexturePath);
+            if (texture == null)
+            {
+                GD.PrintErr("[Kakarot][Vfx] dragon texture failed to load.");
+                return;
+            }
+
+            Creature target = ResolvePrimaryBeamTarget(player, cardPlay);
+            if (cardPlay.Target != null)
+            {
+                KakarotFormVisuals.RefreshFacingToTarget(player.Creature, cardPlay.Target);
+            }
+
+            float dir = staticModel.FlipH ? -1f : 1f;
+            Vector2 originWorld = staticModel.GlobalPosition + new Vector2(70f * dir, -70f);
+            Vector2 impactWorld;
+            if (target != null && TryGetCreatureChestWorld(target, out Vector2 chestWorld))
+            {
+                // 只取目标的横坐标，高度保持与出拳点齐平 —— 否则龙会斜着扎向敌人脚下。
+                impactWorld = new Vector2(chestWorld.X, originWorld.Y);
+            }
+            else
+            {
+                impactWorld = originWorld + new Vector2(560f * dir, 0f);
+            }
+
+            var holder = new Node2D { Name = "KakarotDragonFistFx", ZIndex = 26 };
+            anchor.AddChild(holder);
+            holder.GlobalScale = Vector2.One;
+            holder.GlobalPosition = originWorld;
+
+            float angle = (impactWorld - originWorld).Angle();
+            holder.GlobalRotation = angle;
+
+            int texW = Math.Max(texture.GetWidth(), 1);
+            int texH = Math.Max(texture.GetHeight(), 1);
+            float fullScale = DragonFistTargetHeight / texH;
+
+            var sprite = new Sprite2D
+            {
+                Texture = texture,
+                Centered = true,
+                // 锚点落在龙头，龙身向来路方向拖出去。
+                Offset = new Vector2(-texW * 0.5f, 0f),
+                Scale = new Vector2(fullScale * 0.35f, fullScale * 0.35f),
+                // 朝左发招时整条龙会上下颠倒，翻一次修正。
+                FlipV = Mathf.Cos(angle) < 0f,
+            };
+            holder.AddChild(sprite);
+
+            // 出膛闪光：拳头位置炸一下白光，龙才像是"窜出来"的而不是凭空平移
+            var muzzle = CreateRadialGlowSprite(0.95f, 0f);
+            muzzle.Scale = new Vector2(0.25f, 0.25f);
+            muzzle.ZIndex = 27;
+            anchor.AddChild(muzzle);
+            muzzle.GlobalPosition = originWorld;
+            var muzzleTween = muzzle.CreateTween();
+            muzzleTween.SetParallel(true);
+            muzzleTween.TweenProperty(muzzle, "scale", new Vector2(1.15f, 1.15f), 0.20)
+                .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+            muzzleTween.TweenProperty(muzzle, "modulate:a", 0f, 0.24);
+            muzzleTween.Chain().TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(muzzle))
+                {
+                    muzzle.QueueFree();
+                }
+            }));
+
+            var tween = holder.CreateTween();
+            tween.SetParallel(false);
+            tween.TweenProperty(holder, "global_position", impactWorld, DragonFistFlightSeconds)
+                .SetTrans(Tween.TransitionType.Quad)
+                .SetEase(Tween.EaseType.In);
+            tween.Parallel().TweenProperty(sprite, "scale", new Vector2(fullScale, fullScale), DragonFistFlightSeconds)
+                .SetTrans(Tween.TransitionType.Cubic)
+                .SetEase(Tween.EaseType.Out);
+
+            SpawnDragonFistTrail(anchor, originWorld, impactWorld);
+
+            tween.TweenCallback(Callable.From(() =>
+            {
+                PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
+                SpawnRadialBurst(anchor, impactWorld, 3.4f, 0.38f);
+            }));
+            tween.TweenProperty(sprite, "modulate:a", 0f, 0.22);
+            tween.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(holder))
+                {
+                    holder.QueueFree();
+                }
+            }));
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Dragon fist failed: {ex}");
+        }
+    }
+
+    private static bool TryPlayKamehamehaBeamShader(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Color beamColor, Color coreColor)
+    {
+        if (!ResourceLoader.Exists(KamehamehaBeamShaderPath))
+        {
+            GD.PrintErr($"[Kakarot][Vfx] beam shader missing: {KamehamehaBeamShaderPath}");
+            return false;
+        }
+
+        var shader = ResourceLoader.Load<Shader>(KamehamehaBeamShaderPath);
+        if (shader == null)
+        {
+            GD.PrintErr("[Kakarot][Vfx] beam shader failed to load.");
+            return false;
+        }
+
+        var noise = new NoiseTexture2D
+        {
+            Width = 256,
+            Height = 256,
+            Seamless = true,
+            Noise = new FastNoiseLite
+            {
+                NoiseType = FastNoiseLite.NoiseTypeEnum.SimplexSmooth,
+                Frequency = 0.014f,
+                FractalOctaves = 3,
+            },
+        };
+
+        var material = new ShaderMaterial { Shader = shader };
+        material.SetShaderParameter("noise_tex", noise);
+        material.SetShaderParameter("beam_color", beamColor);
+        material.SetShaderParameter("core_color", coreColor);
+        material.SetShaderParameter("progress", 0f);
+        material.SetShaderParameter("intensity", 1f);
+
+        var holder = new Node2D { Name = "KamehamehaBeamShaderFx", ZIndex = 24 };
+        anchor.AddChild(holder);
+        holder.GlobalPosition = originWorld;
+        // originWorld / endWorld 是世界坐标，而 Scale 走的是局部坐标。
+        // anchor 自身带缩放时两者不等价，光束会又细又长，所以先把继承缩放归一。
+        holder.GlobalScale = Vector2.One;
+        holder.GlobalRotation = (endWorld - originWorld).Angle();
+
+        // 画布只提供 UV 网格，颜色全部由 shader 覆写。
+        // 🔴 必须用 ImageTexture：GradientTexture2D 是异步生成的，贴图就绪前 UV 不会正确
+        // 铺满 0~1，整块面积会退化成一条线。这个坑排查过，别换回去。
+        const int canvasWidth = 256;
+        const int canvasHeight = 64;
+        var canvasImage = Image.CreateEmpty(canvasWidth, canvasHeight, false, Image.Format.Rgba8);
+        canvasImage.Fill(Colors.White);
+        var canvas = ImageTexture.CreateFromImage(canvasImage);
+
+        float distance = Math.Max(originWorld.DistanceTo(endWorld), 1f);
+        var sprite = new Sprite2D
+        {
+            Texture = canvas,
+            Centered = true,
+            Offset = new Vector2(canvasWidth * 0.5f, 0f),
+            Material = material,
+            Scale = new Vector2(distance / canvasWidth, KamehamehaShaderBeamThickness / canvasHeight),
+        };
+        holder.AddChild(sprite);
+
+        var tween = holder.CreateTween();
+        tween.TweenProperty(material, "shader_parameter/progress", 1f, KamehamehaShaderBeamGrowSeconds)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.Out);
+        tween.TweenInterval(KamehamehaShaderBeamHoldSeconds);
+        tween.TweenProperty(material, "shader_parameter/intensity", 0f, KamehamehaShaderBeamFadeSeconds);
+        tween.Finished += () =>
+        {
+            if (GodotObject.IsInstanceValid(holder))
+            {
+                holder.QueueFree();
+            }
+        };
+
+        return true;
     }
 
     private static void TryPlayKamehamehaBeamFromTexture(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Texture2D texture)
@@ -598,91 +1408,6 @@ public static class KakarotCombatPresentation
         };
     }
 
-    private static Sprite2D CreateGoldGlow(float innerAlpha, float outerAlpha)
-    {
-        var gradientTex = new GradientTexture2D
-        {
-            Width = 128,
-            Height = 128,
-            Fill = GradientTexture2D.FillEnum.Radial,
-            FillFrom = new Vector2(0.5f, 0.5f),
-            FillTo = new Vector2(0.5f, 0f),
-        };
-        var grad = new Gradient();
-        grad.SetColor(0, new Color(1f, 0.97f, 0.65f, innerAlpha));
-        grad.SetColor(1, new Color(1f, 0.6f, 0.1f, outerAlpha));
-        gradientTex.Gradient = grad;
-
-        return new Sprite2D
-        {
-            Texture = gradientTex,
-            Centered = true,
-            Material = CreateAdditiveMaterial(),
-        };
-    }
-
-    // Aura bursts use a separate node so form and idle tweens remain untouched.
-    private static void PlayTransformAura(Sprite2D staticModel)
-    {
-        try
-        {
-            if (staticModel?.GetParent() is not Node2D parent)
-            {
-                return;
-            }
-
-            var aura = new Node2D { Name = "KakarotTransformAura", ZIndex = 22 };
-            aura.Position = staticModel.Position + new Vector2(0f, -76f);
-            parent.AddChild(aura);
-
-            var flash = CreateGoldGlow(0.95f, 0f);
-            flash.Scale = new Vector2(1.1f, 1.1f);
-            aura.AddChild(flash);
-
-            var ring = CreateGoldGlow(0.5f, 0f);
-            ring.Scale = new Vector2(0.7f, 0.8f);
-            aura.AddChild(ring);
-
-            var column = CreateGoldGlow(0.6f, 0f);
-            column.Position = new Vector2(0f, -40f);
-            column.Scale = new Vector2(0.5f, 1.6f);
-            aura.AddChild(column);
-
-            var tween = aura.CreateTween();
-            tween.SetParallel(true);
-            tween.SetPauseMode(Tween.TweenPauseMode.Process);
-
-            tween.TweenProperty(flash, "scale", new Vector2(3.6f, 3.9f), 0.32)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(flash, "modulate:a", 0f, 0.46)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-
-            tween.TweenProperty(ring, "scale", new Vector2(2.6f, 2.9f), 0.42)
-                .SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(ring, "modulate:a", 0f, 0.5)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-
-            tween.TweenProperty(column, "scale", new Vector2(0.9f, 3.4f), 0.4)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(column, "position", new Vector2(0f, -120f), 0.4)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(column, "modulate:a", 0f, 0.48)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-
-            tween.Finished += () =>
-            {
-                if (GodotObject.IsInstanceValid(aura))
-                {
-                    aura.QueueFree();
-                }
-            };
-        }
-        catch
-        {
-            // Presentation failures must not interrupt combat.
-        }
-    }
-
     private static Sprite2D CreateWhiteGlow(float outerAlpha)
     {
         var gradientTex = new GradientTexture2D
@@ -706,6 +1431,13 @@ public static class KakarotCombatPresentation
         };
     }
 
+    // 元气弹演出：聚 → 成型 → 投掷 → 散。
+    // 汇聚过程是这一招的辨识度所在（"把大家的元气分给我"），静态球体浪费了这张牌。
+    private const int SpiritBombMoteCount = 22;
+    private const float SpiritBombGatherSeconds = 1.05f;
+    private const float SpiritBombMoteMinRadius = 620f;
+    private const float SpiritBombMoteMaxRadius = 1250f;
+
     private static void PlaySpiritBombVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
     {
         try
@@ -716,40 +1448,67 @@ public static class KakarotCombatPresentation
             }
 
             var target = ResolvePrimaryBeamTarget(player, cardPlay);
+            if (cardPlay.Target != null)
+            {
+                KakarotFormVisuals.RefreshFacingToTarget(player.Creature, cardPlay.Target);
+            }
+
             Vector2 impactWorld;
             if (target == null || !TryGetCreatureChestWorld(target, out impactWorld))
             {
-                float dir = staticModel.FlipH ? -1f : 1f;
-                impactWorld = staticModel.GlobalPosition + new Vector2(420f * dir, -40f);
+                float dirFallback = staticModel.FlipH ? -1f : 1f;
+                impactWorld = staticModel.GlobalPosition + new Vector2(420f * dirFallback, -40f);
             }
 
-            var spawnWorld = impactWorld + new Vector2(0f, -360f);
+            // 球在举手的悟空头顶成型，而不是敌人头顶。
+            var gatherWorld = staticModel.GlobalPosition + new Vector2(0f, -300f);
 
             var holder = new Node2D { Name = "KakarotSpiritBombFx", ZIndex = 30 };
             anchor.AddChild(holder);
-            holder.GlobalPosition = spawnWorld;
+            holder.GlobalScale = Vector2.One;
+            holder.GlobalPosition = gatherWorld;
 
             var glow = CreateRadialGlowSprite(0.55f, 0f);
-            glow.Scale = new Vector2(0.4f, 0.4f);
+            glow.Scale = new Vector2(0.06f, 0.06f);
             holder.AddChild(glow);
 
             var core = CreateRadialGlowSprite(0.95f, 0f);
-            core.Scale = new Vector2(0.22f, 0.22f);
+            core.Scale = new Vector2(0.03f, 0.03f);
             holder.AddChild(core);
+
+            SpawnSpiritBombMotes(anchor, gatherWorld);
+
+            // 举手贯穿「汇聚+成型」，投掷瞬间换成下挥，整段结束才复原成站姿。
+            const float spiritBombPoseSeconds =
+                SpiritBombGatherSeconds + 0.18f + 0.26f + 0.45f;
+            TrySwapToPose(player.Creature, staticModel, SpiritBombRaisePosePath, spiritBombPoseSeconds);
 
             var tween = holder.CreateTween();
             tween.SetParallel(false);
             tween.SetPauseMode(Tween.TweenPauseMode.Process);
 
-            tween.TweenProperty(glow, "scale", new Vector2(3.0f, 3.0f), 0.55)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-            tween.Parallel().TweenProperty(core, "scale", new Vector2(1.7f, 1.7f), 0.55)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+            // ① 汇聚：球随着元气飞入而长大
+            tween.TweenProperty(glow, "scale", new Vector2(3.0f, 3.0f), SpiritBombGatherSeconds)
+                .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.In);
+            tween.Parallel().TweenProperty(core, "scale", new Vector2(1.7f, 1.7f), SpiritBombGatherSeconds)
+                .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.In);
 
-            tween.TweenProperty(holder, "global_position", impactWorld, 0.22)
+            // ② 成型停顿 + 预备动作：身体先后拉蓄力，再甩出去
+            tween.TweenCallback(Callable.From(() => PlaySpiritBombThrowMotion(player.Creature, staticModel)));
+            tween.TweenInterval(0.18);
+
+            // ③ 投掷
+            tween.TweenProperty(holder, "global_position", impactWorld, 0.26)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
 
-            tween.TweenCallback(Callable.From(() => SpawnRadialBurst(anchor, impactWorld, 5.0f, 0.45f)));
+            // ④ 扩散
+            tween.TweenCallback(Callable.From(() =>
+            {
+                // 音效跟着落点走，不再跟出拳那一下绑定。
+                PlaySfx(visualsRoot, SpiritBombSfxNodeName, HitSfxPath, -2f, true);
+                PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
+                SpawnRadialBurst(anchor, impactWorld, 5.0f, 0.45f);
+            }));
             tween.TweenInterval(0.45);
             tween.TweenCallback(Callable.From(() =>
             {
@@ -759,8 +1518,94 @@ public static class KakarotCombatPresentation
                 }
             }));
         }
-        catch
+        catch (Exception ex)
         {
+            GD.PrintErr($"[Kakarot][Vfx] Spirit bomb failed: {ex}");
+        }
+    }
+
+    // 甩出去的力量感：后拉蓄力 → 前冲甩出 → 回稳。贴图切换卡在"甩出"那一帧，
+    // 这样人眼看到的是一个连续动作，而不是一次生硬的换图。
+    private static void PlaySpiritBombThrowMotion(Creature creature, Sprite2D staticModel)
+    {
+        try
+        {
+            if (creature == null || !GodotObject.IsInstanceValid(staticModel))
+            {
+                return;
+            }
+
+            var rest = KakarotFormVisuals.GetRestTransform(creature);
+            float dir = staticModel.FlipH ? -1f : 1f;
+
+            var motion = staticModel.CreateTween();
+            motion.SetParallel(false);
+
+            // 后拉：跟成型停顿同长，玩家看到球定住的同时人在蓄力
+            motion.TweenProperty(staticModel, "position", rest.Pos + new Vector2(-14f * dir, 0f), 0.18)
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.Out);
+
+            motion.TweenCallback(Callable.From(() =>
+            {
+                var throwTex = ResourceLoader.Load<Texture2D>(SpiritBombThrowPosePath);
+                if (throwTex != null && GodotObject.IsInstanceValid(staticModel))
+                {
+                    // 只换贴图，不动复原簿记——原始站姿已由 TrySwapToPose 记下。
+                    CrossfadeTexture(staticModel, throwTex, PoseCrossfadeSeconds);
+                }
+            }));
+
+            // 甩出：快、带一点过冲
+            motion.TweenProperty(staticModel, "position", rest.Pos + new Vector2(30f * dir, 0f), 0.09)
+                .SetTrans(Tween.TransitionType.Back)
+                .SetEase(Tween.EaseType.Out);
+
+            // 回稳：慢，收住余韵
+            motion.TweenProperty(staticModel, "position", rest.Pos, 0.34)
+                .SetTrans(Tween.TransitionType.Sine)
+                .SetEase(Tween.EaseType.Out);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Spirit bomb throw motion failed: {ex.Message}");
+        }
+    }
+
+    // 元气从四面八方飞向汇聚点。偏下半圈生成，读起来像"从大地和众人身上升起"。
+    private static void SpawnSpiritBombMotes(Node2D anchor, Vector2 gatherWorld)
+    {
+        for (int i = 0; i < SpiritBombMoteCount; i++)
+        {
+            float angle = Mathf.Pi * (0.08f + 0.84f * GD.Randf());
+            float radius = Mathf.Lerp(SpiritBombMoteMinRadius, SpiritBombMoteMaxRadius, GD.Randf());
+            var from = gatherWorld + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+
+            var mote = CreateRadialGlowSprite(0.9f, 0f);
+            float size = Mathf.Lerp(0.035f, 0.075f, GD.Randf());
+            mote.Scale = new Vector2(size, size);
+            mote.Modulate = new Color(1f, 1f, 1f, 0f);
+            mote.ZIndex = 29;
+            anchor.AddChild(mote);
+            mote.GlobalPosition = from;
+
+            float delay = GD.Randf() * (SpiritBombGatherSeconds * 0.55f);
+            float travel = Mathf.Lerp(0.42f, 0.62f, GD.Randf());
+
+            var moteTween = mote.CreateTween();
+            moteTween.SetParallel(false);
+            moteTween.TweenInterval(delay);
+            moteTween.TweenProperty(mote, "modulate:a", 1f, 0.10);
+            moteTween.Parallel().TweenProperty(mote, "global_position", gatherWorld, travel)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+            moteTween.TweenProperty(mote, "modulate:a", 0f, 0.08);
+            moteTween.TweenCallback(Callable.From(() =>
+            {
+                if (GodotObject.IsInstanceValid(mote))
+                {
+                    mote.QueueFree();
+                }
+            }));
         }
     }
 
@@ -805,6 +1650,30 @@ public static class KakarotCombatPresentation
         }
         catch
         {
+        }
+    }
+
+    // 打击反馈统一走原版 NGame —— 它会读玩家的震屏强度偏好（无障碍设置），
+    // 自己写 tween 抖相机会无视这个选项。
+    private static void PlayImpactFeedback(ShakeStrength strength, ShakeDuration duration, bool hitStop)
+    {
+        try
+        {
+            var game = NGame.Instance;
+            if (game == null)
+            {
+                return;
+            }
+
+            game.ScreenShake(strength, duration);
+            if (hitStop)
+            {
+                game.DoHitStop(strength, duration);
+            }
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] impact feedback failed: {ex.Message}");
         }
     }
 
@@ -872,6 +1741,7 @@ public static class KakarotCombatPresentation
             {
                 try
                 {
+                    PlayImpactFeedback(ShakeStrength.VeryWeak, ShakeDuration.Short, hitStop: false);
                     foreach (Creature enemy in ResolveKamehamehaImpactTargets(player, cardPlay))
                     {
                         SpawnMeleeImpactFx(enemy);
@@ -1184,6 +2054,8 @@ public static class KakarotCombatPresentation
         {
             try
             {
+                // 一次齐射只震一次：放进逐敌人循环会让群体龟波在同一帧叠加多次震动。
+                PlayImpactFeedback(ShakeStrength.Medium, ShakeDuration.Short, hitStop: true);
                 foreach (Creature enemy in ResolveKamehamehaImpactTargets(player, cardPlay))
                 {
                     TrySpawnKamehamehaImpactBurst(enemy);
@@ -1250,6 +2122,7 @@ public static class KakarotCombatPresentation
 
     private static void TrySpawnKamehamehaImpactBurstProcedural(Creature enemy)
     {
+
         var creatureNode = NCombatRoom.Instance?.GetCreatureNode(enemy);
         if (creatureNode?.Visuals is not Node2D ev)
         {

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KakarotMod.KakarotCode.Characters;
 using KakarotMod.KakarotCode.Powers;
@@ -16,6 +16,25 @@ public class KakarotCancelSuperSaiyanForm() : KakarotCard(0, CardType.Skill, Car
     public override bool CanBeGeneratedInCombat => false;
 
     public override bool CanBeGeneratedByModifiers => false;
+
+    // 只在超一 / 超二 / 超三 下可用。神、蓝、超四、自在极意兆、巅峰极易都不允许手动解除。
+    protected override bool IsPlayable
+    {
+        get
+        {
+            var creature = Owner?.Creature;
+            if (creature == null)
+            {
+                return base.IsPlayable;
+            }
+
+            var form = KakarotAuraFormResolver.ResolveCurrent(creature);
+            return base.IsPlayable
+                && form is KakarotAuraForm.SuperSaiyan1
+                    or KakarotAuraForm.SuperSaiyan2
+                    or KakarotAuraForm.SuperSaiyan3;
+        }
+    }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {

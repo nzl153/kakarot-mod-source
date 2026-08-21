@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 
 namespace KakarotMod.KakarotCode.Characters;
 
@@ -107,7 +107,7 @@ internal static class KakarotAuraConfig
         KakarotAuraForm.SuperSaiyan1 => GoldenAura(false),
         KakarotAuraForm.SuperSaiyan2 => GoldenAura(true),
         KakarotAuraForm.SuperSaiyan3 => GoldenAura(false),
-        KakarotAuraForm.SuperSaiyanGod => new(new Color("ff8a92"), new Color("b92b46"), Colors.White, false),
+        KakarotAuraForm.SuperSaiyanGod => new(new Color("ff3b52"), new Color("a01030"), Colors.White, false),
         KakarotAuraForm.SuperSaiyanBlue => new(new Color("5eeaff"), new Color("087fc4"), Colors.White, false),
         KakarotAuraForm.SuperSaiyan4 => GoldenAura(false),
         KakarotAuraForm.UltraInstinctOmen => UltraInstinctAura(),

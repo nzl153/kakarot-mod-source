@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BaseLib.Abstracts;
 using Godot;
 using KakarotMod.KakarotCode.Cards.Basic;
@@ -81,7 +81,12 @@ public class Kakarot : PlaceholderCharacterModel
     public override string CustomArmRockTexturePath => MultiplayerHandAssetPaths[1];
     public override string CustomArmPaperTexturePath => MultiplayerHandAssetPaths[2];
     public override string CustomArmScissorsTexturePath => MultiplayerHandAssetPaths[3];
-    public override string CharacterTransitionSfx => "event:/sfx/ui/wipe_ironclad";
+    // 选人→战斗的入场过场：气爆式阈值展开材质（由 BaseLib Harmony 补丁接进原生 CharacterSelectTransitionPath；
+    // NTransition 会 tween 材质的 threshold，遮罩灰度决定覆盖先后：中心白最先、四角黑最后）。
+    public override string CustomCharacterSelectTransitionPath => "res://Kakarot/Materials/Transitions/kakarot_transition_mat.tres";
+
+    // 这个 FMOD 事件不存在，故意的：KakarotAudioPatches 认这个字符串来补播我们自己的 transition.wav。
+    public override string CharacterTransitionSfx => "event:/sfx/ui/wipe_kakarot";
 
     protected override IEnumerable<string> ExtraAssetPaths => MultiplayerHandAssetPaths;
 

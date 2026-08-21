@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using KakarotMod.KakarotCode.Characters;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -20,6 +21,7 @@ public class KakarotWolfFangFist() : KakarotCard(2, CardType.Attack, CardRarity.
             .FromKakarotCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
             .WithHitFx("vfx/vfx_attack_slash")
+            .WithHitVfxNode(KakarotCombatPresentation.CreateWolfFangHitVfx)
             .Execute(choiceContext);
     }
 
