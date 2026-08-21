@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KakarotMod.KakarotCode.Powers;
 using KakarotMod.KakarotCode.Wild;
@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Uncommon;
 
@@ -24,11 +25,17 @@ public class KakarotSelfDestruct() : KakarotCard(1, CardType.Skill, CardRarity.U
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromCard(this).TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_slash")
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
             .Execute(choiceContext);
 
-        await CreatureCmd.Damage(choiceContext, Owner.Creature, SelfDamage, ValueProp.Unblockable | ValueProp.Unpowered, Owner.Creature, this);
+        await KakarotBetaCompat.DamageFromCard(
+            choiceContext,
+            Owner.Creature,
+            SelfDamage,
+            ValueProp.Unblockable | ValueProp.Unpowered,
+            Owner.Creature,
+            this,
+            cardPlay);
     }
 
     // Exhaust callbacks are awaited, preserving rage and ritual command order.
