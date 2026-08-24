@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaseLib.Abstracts;
@@ -20,7 +20,9 @@ namespace KakarotMod.KakarotCode.Events;
 [CustomID("KAKAROT_INCREDIBLE_ADVENTURE")]
 public sealed class KakarotIncredibleAdventure : CustomEventModel
 {
-    private const decimal GoodbyeHpLoss = 6m;
+    // 代价从「掉 6 点当前生命」改成「掉 6 点生命上限」——删 2 张牌的收益太高，
+    // 用一次性掉血付账等于白送，改成永久上限才配得上移除两张牌。
+    private const decimal GoodbyeMaxHpLoss = 6m;
 
     public override string CustomInitialPortraitPath =>
         "res://images/events/kakarot_incredible_adventure.png";
@@ -42,7 +44,7 @@ public sealed class KakarotIncredibleAdventure : CustomEventModel
             ? new List<EventOption>
             {
                 new EventOption(this, BeginAdventure, beginKey),
-                new EventOption(this, Goodbye, goodbyeKey).ThatDoesDamage(GoodbyeHpLoss),
+                new EventOption(this, Goodbye, goodbyeKey).ThatDecreasesMaxHp(GoodbyeMaxHpLoss),
             }
             : new List<EventOption>
             {
@@ -68,12 +70,11 @@ public sealed class KakarotIncredibleAdventure : CustomEventModel
 
     private async Task Goodbye()
     {
-        await CreatureCmd.Damage(
+        await CreatureCmd.LoseMaxHp(
             new ThrowingPlayerChoiceContext(),
             Owner!.Creature,
-            GoodbyeHpLoss,
-            DamageProps.nonCardHpLoss,
-            (Creature)null);
+            GoodbyeMaxHpLoss,
+            isFromCard: false);
         List<CardModel> cards = (await CardSelectCmd.FromDeckForRemoval(
             Owner,
             new CardSelectorPrefs(CardSelectorPrefs.RemoveSelectionPrompt, 2))).ToList();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Godot;
 using KakarotMod.KakarotCode.Powers;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -104,6 +104,10 @@ public static class KakarotFormVisuals
         }
 
         KakarotAuraVfx.Stop(staticModel);
+        // 濒死余烬是 StaticModel 的子节点，不归 KakarotAuraVfx 管，得单独收。
+        // 不收的后果：尸体继续冒火星，而且 StopAllMotion 杀掉循环 tween 后
+        // Modulate 会停在半红的某一帧，尸体永久挂着粉色。
+        KakarotCombatPresentation.SetNearDeathAura(staticModel, false);
         KakarotCombatPresentation.TryRestoreFromKamehamehaPose(staticModel);
 
         if (ResourceLoader.Exists(DeadModelPath))

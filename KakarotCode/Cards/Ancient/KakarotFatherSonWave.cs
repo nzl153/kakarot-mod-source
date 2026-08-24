@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Powers;
@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Ancient;
 
@@ -31,7 +32,8 @@ public class KakarotFatherSonWave() : KakarotCard(1, CardType.Attack, CardRarity
         }
 
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).Targeting(cardPlay.Target)
-            .WithHitFx("vfx/vfx_attack_blunt")
+            // 父子龟波是龟波的变体，命中层跟龟波保持同一套。
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Palm, 1.25f))
             .Execute(choiceContext);
         await KakarotPowerCmd.Apply<VulnerablePower>(choiceContext, cardPlay.Target, DynamicVars.Vulnerable.BaseValue, Owner.Creature, this);
         await KakarotPowerCmd.Apply<WeakPower>(choiceContext, cardPlay.Target, DynamicVars.Weak.BaseValue, Owner.Creature, this);

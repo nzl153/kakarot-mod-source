@@ -15,8 +15,12 @@ namespace KakarotMod.KakarotCode.Characters;
 //
 // 🔴 所有渐变贴图一律 ImageTexture 自己画，不用 GradientTexture1D / CurveTexture。
 // 理由和龟波光束那次一样：那些是异步生成的，就绪前采样会退化。
-// ParticleProcessMaterial 的 color_ramp / scale_curve 只是在 GPU 上采样红通道或 RGBA，
-// 喂什么 Texture2D 都行，没必要用会踩坑的那种。
+//
+// 🚨 但 scale_curve 有个致命细节，2026-08-24 才查出来：
+// **引擎把采样出来的 RGB 当成三个轴的缩放**，不是「只读红通道」。
+// 以前这里写的是 new Color(v, 0, 0, 1) —— Y 轴缩放为 0，
+// 粒子被压成零高度，三个工厂的粒子**全都是不可见的**，而且编译期毫无征兆。
+// 一律走 CreateScaleRamp，别再手写 new Color(v, 0, 0, 1)。
 public static partial class KakarotCombatPresentation
 {
     private static ImageTexture _particleDotTex;
@@ -62,8 +66,7 @@ public static partial class KakarotCombatPresentation
 
             ScaleMin = scaleMin,
             ScaleMax = scaleMax,
-            ScaleCurve = CreateRampTexture(t => new Color(
-                Mathf.Lerp(1f, 0.18f, Mathf.Pow(t, 1.4f)), 0f, 0f, 1f)),
+            ScaleCurve = CreateScaleRamp(t => Mathf.Lerp(1f, 0.18f, Mathf.Pow(t, 1.4f))),
 
             // 命中特效的关键是「亮起来再烧尽」，不是线性淡出。
             ColorRamp = CreateRampTexture(t => startColor
@@ -153,9 +156,8 @@ public static partial class KakarotCombatPresentation
 
             ScaleMin = scaleMin,
             ScaleMax = scaleMax,
-            ScaleCurve = CreateRampTexture(t => new Color(
-                Mathf.Lerp(0.35f, 1f, Mathf.Min(1f, t * 4f)) * Mathf.Lerp(1f, 0.5f, t),
-                0f, 0f, 1f)),
+            ScaleCurve = CreateScaleRamp(t =>
+                Mathf.Lerp(0.35f, 1f, Mathf.Min(1f, t * 4f)) * Mathf.Lerp(1f, 0.5f, t)),
 
             ColorRamp = CreateRampTexture(t => startColor
                 .Lerp(endColor, Mathf.Pow(t, 0.7f)) with
@@ -242,8 +244,8 @@ public static partial class KakarotCombatPresentation
 
             ScaleMin = scaleMin,
             ScaleMax = scaleMax,
-            ScaleCurve = CreateRampTexture(t => new Color(
-                Mathf.Lerp(0.5f, 1f, Mathf.Min(1f, t * 3f)) * Mathf.Lerp(1f, 0.35f, t), 0f, 0f, 1f)),
+            ScaleCurve = CreateScaleRamp(t =>
+                Mathf.Lerp(0.5f, 1f, Mathf.Min(1f, t * 3f)) * Mathf.Lerp(1f, 0.35f, t)),
 
             // 两头都淡：常驻效果最忌讳粒子「凭空出现、凭空消失」。
             ColorRamp = CreateRampTexture(t => startColor.Lerp(endColor, Mathf.Pow(t, 0.7f)) with
@@ -269,6 +271,17 @@ public static partial class KakarotCombatPresentation
             ZIndex = -1,
             VisibilityRect = new Rect2(-500f, -700f, 1000f, 1200f),
         };
+    }
+
+    // scale_curve 专用：把同一个值写进 RGB 三通道。
+    // 见文件头那条 🚨 —— 只写红通道会让粒子 Y 轴缩放变 0，整层不可见。
+    internal static ImageTexture CreateScaleRamp(Func<float, float> sample, int width = 64)
+    {
+        return CreateRampTexture(t =>
+        {
+            float v = sample(t);
+            return new Color(v, v, v, 1f);
+        }, width);
     }
 
     // N×1 的渐变条，同步生成。给 color_ramp 用时四个通道都有意义，

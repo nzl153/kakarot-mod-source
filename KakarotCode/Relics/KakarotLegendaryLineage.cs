@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -16,6 +16,10 @@ public sealed class KakarotLegendaryLineage : SaiyanBlood
     public override RelicRarity Rarity => RelicRarity.Ancient;
 
     protected override decimal OpeningCombatRageBonus => 2m;
+
+    // 挨打给 2 点。以前是在 AfterCurrentHpChanged 里额外再加 1 点，
+    // 那个钩子拿不到伤害来源，自伤也算 —— 基类改成只认敌人伤害后就漏了这一半。
+    protected override decimal RageOnEnemyDamage => 2m;
 
     protected override int EndCombatHealHpThresholdPercent => 80;
 
@@ -46,17 +50,6 @@ public sealed class KakarotLegendaryLineage : SaiyanBlood
             }
 
             await RelicCmd.Remove(existing);
-        }
-    }
-
-    public override async Task AfterCurrentHpChanged(Creature creature, decimal delta)
-    {
-        await base.AfterCurrentHpChanged(creature, delta);
-
-        if (creature == Owner.Creature && delta < 0 && CombatManager.Instance.IsInProgress && creature.CombatState != null)
-        {
-            Flash();
-            await PlayerCmd.GainStars(1m, Owner);
         }
     }
 

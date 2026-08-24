@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using BaseLib.Abstracts;
@@ -16,6 +16,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Relics;
+using MegaCrit.Sts2.Core.ValueProps;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
@@ -220,6 +221,52 @@ public class SaiyanBlood : KakarotRelic
         }
     }
 
+    // 挨打获得的怒气量。觉醒版（传说血脉）覆写成 2。
+    // 抽成属性是为了让「只认敌人伤害」这条判定只写一份 ——
+    // 之前觉醒版自己在旧钩子上又加了一次，结果基类改了它没改，自伤照样刷怒气。
+    protected virtual decimal RageOnEnemyDamage => 1m;
+
+    // 怒气只认「挨打」——敌人真正打掉血才给，卡面文案就是这么写的。
+    //
+    // 以前挂在 AfterCurrentHpChanged 上，那个钩子只有 delta、没有来源，
+    // 于是自伤（界王拳等）也刷怒气。而且给的是固定 1 点、与掉血量无关，
+    // 等于奖励「掉血次数」而不是「掉血量」，最优解变成频繁小额自伤 —— 与设计相反。
+    public override async Task AfterDamageReceived(
+        PlayerChoiceContext choiceContext,
+        Creature target,
+        DamageResult result,
+        ValueProp props,
+        Creature dealer,
+        CardModel cardSource)
+    {
+        if (Owner?.Creature == null || target != Owner.Creature)
+        {
+            return;
+        }
+
+        if (!CombatManager.Instance.IsInProgress || target.CombatState == null)
+        {
+            return;
+        }
+
+        // 全格挡不给：没真掉血就不算挨打。
+        if (result == null || result.UnblockedDamage <= 0)
+        {
+            return;
+        }
+
+        // 🔴 关键判定：必须是对面阵营的生物打的。
+        // dealer 为 null 的是无主伤害（中毒跳伤就是 CreatureCmd.Damage(dealer: null)），
+        // 自伤的 dealer 是自己，两者都不算挨打。
+        if (dealer == null || dealer.Side == target.Side)
+        {
+            return;
+        }
+
+        Flash();
+        await PlayerCmd.GainStars(RageOnEnemyDamage, Owner);
+    }
+
     public override async Task AfterCurrentHpChanged(Creature creature, decimal delta)
     {
         // Event/self damage outside combat has no combat state; skip rage gain there.
@@ -230,8 +277,9 @@ public class SaiyanBlood : KakarotRelic
                 KakarotCombatPresentation.TryPlayHitReaction(creature);
             }
 
-            Flash();
-            await PlayerCmd.GainStars(1m, Owner);
+            // ⚠ 怒气不在这里给了。这个钩子只有 delta、拿不到伤害来源，
+            // 结果是「自己扣血也算挨打」，和卡面文案对不上。
+            // 已挪到 AfterDamageReceived，那里有 dealer。
             if (Owner.Character is KakarotCharacter)
             {
                 await KakarotUltraInstinctTriggerHelper.OnPlayerTookHpLoss(Owner, creature, creature.CombatState, delta);
@@ -378,6 +426,9 @@ public class SaiyanBlood : KakarotRelic
             await KakarotPowerCmd.Apply<StrengthPower>(creature, 2m, creature, null);
             await KakarotPowerCmd.Apply<DexterityPower>(creature, 2m, creature, null);
             _nearDeathBoostApplied = true;
+            // 纯表现层。气场只跟着这个遗物的状态走，不去判血量百分比——
+            // 没拿到这个遗物的人不该看见它，否则等于承诺了一个他没有的加成。
+            KakarotCombatPresentation.SetNearDeathAura(creature, true);
         }
         else if (!isNearDeath && _nearDeathBoostApplied)
         {
@@ -385,6 +436,7 @@ public class SaiyanBlood : KakarotRelic
             await KakarotPowerCmd.Apply<StrengthPower>(creature, -2m, creature, null);
             await KakarotPowerCmd.Apply<DexterityPower>(creature, -2m, creature, null);
             _nearDeathBoostApplied = false;
+            KakarotCombatPresentation.SetNearDeathAura(creature, false);
         }
     }
 }

@@ -7,7 +7,6 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
-using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Common;
 
@@ -26,7 +25,9 @@ public class KakarotStomp() : KakarotCard(0, CardType.Attack, CardRarity.Common,
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Fist, 1.10f))
+            // 复用原版重击（CrushUnder/碾压 用的同一套）：落地扬尘+地刺，脚下生成才有踩踏感。
+            .WithHitFx("vfx/vfx_heavy_blunt", null, "blunt_attack.mp3")
+            .WithHitVfxSpawnedAtBase()
             .Execute(choiceContext);
         await KakarotPowerCmd.Apply<WeakPower>(choiceContext, CombatState.HittableEnemies, DynamicVars.Weak.BaseValue, Owner.Creature, this);
     }

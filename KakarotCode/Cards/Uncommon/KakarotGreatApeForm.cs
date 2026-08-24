@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BaseLib.Utils;
@@ -30,11 +30,22 @@ public class KakarotGreatApeForm() : KakarotCard(2, CardType.Skill, CardRarity.U
     {
         await CommonActions.CardBlock(this, cardPlay);
 
-        var pickCount = System.Math.Min((int)DynamicVars["WildPicks"].BaseValue, Owner.PlayerCombatState.Hand.Cards.Count);
+        // 与激发野性同因：结算期间自己还在手牌里，按 Count 算会要求选一张选不出来的牌。
+        var selectableCount = Owner.PlayerCombatState.Hand.Cards.Count(c => c != this);
+        var pickCount = System.Math.Min((int)DynamicVars["WildPicks"].BaseValue, selectableCount);
         if (pickCount > 0)
         {
-            var chosen = await KakarotCardSelectHelper.FromHandSelectAsync(choiceContext, Owner, pickCount, this);
-            foreach (var card in chosen.Where(c => c != null))
+            IEnumerable<CardModel> chosen = [];
+            try
+            {
+                chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, pickCount, this);
+            }
+            catch
+            {
+                // 选择 UI 出问题不应该卡住整张牌的结算。
+            }
+
+            foreach (var card in chosen.Where(c => c != null && c != this).Take(pickCount))
             {
                 card.AddKeyword(KakarotWildKeyword.Wild);
                 KakarotWildHelper.EnsureWildActsUpgradedIfSs4(Owner, card);

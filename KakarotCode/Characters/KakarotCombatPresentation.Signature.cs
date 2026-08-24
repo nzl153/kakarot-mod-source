@@ -262,6 +262,83 @@ public static partial class KakarotCombatPresentation
         }
     }
 
+    // ── 气功弹 ────────────────────────────────────────────────
+    // 全卡组出现频率最高的一张（0 费初始牌），原本连专属命中层都没有，
+    // 走的是引擎默认表现 —— 玩家看得最多的东西反而最没有身份。
+    //
+    // 它的机制是「上一张打的是技能就再打一发」。第二发必须和第一发长得不一样，
+    // 否则「触发了」这件事只体现在数字上，画面上读不出来。
+    // echo = true 就是第二发：更大、更白、外面多一圈扩散环。
+    public static Func<Creature, Node2D> KiBlastHit(bool echo)
+    {
+        return enemy => BuildKiBlastHit(enemy, echo);
+    }
+
+    private static Node2D BuildKiBlastHit(Creature enemy, bool echo)
+    {
+        try
+        {
+            var holder = new Node2D { Name = echo ? "KakarotKiBlastEchoFx" : "KakarotKiBlastFx", ZIndex = 31 };
+            if (TryGetCreatureChestWorld(enemy, out Vector2 chest))
+            {
+                holder.TreeEntered += () =>
+                {
+                    if (GodotObject.IsInstanceValid(holder))
+                    {
+                        holder.GlobalPosition = chest;
+                    }
+                };
+            }
+
+            // 回响那发把芯往白里推，和第一发的橙金拉开一档。
+            Color core = KiDefaultColor.Lerp(new Color(1f, 1f, 1f), echo ? 0.88f : 0.68f);
+            float size = echo ? 1.30f : 1f;
+
+            // 命中球：小而快，气功弹是「点」不是「面」，不要做成爆炸。
+            var ball = new Sprite2D
+            {
+                Texture = GetKiGlowTexture(),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(core.R, core.G, core.B, 1f),
+                Scale = new Vector2(0.14f * size, 0.14f * size),
+                ZIndex = 2,
+            };
+            holder.AddChild(ball);
+
+            var tw = ball.CreateTween();
+            tw.TweenProperty(ball, "scale", new Vector2(0.78f * size, 0.78f * size), 0.08)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            tw.Parallel().TweenProperty(ball, "modulate:a", 0f, 0.18)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            tw.TweenCallback(Callable.From(() => FreeIfValid(ball)));
+
+            // 第二发独有：一圈向外推的薄环，读作「又来了一下」。
+            if (echo)
+            {
+                SpawnBlastRing(holder, core, KiDefaultColor, 1.7f, 0.62f, 0.26f);
+            }
+
+            SpawnKiSparks(holder, echo ? 5 : 3, 0.42f * size, core,
+                0f, Mathf.DegToRad(70f), 120f, echo ? 330f : 240f, 0.20f);
+
+            holder.AddChild(CreateBurst(
+                GetParticleDotTexture(), core, KiDefaultColor,
+                amount: echo ? 24 : 16, lifetime: 0.30f,
+                speedMin: 110f, speedMax: echo ? 420f : 320f,
+                scaleMin: 0.45f, scaleMax: 1.15f * size,
+                baseAngle: 0f, halfSpread: Mathf.DegToRad(90f),
+                gravity: new Vector2(0f, 280f), damping: 0f));
+
+            return holder;
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Ki blast hit failed: {ex}");
+            return null;
+        }
+    }
+
     // ── 共用图元 ──────────────────────────────────────────────
     private static void SpawnBlastRing(
         Node2D holder, Color core, Color edge, float peak, float squash, float life)

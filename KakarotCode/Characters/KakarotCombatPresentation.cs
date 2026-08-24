@@ -218,6 +218,11 @@ public static partial class KakarotCombatPresentation
                         TryPlayRuyiStaffVfx(player, cardPlay, visualsRoot, staticModel);
                     }
 
+                    if (!string.IsNullOrWhiteSpace(cardEntryId) && ShenronWishDragonCardIds.Contains(cardEntryId))
+                    {
+                        TryPlayDragonFistVfx(player, cardPlay, visualsRoot, staticModel, ShenronWishDragonTint);
+                    }
+
                     if (string.Equals(cardEntryId, DestructionCardId, StringComparison.OrdinalIgnoreCase))
                     {
                         TryPlayDestructionVfx(player, cardPlay, visualsRoot, staticModel);
@@ -245,6 +250,23 @@ public static partial class KakarotCombatPresentation
 
             // 解析器会过滤无关卡牌；这里只发起纯表现播放。
             KakarotAuraVfx.TryPlay(staticModel, player.Creature, cardEntryId);
+
+            // 「我要药」的 CardType 是 Skill，但它指定敌人、也真的造成伤害，
+            // 所以它需要攻击分支那套朝向/姿势处理，光挂个特效会变成「背对着敌人放龙」。
+            if (string.Equals(cardEntryId, ShenronWishPotionCardId, StringComparison.OrdinalIgnoreCase))
+            {
+                if (cardPlay.Target != null)
+                {
+                    KakarotFormVisuals.RefreshFacingToTarget(player.Creature, cardPlay.Target);
+                }
+                else
+                {
+                    KakarotFormVisuals.RefreshFacing(player.Creature);
+                }
+
+                TrySwapToPose(player.Creature, staticModel, KakarotFormVisuals.ResolveAttackPosePath(player.Creature), 0.42f);
+                TryPlayDragonFistVfx(player, cardPlay, visualsRoot, staticModel, ShenronWishDragonTint);
+            }
 
             if (string.Equals(cardEntryId, SolarFistCardId, StringComparison.OrdinalIgnoreCase))
             {
@@ -368,8 +390,36 @@ public static partial class KakarotCombatPresentation
     // 龙头贴在画面右端，所以锚点放在龙头上、龙身向后拖。
     private const float DragonFistTargetHeight = 300f;
 
-    private const float DragonFistFlightSeconds = 0.34f;
+    private const float DragonFistFlightSeconds = 0.50f;
 
+    // 静态贴图直接平移看着太呆。这个 shader 给它加行波扭动 + 从头到尾显形 + 流光亮带。
+    // 建这个文件时是用 `godot --headless --import --path .` 补的 .uid —— 见文件头那条警告。
+    private const string DragonWarpShaderPath = "res://Kakarot/Shaders/kakarot_dragon_warp.gdshader";
+
+    // 横向拉长 2 倍：原始比例的龙 S 弯压得太紧，读起来是一团而不是一条长龙。
+    // 龙头会跟着被拉扁，但试下来比「头正身短」更对味，所以不做去畸变。
+    private const float DragonFistStretch = 2.0f;
+
+    // 神龙许愿的攻击类卡复用龙拳这条龙。金色贴图乘上这个色 = 偏黄绿的神龙气。
+    // 想换回纯金把它改成 Colors.White 即可。
+    private static readonly Color ShenronWishDragonTint = new(0.45f, 1.25f, 0.55f, 1f);
+
+    // 「我要药」是 Skill 类型但指定敌人且造成伤害，走技能分支单独接，见 OnCardPlayed。
+    private const string ShenronWishPotionCardId = "KAKAROTMOD-KAKAROT_SHENRON_WISH_POTION";
+
+    // 只有攻击类进这里；烧牌/抽牌那些技能卡放牌时选牌 UI 会盖住大半屏，做演出是白做。
+    private static readonly HashSet<string> ShenronWishDragonCardIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "KAKAROTMOD-KAKAROT_SHENRON_WISH_CARD",
+        "KAKAROTMOD-KAKAROT_SHENRON_WISH_WIN",
+        "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY",
+    };
+
+    // ⚠ 光束 shader 必须写在这个已存在的文件里，不要新建 .gdshader。
+    // 新建的文件没有 .uid，Godot 不会自动导入，ResourceLoader.Exists() 返回 false，
+    // SpawnEnergyBeam 直接 return false，然后掉到最后的贴图分支 ——
+    // 表现是「光束变回了旧的贴图风格」，而且编译期完全发现不了。
+    // 旧版本的 shader 内容在 git 历史里，需要对比就去翻。
     private const string KamehamehaBeamShaderPath = "res://Kakarot/Shaders/kakarot_kamehameha_beam.gdshader";
 
     // 暗色变体：blend_mix，能真正遮住背景。加法混合画不出黑。
@@ -378,13 +428,45 @@ public static partial class KakarotCombatPresentation
     // 调试开关：true 走程序化 shader，false 退回原来的贴图/场景路径。
     private const bool KamehamehaUseShaderBeam = true;
 
-    private const float KamehamehaShaderBeamThickness = 292f;
+    // 画布高度 = 光束能张到多宽的上限，不是束宽本身。
+    // shader 的 thickness = 0.52，束体实际约 468px（悟空立绘约 600px 高，接近 3/4 个身子）。
+    // 剩下的余量留给辉光衰减 —— 否则画面上会出现一个发光的方块硬边。
+    // ⚠ 想让光束更粗改这里，不要改 shader 的 thickness：
+    //   那个是「占画布的比例」，超过 0.6 会撑满画布、中心饱和成一整片纯白。
+    private const float KamehamehaShaderBeamThickness = 900f;
 
     private const float KamehamehaShaderBeamGrowSeconds = 0.26f;
 
     private const float KamehamehaShaderBeamHoldSeconds = 0.34f;
 
     private const float KamehamehaShaderBeamFadeSeconds = 0.30f;
+
+    // 手心气团直径 = 光束根部宽度 x 这个倍数。
+    // 绑定到根部而不是画布：球必须明显比根部粗才读得出是球，
+    // 只粗一点点的话，白芯一软化就被主干吞掉。
+    private const float KamehamehaMuzzleOrbScale = 2.6f;
+
+    // 气团沿束向拉长的比例。正圆读成「卡了一个球」，椭圆自带流向。
+    private const float KamehamehaMuzzleOrbStretch = 1.55f;
+
+    // 气团往前压进主干的比例（占球径）。右半个球埋进光束里，接缝就藏住了。
+    private const float KamehamehaMuzzleOrbPush = 0.22f;
+
+    // 光束根部宽度换算：shader 里 width = neck_width * thickness（占画布高度）。
+    // 这两个值必须和 kakarot_kamehameha_beam_v2.gdshader 的默认值保持一致。
+    private const float KamehamehaBeamNeckWidth = 0.46f;
+    private const float KamehamehaBeamThicknessRatio = 0.52f;
+
+    // 精灵比实际距离长出来的倍数。末尾留一段空画布兜住波头的辉光，
+    // 否则波头会被精灵右边界切出一条竖直硬边。progress 只推到 1/这个值。
+    private const float KamehamehaBeamLengthHeadroom = 1.10f;
+
+    // 光束越过最远那只敌人之后再往外走多少像素。
+    // 目的是读作「打穿整排」而不是「正好停在最后一只身上」。
+    private const float KamehamehaBeamOvershoot = 320f;
+
+    // 场上一个敌人都找不到时的兜底长度。
+    private const float KamehamehaBeamFallbackLength = 900f;
 
     private const string KamehamehaBeamPackedScenePath = "res://Kakarot/Vfx/kakarot_kamehameha_beam.tscn";
 
@@ -536,7 +618,7 @@ public static partial class KakarotCombatPresentation
             }
 
             Vector2 beamOriginWorld = ComputeKamehamehaBeamOriginWorld(staticModel, player?.Creature);
-            Vector2 beamEndWorld = ComputeKamehamehaBeamEndWorld(staticModel, primaryTarget, beamOriginWorld);
+            Vector2 beamEndWorld = ComputeKamehamehaBeamEndWorld(staticModel, primaryTarget, beamOriginWorld, player);
 
             bool spawned = false;
 
@@ -623,16 +705,105 @@ public static partial class KakarotCombatPresentation
     }
 
     // Horizontal beams keep the caster's hand height.
-    private static Vector2 ComputeKamehamehaBeamEndWorld(Sprite2D staticModel, Creature primaryTarget, Vector2 beamOriginWorld)
+    // 光束的终点。
+    //
+    // 以前这里直接用 ResolvePrimaryBeamTarget 的结果，而那个函数取的是
+    // 「朝向那一侧最近的敌人」（朝向逻辑要跟它同源，不能改）。
+    // 于是群怪时光束停在最靠前那只身上，后面几只完全没被扫到，演出效果大打折扣。
+    //
+    // 光束的终点和朝向用的目标不是同一件事：朝向要最近的，长度要最远的。
+    // 所以这里单独找「朝向那一侧最远的可命中敌人」，再往外多走一段，
+    // 读作打穿整排而不是停在第一只身上。
+    private static Vector2 ComputeKamehamehaBeamEndWorld(
+        Sprite2D staticModel, Creature primaryTarget, Vector2 beamOriginWorld, Player player = null)
     {
-        Vector2 enemyAnchor;
-        if (primaryTarget != null && TryGetCreatureChestWorld(primaryTarget, out enemyAnchor))
+        float dir = staticModel.FlipH ? -1f : 1f;
+
+        if (TryResolveFarthestBeamTargetX(player, staticModel, out float farthestX))
         {
-            return new Vector2(enemyAnchor.X, beamOriginWorld.Y);
+            return new Vector2(farthestX + KamehamehaBeamOvershoot * dir, beamOriginWorld.Y);
         }
 
-        float dir = staticModel.FlipH ? -1f : 1f;
-        return beamOriginWorld + new Vector2(420f * dir, 0f);
+        // 找不到敌人节点时退回原来的单体行为，至少不会比以前差。
+        if (primaryTarget != null && TryGetCreatureChestWorld(primaryTarget, out Vector2 enemyAnchor))
+        {
+            return new Vector2(enemyAnchor.X + KamehamehaBeamOvershoot * dir, beamOriginWorld.Y);
+        }
+
+        return beamOriginWorld + new Vector2(KamehamehaBeamFallbackLength * dir, 0f);
+    }
+
+    // 朝向那一侧最远的可命中敌人的世界 X。同侧没人时退回全场最远。
+    private static bool TryResolveFarthestBeamTargetX(Player player, Sprite2D staticModel, out float farthestX)
+    {
+        farthestX = 0f;
+
+        var combatState = player?.Creature?.CombatState;
+        var room = NCombatRoom.Instance;
+        if (combatState == null || room == null)
+        {
+            return false;
+        }
+
+        var selfNode = room.GetCreatureNode(player.Creature);
+        if (selfNode == null)
+        {
+            return false;
+        }
+
+        float facing = staticModel.FlipH ? -1f : 1f;
+        float selfX = selfNode.GlobalPosition.X;
+
+        bool foundFacing = false;
+        float bestFacingDx = float.MinValue;
+        bool foundAny = false;
+        float bestAnyDx = float.MinValue;
+        float bestAnyX = 0f;
+
+        foreach (Creature candidate in combatState.HittableEnemies)
+        {
+            if (candidate is not { CurrentHp: > 0 })
+            {
+                continue;
+            }
+
+            var node = room.GetCreatureNode(candidate);
+            if (node == null)
+            {
+                continue;
+            }
+
+            float delta = node.GlobalPosition.X - selfX;
+            float dx = Math.Abs(delta);
+
+            if (dx > bestAnyDx)
+            {
+                bestAnyDx = dx;
+                bestAnyX = node.GlobalPosition.X;
+                foundAny = true;
+            }
+
+            // 同侧判定和 ResolvePrimaryBeamTarget 一致，只是这里取最远而不是最近。
+            if (delta * facing >= 0f && dx > bestFacingDx)
+            {
+                bestFacingDx = dx;
+                farthestX = node.GlobalPosition.X;
+                foundFacing = true;
+            }
+        }
+
+        if (foundFacing)
+        {
+            return true;
+        }
+
+        if (foundAny)
+        {
+            farthestX = bestAnyX;
+            return true;
+        }
+
+        return false;
     }
 
     private static bool TryGetCreatureChestWorld(Creature creature, out Vector2 world)
@@ -1210,7 +1381,171 @@ public static partial class KakarotCombatPresentation
     }
 
     // 龙拳爆发：金龙从施法者拳头窜出，龙头咬向目标。
-    private static void TryPlayDragonFistVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
+    // ── 气功弹 ────────────────────────────────────────────────
+    // 悟空手上射出去的一颗气弹，飞到敌人身上。
+    // 结构和龟波的手心气团同一套（软晕 + 边轮廓 + 白芯），保证两个招式看起来是同一个角色的气。
+    //
+    // 由卡里主动调用而不是走卡牌派发表：这张牌一次结算可能打两发（上一张是技能时），
+    // 派发表只在出牌时触发一次，喂不出第二发。
+    internal const float KiBlastFlightSeconds = 0.18f;
+
+    // 弹丸直径（像素）。第一版做成 96 贴图缩到 0.4 约 38px，是个小点，完全没有体积感。
+    private const float KiBlastDiameter = 132f;
+
+    // 回响那发（技能触发的第二发）的放大倍数。
+    private const float KiBlastEchoScale = 1.32f;
+
+    public static void PlayKiBlastProjectile(Player player, CardPlay cardPlay, bool echo)
+    {
+        try
+        {
+            if (player?.Creature == null)
+            {
+                return;
+            }
+
+            var creatureNode = NCombatRoom.Instance?.GetCreatureNode(player.Creature);
+            if (creatureNode?.Visuals is not Node2D anchor)
+            {
+                return;
+            }
+
+            var staticModel = anchor.GetNodeOrNull<Sprite2D>("StaticModel");
+            if (staticModel == null)
+            {
+                return;
+            }
+
+            float dir = staticModel.FlipH ? -1f : 1f;
+
+            // 起点和龟波共用同一套「按形态查手心位置」的计算。
+            // 以前这里写死 (74, -66)，变身之后手心位置变了就对不上。
+            Vector2 originWorld = ComputeKamehamehaBeamOriginWorld(staticModel, player.Creature);
+
+            Vector2 impactWorld = ResolveKiBlastImpactWorld(cardPlay.Target, originWorld, dir);
+
+            Color ki = KiDefaultColor;
+            Color core = ki.Lerp(new Color(1f, 1f, 1f), echo ? 0.80f : 0.62f);
+            float dia = KiBlastDiameter * (echo ? KiBlastEchoScale : 1f);
+
+            var holder = new Node2D { Name = echo ? "KakarotKiBlastEchoShot" : "KakarotKiBlastShot", ZIndex = 26 };
+            anchor.AddChild(holder);
+            // anchor 自带缩放，不归一的话弹丸会被角色缩放二次放大。
+            holder.GlobalScale = Vector2.One;
+            holder.GlobalPosition = originWorld;
+            holder.GlobalRotation = (impactWorld - originWorld).Angle();
+
+            var fadedKi = new Color(ki.R, ki.G, ki.B, 0f);
+
+            // 外晕
+            var halo = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(128, ki, fadedKi, 0f, 1.60f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0.85f),
+                Scale = new Vector2(dia * 1.55f / 128f, dia * 1.40f / 128f),
+                ZIndex = -1,
+            };
+            holder.AddChild(halo);
+
+            // 边轮廓：让它是一颗球而不是一团光
+            var rim = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(112, ki, fadedKi, 0.34f, 1.40f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Scale = new Vector2(dia * 1.10f / 112f, dia / 112f),
+                ZIndex = 0,
+            };
+            holder.AddChild(rim);
+
+            // 白芯
+            var ball = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(96, new Color(1f, 1f, 1f), core, 0.50f, 2.0f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Scale = new Vector2(dia * 0.62f / 96f, dia * 0.58f / 96f),
+                ZIndex = 1,
+            };
+            holder.AddChild(ball);
+
+            // 拖尾：速度朝来路方向，飞行途中一路发射
+            holder.AddChild(CreateStream(
+                GetParticleDotTexture(), core, ki,
+                amount: echo ? 64 : 44, lifetime: 0.24f, duration: KiBlastFlightSeconds,
+                radialVelocity: -190f, emissionRadius: dia * 0.20f,
+                scaleMin: 0.5f, scaleMax: 1.7f * (echo ? KiBlastEchoScale : 1f),
+                gravity: Vector2.Zero));
+
+            // 出膛闪光：手心炸一下，弹丸才像是被推出去的
+            var muzzle = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(128, new Color(1f, 1f, 1f), ki, 0.45f, 1.9f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0.95f),
+                Scale = new Vector2(dia * 0.35f / 128f, dia * 0.35f / 128f),
+                ZIndex = 27,
+            };
+            anchor.AddChild(muzzle);
+            muzzle.GlobalScale = Vector2.One * (dia * 0.35f / 128f);
+            muzzle.GlobalPosition = originWorld;
+            var muzzleTw = muzzle.CreateTween();
+            muzzleTw.SetParallel(true);
+            muzzleTw.TweenProperty(muzzle, "scale", new Vector2(dia * 1.15f / 128f, dia * 1.15f / 128f), 0.14)
+                .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+            muzzleTw.TweenProperty(muzzle, "modulate:a", 0f, 0.18);
+            muzzleTw.Chain().TweenCallback(Callable.From(() => FreeIfValid(muzzle)));
+
+            var tw = holder.CreateTween();
+            tw.TweenProperty(holder, "global_position", impactWorld, KiBlastFlightSeconds)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            // 飞行末段沿运动方向拉长：速度感来自形变，不只是位移
+            tw.Parallel().TweenProperty(ball, "scale",
+                    new Vector2(dia * 0.88f / 96f, dia * 0.46f / 96f), KiBlastFlightSeconds)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            tw.Parallel().TweenProperty(rim, "scale",
+                    new Vector2(dia * 1.45f / 112f, dia * 0.82f / 112f), KiBlastFlightSeconds)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            tw.TweenCallback(Callable.From(() => FreeIfValid(holder)));
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Ki blast projectile failed: {ex}");
+        }
+    }
+
+    // 气弹的落点。
+    // 不能直接用 TryGetCreatureChestWorld：那个取的是贴图矩形正中心，
+    // 对矮胖敌人来说「正中心」已经接近肚子，气弹看起来就是贴着地面平飞过去打脚下。
+    // 这里按贴图高度往上抬一截，落在上半身。
+    private static Vector2 ResolveKiBlastImpactWorld(Creature target, Vector2 originWorld, float dir)
+    {
+        var targetNode = target == null ? null : NCombatRoom.Instance?.GetCreatureNode(target);
+        if (targetNode?.Visuals is Node2D targetVisuals)
+        {
+            var targetStatic = targetVisuals.GetNodeOrNull<Sprite2D>("StaticModel");
+            if (targetStatic?.Texture != null)
+            {
+                Rect2 rect = targetStatic.GetRect();
+                Vector2 center = targetStatic.ToGlobal(rect.GetCenter());
+                // 矩形高度的 18% 往上，高矮自适应；再限制一下别抬出头顶。
+                float lift = Math.Min(rect.Size.Y * 0.18f * Math.Abs(targetStatic.GlobalScale.Y), 90f);
+                return center - new Vector2(0f, lift);
+            }
+        }
+
+        if (TryGetCreatureChestWorld(target, out Vector2 chest))
+        {
+            return chest;
+        }
+
+        return originWorld + new Vector2(560f * dir, 0f);
+    }
+
+    private static void TryPlayDragonFistVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel, Color? tint = null)
     {
         try
         {
@@ -1240,15 +1575,28 @@ public static partial class KakarotCombatPresentation
 
             float dir = staticModel.FlipH ? -1f : 1f;
             Vector2 originWorld = staticModel.GlobalPosition + new Vector2(70f * dir, -70f);
+            // 龙身横向 2 倍之后很长，只飞到最近的敌人会让尾巴还留在悟空身后。
+            // 和龟波同一套：取「最远的敌人」再过冲一段，让整条龙铺满战场。
             Vector2 impactWorld;
-            if (target != null && TryGetCreatureChestWorld(target, out Vector2 chestWorld))
+            if (TryResolveFarthestBeamTargetX(player, staticModel, out float farthestX))
+            {
+                impactWorld = new Vector2(farthestX + KamehamehaBeamOvershoot * dir, originWorld.Y);
+            }
+            else if (target != null && TryGetCreatureChestWorld(target, out Vector2 chestWorld))
             {
                 // 只取目标的横坐标，高度保持与出拳点齐平 —— 否则龙会斜着扎向敌人脚下。
-                impactWorld = new Vector2(chestWorld.X, originWorld.Y);
+                impactWorld = new Vector2(chestWorld.X + KamehamehaBeamOvershoot * dir, originWorld.Y);
             }
             else
             {
-                impactWorld = originWorld + new Vector2(560f * dir, 0f);
+                impactWorld = originWorld + new Vector2(880f * dir, 0f);
+            }
+
+            // 打击反馈仍然落在真正的目标身上，不要跟着过冲跑到所有人右边去。
+            Vector2 feedbackWorld = impactWorld;
+            if (target != null && TryGetCreatureChestWorld(target, out Vector2 hitChest))
+            {
+                feedbackWorld = new Vector2(hitChest.X, originWorld.Y);
             }
 
             var holder = new Node2D { Name = "KakarotDragonFistFx", ZIndex = 26 };
@@ -1269,10 +1617,15 @@ public static partial class KakarotCombatPresentation
                 Centered = true,
                 // 锚点落在龙头，龙身向来路方向拖出去。
                 Offset = new Vector2(-texW * 0.5f, 0f),
-                Scale = new Vector2(fullScale * 0.35f, fullScale * 0.35f),
+                Scale = new Vector2(fullScale * 0.35f * DragonFistStretch, fullScale * 0.35f),
                 // 朝左发招时整条龙会上下颠倒，翻一次修正。
                 FlipV = Mathf.Cos(angle) < 0f,
             };
+            if (tint.HasValue)
+            {
+                sprite.Modulate = tint.Value;
+            }
+            var warpMaterial = AttachDragonWarp(sprite);
             holder.AddChild(sprite);
 
             // 出膛闪光：拳头位置炸一下白光，龙才像是"窜出来"的而不是凭空平移
@@ -1294,12 +1647,21 @@ public static partial class KakarotCombatPresentation
                 }
             }));
 
+            if (warpMaterial != null)
+            {
+                // 显形比飞行快一截，龙先整条窜出来再撞上去。
+                var revealTween = sprite.CreateTween();
+                revealTween.TweenProperty(warpMaterial, "shader_parameter/progress", 1f, DragonFistFlightSeconds * 0.75f)
+                    .SetTrans(Tween.TransitionType.Quad)
+                    .SetEase(Tween.EaseType.Out);
+            }
+
             var tween = holder.CreateTween();
             tween.SetParallel(false);
             tween.TweenProperty(holder, "global_position", impactWorld, DragonFistFlightSeconds)
                 .SetTrans(Tween.TransitionType.Quad)
                 .SetEase(Tween.EaseType.In);
-            tween.Parallel().TweenProperty(sprite, "scale", new Vector2(fullScale, fullScale), DragonFistFlightSeconds)
+            tween.Parallel().TweenProperty(sprite, "scale", new Vector2(fullScale * DragonFistStretch, fullScale), DragonFistFlightSeconds)
                 .SetTrans(Tween.TransitionType.Cubic)
                 .SetEase(Tween.EaseType.Out);
 
@@ -1308,7 +1670,7 @@ public static partial class KakarotCombatPresentation
             tween.TweenCallback(Callable.From(() =>
             {
                 PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
-                SpawnRadialBurst(anchor, impactWorld, 3.4f, 0.38f);
+                SpawnRadialBurst(anchor, feedbackWorld, 3.4f, 0.38f);
             }));
             tween.TweenProperty(sprite, "modulate:a", 0f, 0.22);
             tween.TweenCallback(Callable.From(() =>
@@ -1325,6 +1687,53 @@ public static partial class KakarotCombatPresentation
         }
     }
 
+    // 给龙贴图挂上扭动 shader：行波扭动 + 从头到尾显形 + 流光亮带。
+    // 加载失败就静默退化成原来的静态平移 —— 特效缺失不该把整张卡的表现打断。
+    // 返回材质给调用方 tween progress，null 表示没挂上。
+    private static ShaderMaterial AttachDragonWarp(Sprite2D sprite)
+    {
+        try
+        {
+            if (!ResourceLoader.Exists(DragonWarpShaderPath))
+            {
+                GD.PrintErr($"[Kakarot][Vfx] dragon warp shader missing: {DragonWarpShaderPath}");
+                return null;
+            }
+
+            var shader = ResourceLoader.Load<Shader>(DragonWarpShaderPath);
+            if (shader == null)
+            {
+                return null;
+            }
+
+            var noise = new NoiseTexture2D
+            {
+                Width = 256,
+                Height = 256,
+                Seamless = true,
+                Noise = new FastNoiseLite
+                {
+                    NoiseType = FastNoiseLite.NoiseTypeEnum.SimplexSmooth,
+                    Frequency = 0.020f,
+                    FractalOctaves = 3,
+                },
+            };
+
+            var material = new ShaderMaterial { Shader = shader };
+            material.SetShaderParameter("noise_tex", noise);
+            // stretch 传 1 让重映射退化成恒等 —— 定稿选的是「不做龙头去畸变」那档。
+            material.SetShaderParameter("stretch", 1f);
+            material.SetShaderParameter("progress", 0f);
+            sprite.Material = material;
+            return material;
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] dragon warp shader failed: {ex}");
+            return null;
+        }
+    }
+
     private static bool TryPlayKamehamehaBeamShader(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Color beamColor, Color coreColor)
     {
         return SpawnEnergyBeam(
@@ -1336,7 +1745,9 @@ public static partial class KakarotCombatPresentation
             KamehamehaShaderBeamThickness,
             KamehamehaShaderBeamGrowSeconds,
             KamehamehaShaderBeamHoldSeconds,
-            KamehamehaShaderBeamFadeSeconds);
+            KamehamehaShaderBeamFadeSeconds,
+            dark: false,
+            muzzleOrbScale: KamehamehaMuzzleOrbScale);
     }
 
     // 程序化能量束。龟波和弗利萨的死亡光线共用这一份实现——
@@ -1352,7 +1763,8 @@ public static partial class KakarotCombatPresentation
         float growSeconds,
         float holdSeconds,
         float fadeSeconds,
-        bool dark = false)
+        bool dark = false,
+        float muzzleOrbScale = 0f)
     {
         string shaderPath = dark ? DarkBeamShaderPath : KamehamehaBeamShaderPath;
         if (!ResourceLoader.Exists(shaderPath))
@@ -1406,18 +1818,32 @@ public static partial class KakarotCombatPresentation
         var canvas = ImageTexture.CreateFromImage(canvasImage);
 
         float distance = Math.Max(originWorld.DistanceTo(endWorld), 1f);
+        // 精灵比实际距离长一截，末尾留空画布兜住波头的辉光；
+        // 对应地 progress 只推到 1/headroom，波头才落在真正的终点上。
+        // 不留这段余量的话，波头会被精灵右边界切出一条竖直硬边。
+        float headroom = dark ? 1f : KamehamehaBeamLengthHeadroom;
+        float progressTarget = 1f / headroom;
         var sprite = new Sprite2D
         {
             Texture = canvas,
             Centered = true,
             Offset = new Vector2(canvasWidth * 0.5f, 0f),
             Material = material,
-            Scale = new Vector2(distance / canvasWidth, thicknessPixels / canvasHeight),
+            Scale = new Vector2(distance * headroom / canvasWidth, thicknessPixels / canvasHeight),
         };
         holder.AddChild(sprite);
 
+        // 手心光球。龟波「大气」的来源不是光束本身，是光束根部那颗被推出去的气团 ——
+        // 没有它，一条从手里直接伸出去的带子只会读成激光。
+        // 光球钉在光束原点（holder 的局部零点），不改光束几何，所以不需要重调手臂位置。
+        if (muzzleOrbScale > 0f)
+        {
+            SpawnBeamMuzzleOrb(holder, beamColor, coreColor, thicknessPixels, muzzleOrbScale,
+                growSeconds, holdSeconds, fadeSeconds);
+        }
+
         var tween = holder.CreateTween();
-        tween.TweenProperty(material, "shader_parameter/progress", 1f, growSeconds)
+        tween.TweenProperty(material, "shader_parameter/progress", progressTarget, growSeconds)
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         tween.TweenInterval(holdSeconds);
@@ -1431,6 +1857,140 @@ public static partial class KakarotCombatPresentation
         };
 
         return true;
+    }
+
+    // 光束根部的气团。三段跟着光束走：起手炸开 -> 保持时轻微呼吸 -> 随光束一起淡出。
+    // holder 已按发射方向旋转过，径向辉光各向同性，不用反向补偿。
+    //
+    // 这里踩过的坑（离屏渲染逐轮验出来的，别再走回头路）：
+    //   · 球径必须绑定「光束根部宽度」而不是画布。只比根部粗一点点的话，
+    //     白芯一软化就被主干吞掉，看起来根本没有球。
+    //   · 纯白硬核 + 正圆 = 「卡了一个球」。要的是球面渐变 + 蓝边轮廓，
+    //     靠「比主干粗」读出球形，不是靠「比主干白」。
+    //   · 椭圆 + 往前压进主干 + 根部收口放大，三个一起用接缝才藏得住。
+    private static void SpawnBeamMuzzleOrb(
+        Node2D holder, Color beamColor, Color coreColor,
+        float thicknessPixels, float orbScale,
+        float growSeconds, float holdSeconds, float fadeSeconds)
+    {
+        try
+        {
+            // 光束根部实际像素宽度 = neck_width * thickness * 画布高度
+            float rootPx = KamehamehaBeamNeckWidth * KamehamehaBeamThicknessRatio * thicknessPixels;
+            float dia = rootPx * orbScale;
+            float ex = KamehamehaMuzzleOrbStretch;
+            float push = dia * KamehamehaMuzzleOrbPush;
+
+            var fadedBeam = new Color(beamColor.R, beamColor.G, beamColor.B, 0f);
+
+            var halo = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(160, beamColor, fadedBeam, 0f, 1.55f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+                Scale = new Vector2(0.2f, 0.2f),
+                Position = new Vector2(push, 0f),
+                ZIndex = -1,
+            };
+            holder.AddChild(halo);
+
+            // 蓝边层：比白芯大一圈的纯蓝球，球的轮廓靠它读出来
+            var rim = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(144, beamColor, fadedBeam, 0.30f, 1.32f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+                Scale = new Vector2(0.15f, 0.15f),
+                Position = new Vector2(push, 0f),
+                ZIndex = 0,
+            };
+            holder.AddChild(rim);
+
+            // 白芯：明显小于蓝边层，蓝边才露得出来
+            var core = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(128, new Color(1f, 1f, 1f), coreColor, 0.45f, 1.86f),
+                Centered = true,
+                Material = CreateAdditiveMaterial(),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+                Scale = new Vector2(0.1f, 0.1f),
+                Position = new Vector2(push, 0f),
+                ZIndex = 1,
+            };
+            holder.AddChild(core);
+
+            var haloPeak = new Vector2(dia * 1.30f * ex / 160f, dia * 1.18f / 160f);
+            var rimPeak = new Vector2(dia * ex / 144f, dia / 144f);
+            var corePeak = new Vector2(dia * 0.58f * ex / 128f, dia * 0.58f / 128f);
+
+            var tw = holder.CreateTween();
+            tw.SetParallel(true);
+            tw.TweenProperty(halo, "modulate:a", 0.85f, growSeconds * 0.45)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(halo, "scale", haloPeak, growSeconds * 0.7)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(rim, "modulate:a", 1f, growSeconds * 0.40)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(rim, "scale", rimPeak, growSeconds * 0.65)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(core, "modulate:a", 0.95f, growSeconds * 0.35)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            tw.TweenProperty(core, "scale", corePeak, growSeconds * 0.6)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+
+            // 保持段轻微收缩再回弹：静止不动的球会读成贴图
+            tw.Chain().TweenProperty(rim, "scale", rimPeak * 0.90f, holdSeconds * 0.5)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            tw.Chain().TweenProperty(rim, "scale", rimPeak * 1.02f, holdSeconds * 0.5)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+            // 和光束同时收，别让球比光束活得久
+            tw.Chain().TweenProperty(halo, "modulate:a", 0f, fadeSeconds)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+            tw.Parallel().TweenProperty(rim, "modulate:a", 0f, fadeSeconds)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+            tw.Parallel().TweenProperty(core, "modulate:a", 0f, fadeSeconds * 0.8)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"[Kakarot][Vfx] Beam muzzle orb failed: {ex}");
+        }
+    }
+
+    // CreateRadialGlowTexture 的可调版：coreK = 中心实心核强度（0 = 纯软晕），
+    // falloff = 外圈衰减指数（越小越软）。原函数把这两个写死成 0.55 / 3.2，
+    // 那组值画出来是「硬白球」，和程序化光束拼不到一起。
+    internal static ImageTexture CreateSoftGlowTexture(
+        int size, Color inner, Color outer, float coreK, float falloff)
+    {
+        var img = Image.CreateEmpty(size, size, false, Image.Format.Rgba8);
+        float half = size * 0.5f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f - half) / half;
+                float dy = (y + 0.5f - half) / half;
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+
+                if (d >= 1f)
+                {
+                    img.SetPixel(x, y, new Color(0f, 0f, 0f, 0f));
+                    continue;
+                }
+
+                Color c = inner.Lerp(outer, Mathf.Pow(d, 0.85f));
+                float k = coreK * Mathf.Exp(-((d / 0.17f) * (d / 0.17f)));
+                c.A = Mathf.Min(1f, Mathf.Pow(1f - d, falloff) + k);
+                img.SetPixel(x, y, c);
+            }
+        }
+
+        return ImageTexture.CreateFromImage(img);
     }
 
     private static void TryPlayKamehamehaBeamFromTexture(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Texture2D texture)

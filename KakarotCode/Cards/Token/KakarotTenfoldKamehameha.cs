@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KakarotMod.KakarotCode.Powers;
 using KakarotMod.KakarotCode.Wild;
@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using KakarotMod.KakarotCode.Characters;
 
 namespace KakarotMod.KakarotCode.Cards.Token;
 
@@ -43,13 +44,13 @@ public class KakarotTenfoldKamehameha() : KakarotCard(2, CardType.Attack, CardRa
     {
         bool repeat = _adjacentWildReady || TryWildHandNeighbors();
         await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_slash")
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Palm, 1.35f))
             .Execute(choiceContext);
 
         if (repeat)
         {
             await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).TargetingAllOpponents(CombatState)
-                .WithHitFx("vfx/vfx_attack_slash")
+                .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Palm, 1.35f))
                 .Execute(choiceContext);
         }
     }
