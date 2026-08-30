@@ -41,9 +41,4 @@ public class KakarotSummonRuyiStaff() : KakarotCard(3, CardType.Power, CardRarit
 
         await KakarotPowerCmd.Apply<KakarotRuyiStaffSummonedPower>(choiceContext, Owner.Creature, 1m, Owner.Creature, this);
     }
-
-    protected override void OnUpgrade()
-    {
-        EnergyCost.UpgradeBy(-1);
-    }
 }

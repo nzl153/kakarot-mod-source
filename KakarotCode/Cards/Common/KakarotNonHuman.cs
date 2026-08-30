@@ -14,7 +14,7 @@ namespace KakarotMod.KakarotCode.Cards.Common;
 
 public class KakarotNonHuman() : KakarotCard(0, CardType.Skill, CardRarity.Common, TargetType.Self)
 {
-    public override int CanonicalStarCost => 2;
+    public override int CanonicalStarCost => 3;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [

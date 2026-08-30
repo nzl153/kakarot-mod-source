@@ -33,7 +33,7 @@ public class KakarotYouKilledKrillin() : KakarotCard(2, CardType.Skill, CardRari
 
     protected override void OnUpgrade()
     {
-        DynamicVars.Weak.UpgradeValueBy(2m);
-        DynamicVars.Vulnerable.UpgradeValueBy(2m);
+        DynamicVars.Weak.UpgradeValueBy(1m);
+        DynamicVars.Vulnerable.UpgradeValueBy(1m);
     }
 }

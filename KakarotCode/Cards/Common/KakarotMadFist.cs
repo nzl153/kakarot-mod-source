@@ -15,7 +15,7 @@ namespace KakarotMod.KakarotCode.Cards.Common;
 
 public class KakarotMadFist() : KakarotCard(0, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
 {
-    public override int CanonicalStarCost => 1;
+    public override int CanonicalStarCost => 2;
 
     protected override IEnumerable<DynamicVar> CanonicalVars =>
     [

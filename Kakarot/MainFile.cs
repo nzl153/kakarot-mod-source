@@ -1,7 +1,9 @@
 using System;
+using BaseLib.Config;
 using HarmonyLib;
 using Godot;
 using KakarotMod.KakarotCode;
+using KakarotMod.KakarotCode.Config;
 using KakarotMod.KakarotCode.Encounters;
 using KakarotMod.KakarotCode.Events;
 using KakarotMod.KakarotCode.Monsters.Frieza;
@@ -24,6 +26,11 @@ public class MainFile
 	{
 		Harmony harmony = new(ModId);
 		harmony.PatchAll();
+
+		// mod 设置：SimpleModConfig 按属性自动生成 UI；Register 内部会在有可见项时才登记。
+		var modConfig = new KakarotModConfig();
+		modConfig.Load();
+		ModConfigRegistry.Register(ModId, modConfig);
 		KakarotResourceDiagnostics.LogMissingResources();
 		KakarotWildKeyword.LogIfSlotCollides();
 
