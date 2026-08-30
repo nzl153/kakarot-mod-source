@@ -34,7 +34,7 @@
   "KAKAROTMOD-KAKAROT_NON_HUMAN.title": "人間じゃない",
   "KAKAROTMOD-KAKAROT_NON_HUMAN.description": "[gold]ブロック[/gold]を{Block:diff()}得る。[gold]手札[/gold]からカードを1枚[gold]廃棄[/gold]してもよい。",
   "KAKAROTMOD-KAKAROT_KAIOKEN.title": "界王拳",
-  "KAKAROTMOD-KAKAROT_KAIOKEN.description": "[gold]界王拳[/gold]に入る。[gold]筋力[/gold]を{Strength}、[gold]敏捷性[/gold]を{Dexterity}得る。あなたのターン終了時、HPを{HpLoss:diff()}失う。{Turns}ターン持続。他の形態とは同時に使えない。",
+  "KAKAROTMOD-KAKAROT_KAIOKEN.description": "[gold]界王拳[/gold]に入る。[gold]筋力[/gold]を{Strength}、[gold]敏捷[/gold]を{Dexterity}得る。あなたのターン終了時、HPを{HpLoss:diff()}失う。{Turns}ターン持続。他の形態とは同時に使えない。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_TRANSFORM.title": "変身",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_TRANSFORM.description": "伝説の[gold]超サイヤ人[/gold]として覚醒する（最大ステージ3）。[gold]山札[/gold]から気をためるを[gold]手札[/gold]に移す。パワーダウンを持っていないなら[gold]手札[/gold]に加える。",
   "KAKAROTMOD-KAKAROT_CANCEL_SUPER_SAIYAN_FORM.title": "パワーダウン",
@@ -46,7 +46,7 @@
   "KAKAROTMOD-KAKAROT_KAMEHAMEHA.title": "かめはめ波",
   "KAKAROTMOD-KAKAROT_KAMEHAMEHA.description": "敵全体に{Damage:diff()}ダメージを与える。",
   "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.title": "瞬間移動",
-  "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.description": "[gold]ブロック[/gold]を{Block:diff()}得る。このターン、あなたがスキルをプレイするたび、[gold]臨時敏捷性[/gold]を+1得る。",
+  "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.description": "[gold]ブロック[/gold]を{Block:diff()}得る。このターン、あなたがスキルをプレイするたび、[gold]臨時敏捷[/gold]を+1得る。",
   "KAKAROTMOD-KAKAROT_FOCUS_CHARGE.title": "集中チャージ",
   "KAKAROTMOD-KAKAROT_FOCUS_CHARGE.description": "このターン、次のアタックカードを2回プレイする。",
   "KAKAROTMOD-KAKAROT_HEAVEN_PIERCING_FIST.title": "天を貫く拳",
@@ -68,7 +68,7 @@
   "KAKAROTMOD-KAKAROT_NIMBUS_CLOUD.title": "筋斗雲",
   "KAKAROTMOD-KAKAROT_NIMBUS_CLOUD.description": "あなたの各ターン開始時、[gold]ブロック[/gold]を{KakarotNimbusCloudPower:diff()}得る。",
   "KAKAROTMOD-KAKAROT_LEVITATION.title": "浮遊",
-  "KAKAROTMOD-KAKAROT_LEVITATION.description": "このターン、[gold]臨時敏捷性[/gold]を{Dexterity:diff()}得る。[gold]捨て札[/gold]からカードを1枚選び、[gold]山札[/gold]の一番上に置く。",
+  "KAKAROTMOD-KAKAROT_LEVITATION.description": "このターン、[gold]臨時敏捷[/gold]を{Dexterity:diff()}得る。[gold]捨て札[/gold]からカードを1枚選び、[gold]山札[/gold]の一番上に置く。",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.title": "如意棒召喚",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.description": "如意棒を1枚[gold]手札[/gold]に加える。",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.description_plus": "アップグレード済みの如意棒を1枚手札に加える。",
@@ -101,7 +101,7 @@
   "KAKAROTMOD-KAKAROT_GOD_KI.title": "神の気",
   "KAKAROTMOD-KAKAROT_GOD_KI.description": "この戦闘中に2回プレイすると、[gold]超サイヤ人ブルー[/gold]を解放する。このターン、HPを失った時に[gold]身勝手の極意“兆”[/gold]へ覚醒する確率が+5%される。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.title": "超サイヤ人ブルー化",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.description": "[gold]超サイヤ人ブルー[/gold]に入る。[gold]神の気[/gold]を[gold]手札[/gold]に加え、その後この戦闘中のすべての[gold]神の気[/gold]と破壊カードを[gold]アップグレード[/gold]する。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.description": "[gold]超サイヤ人ブルー[/gold]に入る。この戦闘中、すべてのカードを[gold]アップグレード[/gold]する。[gold]神の気[/gold]を[gold]手札[/gold]に加え、「破壊」を[gold]手札[/gold]に戻す。",
   "KAKAROTMOD-KAKAROT_INSIGHT_ULTRA_INSTINCT.title": "身勝手の極意の兆し",
   "KAKAROTMOD-KAKAROT_INSIGHT_ULTRA_INSTINCT.description": "この戦闘中、HPを失った時、[gold]身勝手の極意“兆”[/gold]を[gold]手札[/gold]に加える確率が+15%される。発動後に終了する。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN.title": "身勝手の極意“兆”",
@@ -127,7 +127,7 @@
   "KAKAROTMOD-KAKAROT_OUT_OF_CONTROL.title": "制御不能",
   "KAKAROTMOD-KAKAROT_OUT_OF_CONTROL.description": "これが[gold]手札[/gold]にある間、他のカードをプレイできない。",
   "KAKAROTMOD-KAKAROT_SAIYAN_POWER_BANK.title": "サイヤ人パワーバンク",
-  "KAKAROTMOD-KAKAROT_SAIYAN_POWER_BANK.description": "チームメイトに[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷性[/gold]を{Dexterity:diff()}与える。チームメイトがカカロットなら、その[gold]野性覚醒[/gold]進行+{RitualProgress:diff()}。",
+  "KAKAROTMOD-KAKAROT_SAIYAN_POWER_BANK.description": "チームメイトに[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷[/gold]を{Dexterity:diff()}与える。チームメイトがカカロットなら、その[gold]野性覚醒[/gold]進行+{RitualProgress:diff()}。",
   "KAKAROTMOD-KAKAROT_WILD_CHARGE.title": "野性の蓄気",
   "KAKAROTMOD-KAKAROT_WILD_CHARGE.description": "カードを{Draw}枚引く。引く前に[gold]手札[/gold]の一番左のカードが[gold]野性[/gold]なら、エナジーを{Energy:diff()}得る。",
   "KAKAROTMOD-KAKAROT_AWAKENING_TRIGGER.title": "覚醒のきっかけ",
@@ -145,7 +145,7 @@
   "KAKAROTMOD-KAKAROT_POWER_OF_WILDNESS.title": "野性の力",
   "KAKAROTMOD-KAKAROT_POWER_OF_WILDNESS.description": "[gold]野性[/gold]カードをプレイするたび、[gold]臨時筋力[/gold]を{StrengthGain:diff()}、[gold]ブロック[/gold]を{BlockGain:diff()}得る。",
   "KAKAROTMOD-KAKAROT_COMIC_RELIEF.title": "息抜き",
-  "KAKAROTMOD-KAKAROT_COMIC_RELIEF.description": "バッファーを{Buffer:diff()}、[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷性[/gold]を{Dexterity:diff()}得る。",
+  "KAKAROTMOD-KAKAROT_COMIC_RELIEF.description": "バッファーを{Buffer:diff()}、[gold]筋力[/gold]を{Strength:diff()}、[gold]敏捷[/gold]を{Dexterity:diff()}得る。",
   "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.title": "ドラゴンボールの願い：富",
   "KAKAROTMOD-KAKAROT_DRAGON_BALL_WISH_MONEY.description": "敵1体に{Damage:diff()}ダメージを与える。このカードで倒した場合、戦闘後に追加で100ゴールドを得る。",
   "KAKAROTMOD-KAKAROT_QIQI_MEAL.title": "チチの食事",
@@ -191,7 +191,7 @@
   "KAKAROTMOD-KAKAROT_INSIGHT_DIVINE_REALM.title": "神域の洞察",
   "KAKAROTMOD-KAKAROT_INSIGHT_DIVINE_REALM.description": "5ターンの間、あなたのターン開始時、[gold]正義の心[/gold]進行を1得る。",
   "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.title": "ジャン拳",
-  "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.description": "40%：[gold]筋力[/gold]を{Strength}、[gold]敏捷性[/gold]を{Dexterity}得る。30%：HPを{SelfDamage}失う。30%：エナジーを{EnergyGain}得て、カードを{Draw}枚引く。",
+  "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.description": "40%：[gold]筋力[/gold]を{Strength}、[gold]敏捷[/gold]を{Dexterity}得る。30%：HPを{SelfDamage}失う。30%：エナジーを{EnergyGain}得て、カードを{Draw}枚引く。",
   "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST.title": "残像拳",
   "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST.description": "すべてのエナジーと[gold]怒り[/gold]を消費する。消費した[gold]怒り[/gold]に等しいダメージを敵全体に与え、消費したエナジーの回数だけ繰り返す。",
   "KAKAROTMOD-KAKAROT_KI_DIFFUSION.title": "気の拡散",
@@ -205,9 +205,9 @@
   "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE.title": "親子かめはめ波",
   "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE.description": "{Damage:diff()}ダメージを与える。[gold]弱体[/gold]を{VulnerablePower:diff()}、[gold]脱力[/gold]を{WeakPower:diff()}付与する。",
   "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.title": "ありがとう、鳥山先生",
-  "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "[gold]無形[/gold]を{IntangiblePower:diff()}得る。"
-, "KAKAROTMOD-FRIEZA_QI_LEAK.title": "気漏れ"
-, "KAKAROTMOD-FRIEZA_QI_LEAK.description": "効果なし。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "共闘"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "このターン、仲間がアタックカードを1枚プレイするたび、[gold]怒り[/gold]を{RagePerAttack}得る。あなたが[gold]怒り[/gold]を消費するたび、1点につきすべての仲間は{BlockPerRage}[gold]ブロック[/gold]を得る。"
+  "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "[gold]無形[/gold]を{IntangiblePower:diff()}得る。",
+  "KAKAROTMOD-FRIEZA_QI_LEAK.title": "気漏れ",
+  "KAKAROTMOD-FRIEZA_QI_LEAK.description": "効果なし。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "共闘",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "このターン、仲間がアタックカードを1枚プレイするたび、[gold]怒り[/gold]を{RagePerAttack}得る。あなたが[gold]怒り[/gold]を消費するたび、1点につきすべての仲間は{BlockPerRage}[gold]ブロック[/gold]を得る。"
 }

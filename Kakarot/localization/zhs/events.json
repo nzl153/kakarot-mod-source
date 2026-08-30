@@ -14,11 +14,11 @@
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.title": "初遇",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.description": "一对少男少女的初遇，开启了一段奇妙又美丽的冒险。随机升级卡组里的2张牌。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.title": "再见",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "两位英雄的再见，为这段完美的故事画上了句号。失去6点生命上限，从卡组中选择2张牌移除。",
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "两位英雄的再见，为这段完美的故事画上了句号。失去10点生命上限，从卡组中选择2张牌移除。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.title": "再见",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.description": "卡组里可移除的牌不足2张，你无法写下这场告别。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.BEGIN_ADVENTURE.description": "微光掠过卡组，两张牌在故事中蜕变、强化——奇妙冒险，才刚刚翻开下一页。",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "你付出代价，抹去两行字迹：生命上限减去6点，两张牌永远留在了结局里。句号落下，余韵很长。"
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "你付出代价，抹去两行字迹：生命上限减去10点，两张牌永远留在了结局里。句号落下，余韵很长。"
   ,
   "KAKAROTMOD-FRIEZA_CHALLENGE.title": "帝王来袭",
   "KAKAROTMOD-FRIEZA_CHALLENGE.loss": "你倒在了弗利萨面前。",

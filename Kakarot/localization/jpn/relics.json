@@ -1,7 +1,7 @@
 {
   "KAKAROTMOD-SAIYAN_BLOOD.title": "サイヤ人の血",
   "KAKAROTMOD-SAIYAN_BLOOD.flavor": "痛みが深いほど、意志は激しく燃える。",
-  "KAKAROTMOD-SAIYAN_BLOOD.description": "各戦闘の最初のターン開始時、追加で怒りを1得る。ストライクをプレイするか敵から攻撃を受けるたび、怒りを1得る。HPが20%未満なら筋力2と敏捷性2を得る。戦闘終了時、HPが70%未満ならHPを6回復。",
+  "KAKAROTMOD-SAIYAN_BLOOD.description": "各戦闘の最初のターン開始時、追加で怒りを1得る。ストライクをプレイするか敵から攻撃を受けるたび、怒りを1得る。HPが20%未満なら筋力2と敏捷2を得る。戦闘終了時、HPが70%未満ならHPを6回復。",
   "KAKAROTMOD-KAKAROT_HEALING_POD.title": "治療ポッド",
   "KAKAROTMOD-KAKAROT_HEALING_POD.flavor": "肉体を癒やし、戦う意志に再び火をつける。",
   "KAKAROTMOD-KAKAROT_HEALING_POD.description": "各戦闘開始時、HPを4回復。",
@@ -10,7 +10,7 @@
   "KAKAROTMOD-KAKAROT_SPACE_SHIP.description": "各戦闘で初めてスキルをプレイした時、カードを2枚引く。",
   "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.title": "伝説の血統",
   "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.flavor": "この血に流れるのは怒りだけではない。征服者の本能も宿っている。",
-  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "各戦闘の最初のターン開始時、追加で怒りを2得る。ストライクをプレイするか敵から攻撃を受けるたび、怒りを2得る。最大エナジー+1。HPが20%未満なら筋力2と敏捷性2を得る。戦闘終了時、HPが80%未満ならHPを6回復。",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "各戦闘の最初のターン開始時、追加で怒りを2得る。ストライクをプレイするか敵から攻撃を受けるたび、怒りを2得る。最大エナジー+1。HPが20%未満なら筋力2と敏捷2を得る。戦闘終了時、HPが80%未満ならHPを6回復。",
   "KAKAROTMOD-KAKAROT_CAPSULE1.title": "No.1カプセル",
   "KAKAROTMOD-KAKAROT_CAPSULE1.flavor": "小型の緊急キット。一息ついた瞬間に開けよう。",
   "KAKAROTMOD-KAKAROT_CAPSULE1.description": "休憩所に入った時、HPを6回復。",

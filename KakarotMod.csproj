@@ -9,9 +9,9 @@
     <!-- beta 分支构建开关：dotnet build -p:Sts2Beta=true 出 beta 版 dll，不传就是正式版。 -->
     <Sts2Beta Condition="'$(Sts2Beta)'==''">false</Sts2Beta>
     <DefineConstants Condition="'$(Sts2Beta)'=='true'">$(DefineConstants);STS2_BETA</DefineConstants>
-    <Version>5.2.0</Version>
-    <AssemblyVersion>5.2.0.0</AssemblyVersion>
-    <FileVersion>5.2.0.0</FileVersion>
+    <Version>5.3.0</Version>
+    <AssemblyVersion>5.3.0.0</AssemblyVersion>
+    <FileVersion>5.3.0.0</FileVersion>
     <TargetFramework>net9.0</TargetFramework>
     <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>

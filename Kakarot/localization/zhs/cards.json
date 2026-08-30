@@ -18,7 +18,7 @@
   "KAKAROTMOD-KAKAROT_WOLF_FANG_FIST.title": "狼牙风风拳",
   "KAKAROTMOD-KAKAROT_WOLF_FANG_FIST.description": "对全体敌人各造成4次{Damage:diff()}点伤害。",
   "KAKAROTMOD-KAKAROT_ROAR.title": "怒吼",
-  "KAKAROTMOD-KAKAROT_ROAR.description": "移除一名敌人的全部护盾与[gold]人工制品[/gold]，并施加{WeakPower}层[gold]虚弱[/gold]。获得2点[gold]怒气[/gold]。",
+  "KAKAROTMOD-KAKAROT_ROAR.description": "移除一名敌人的全部[gold]格挡[/gold]与[gold]人工制品[/gold]，并施加{WeakPower}层[gold]虚弱[/gold]。获得2点[gold]怒气[/gold]。",
   "KAKAROTMOD-KAKAROT_EYE_BEAM.title": "眼射线",
   "KAKAROTMOD-KAKAROT_EYE_BEAM.description": "造成{Damage:diff()}点伤害。施加{WeakPower:diff()}层[gold]虚弱[/gold]。",
   "KAKAROTMOD-KAKAROT_BIG_APPETITE.title": "大胃袋",
@@ -46,7 +46,7 @@
   "KAKAROTMOD-KAKAROT_KAMEHAMEHA.title": "龟派气功波",
   "KAKAROTMOD-KAKAROT_KAMEHAMEHA.description": "对全体敌人造成{Damage:diff()}点伤害。",
   "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.title": "瞬间移动",
-  "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.description": "获得{Block:diff()}点[gold]格挡[/gold]。本回合每打出一张技能牌获得1点[gold]临时灵敏[/gold]。",
+  "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION.description": "获得{Block:diff()}点[gold]格挡[/gold]。本回合每打出一张技能牌获得1点[gold]临时敏捷[/gold]。",
   "KAKAROTMOD-KAKAROT_FOCUS_CHARGE.title": "蓄力",
   "KAKAROTMOD-KAKAROT_FOCUS_CHARGE.description": "本回合，下一张攻击牌打出两次。",
   "KAKAROTMOD-KAKAROT_HEAVEN_PIERCING_FIST.title": "天地贯穿拳",
@@ -68,7 +68,7 @@
   "KAKAROTMOD-KAKAROT_NIMBUS_CLOUD.title": "筋斗云",
   "KAKAROTMOD-KAKAROT_NIMBUS_CLOUD.description": "在你的每个回合开始时，获得{KakarotNimbusCloudPower:diff()}点[gold]格挡[/gold]。",
   "KAKAROTMOD-KAKAROT_LEVITATION.title": "舞空术",
-  "KAKAROTMOD-KAKAROT_LEVITATION.description": "本回合获得{Dexterity:diff()}点[gold]临时灵敏[/gold]。将[gold]弃牌堆[/gold]中的1张牌置于[gold]抽牌堆[/gold]顶。",
+  "KAKAROTMOD-KAKAROT_LEVITATION.description": "本回合获得{Dexterity:diff()}点[gold]临时敏捷[/gold]。将[gold]弃牌堆[/gold]中的1张牌置于[gold]抽牌堆[/gold]顶。",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.title": "召唤如意棒",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.description": "在[gold]手牌[/gold]中[gold]生成[/gold]一张如意棒。",
   "KAKAROTMOD-KAKAROT_SUMMON_RUYI_STAFF.description_plus": "在手牌中生成一张升级版如意棒。",
@@ -97,11 +97,11 @@
   "KAKAROTMOD-KAKAROT_JUSTICE_HEART.title": "正义之心",
   "KAKAROTMOD-KAKAROT_JUSTICE_HEART.description": "获得{Block:diff()}点[gold]格挡[/gold]并回复{Heal:diff()}点生命。本场战斗打出5次可获得5个正义赛亚人的祝福。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_GOD_TRANSFORM.title": "超级赛亚人之神",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_GOD_TRANSFORM.description": "即将掌握神的[gold]力量[/gold]。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_GOD_TRANSFORM.description": "即将掌握神的力量。",
   "KAKAROTMOD-KAKAROT_GOD_KI.title": "神之气",
   "KAKAROTMOD-KAKAROT_GOD_KI.description": "领悟神的气息，本场打出2次后可进一步变身，且这回合增加百分之5的概率领悟神之技。",
   "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.title": "变成超级赛亚人蓝色",
-  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.description": "神的[gold]力量[/gold]再进一步。",
+  "KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM.description": "神的力量再进一步。",
   "KAKAROTMOD-KAKAROT_INSIGHT_ULTRA_INSTINCT.title": "领悟极易",
   "KAKAROTMOD-KAKAROT_INSIGHT_ULTRA_INSTINCT.description": "本场战斗中，受伤有百分之15的概率领悟神之技。",
   "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN.title": "自在极意兆",
@@ -191,7 +191,7 @@
   "KAKAROTMOD-KAKAROT_INSIGHT_DIVINE_REALM.title": "感悟神境",
   "KAKAROTMOD-KAKAROT_INSIGHT_DIVINE_REALM.description": "持续5回合，在你的每个回合开始时，获得1层[gold]正义仪式[/gold]。",
   "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.title": "猜拳",
-  "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.description": "40%概率获得{Strength}点[gold]力量[/gold]与{Dexterity}点[gold]灵敏[/gold]；30%概率失去{SelfDamage}点生命；30%概率获得{EnergyGain}点能量并抽{Draw}张牌。",
+  "KAKAROTMOD-KAKAROT_ROCK_PAPER_SCISSORS.description": "40%概率获得{Strength}点[gold]力量[/gold]与{Dexterity}点[gold]敏捷[/gold]；30%概率失去{SelfDamage}点生命；30%概率获得{EnergyGain}点能量并抽{Draw}张牌。",
   "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST.title": "残像拳",
   "KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST.description": "对全体敌人造成X能量次X[gold]怒气[/gold]伤害。",
   "KAKAROTMOD-KAKAROT_KI_DIFFUSION.title": "气扩散",
@@ -205,9 +205,9 @@
   "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE.title": "父子波",
   "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE.description": "造成{Damage:diff()}点伤害，并施加{VulnerablePower:diff()}层[gold]易伤[/gold]与{WeakPower:diff()}层[gold]虚弱[/gold]。",
   "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.title": "再见，鸟山明",
-  "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "获得{IntangiblePower:diff()}层[gold]无实体[/gold]。"
-, "KAKAROTMOD-FRIEZA_QI_LEAK.title": "气泄"
-, "KAKAROTMOD-FRIEZA_QI_LEAK.description": "没有效果。"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "并肩作战"
-, "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "本回合，每当一名队友打出一张攻击牌，获得{RagePerAttack}点[gold]怒气[/gold]。每当你消耗[gold]怒气[/gold]时，每消耗1点，所有队友获得{BlockPerRage}点[gold]格挡[/gold]。"
+  "KAKAROTMOD-KAKAROT_GOODBYE_TORIYAMA.description": "获得{IntangiblePower:diff()}层[gold]无实体[/gold]。",
+  "KAKAROTMOD-FRIEZA_QI_LEAK.title": "气泄",
+  "KAKAROTMOD-FRIEZA_QI_LEAK.description": "没有效果。",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.title": "并肩作战",
+  "KAKAROTMOD-KAKAROT_FIGHT_TOGETHER.description": "本回合，每当一名队友打出一张攻击牌，获得{RagePerAttack}点[gold]怒气[/gold]。每当你消耗[gold]怒气[/gold]时，每消耗1点，所有队友获得{BlockPerRage}点[gold]格挡[/gold]。"
 }

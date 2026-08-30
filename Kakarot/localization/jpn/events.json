@@ -14,11 +14,11 @@
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.title": "最初の出会い",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.description": "少年と少女が出会い、奇妙で美しい旅が始まる。デッキ内のランダムなカード2枚をアップグレード。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.title": "別れ",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "二人の英雄が別れを告げ、完璧な物語が終わりを迎える。最大HPを6失い、その後デッキからカードを2枚選んで削除。",
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "二人の英雄が別れを告げ、完璧な物語が終わりを迎える。最大HPを10失い、その後デッキからカードを2枚選んで削除。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.title": "別れ",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.description": "この結末を受け入れるには、デッキに削除可能なカードが少なくとも2枚必要。",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.BEGIN_ADVENTURE.description": "柔らかな光がデッキを包む。語られる中で二枚のカードが強くなる。冒険は新たなページへ進む。",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "代償を支払った。最大HPを6失い、二枚のカードは永遠に去った。最後の一文が胸に落ち、その余韻だけが残る。"
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "代償を支払った。最大HPを10失い、二枚のカードは永遠に去った。最後の一文が胸に落ち、その余韻だけが残る。"
   ,
   "KAKAROTMOD-FRIEZA_CHALLENGE.title": "帝王襲来",
   "KAKAROTMOD-FRIEZA_CHALLENGE.loss": "フリーザの前に倒れた。",

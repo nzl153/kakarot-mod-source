@@ -92,7 +92,10 @@ public static class KakarotWildGetDescriptionForPilePatch
         }
 
         var text = __result ?? string.Empty;
-        if (text.Contains(line, StringComparison.Ordinal))
+        // 只防重复前置：这一行永远加在最前面，所以用前缀判断。
+        // 不能用 Contains——卡面文案本身就可能写着「赋予[gold]野性[/gold]。」
+        //（激发野性/兽性冲拳/尾袭准备/大猿形态/野性全开），会被误判成已加过而整行丢失。
+        if (text.StartsWith(line, StringComparison.Ordinal))
         {
             return;
         }

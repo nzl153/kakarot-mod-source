@@ -14,11 +14,11 @@
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.title": "First meeting",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.BEGIN_ADVENTURE.description": "A boy and a girl meet, and a strange, beautiful journey begins. Upgrade 2 random cards in your deck.",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.title": "Farewell",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "Two heroes say goodbye, and a perfect story finds its ending. Lose 6 Max HP, then choose 2 cards in your deck to remove.",
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE.description": "Two heroes say goodbye, and a perfect story finds its ending. Lose 10 Max HP, then choose 2 cards in your deck to remove.",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.title": "Farewell",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.INITIAL.options.GOODBYE_LOCKED.description": "You need at least 2 removable cards in your deck to accept this ending.",
   "KAKAROT_INCREDIBLE_ADVENTURE.pages.BEGIN_ADVENTURE.description": "Soft light washes over your deck. Two cards grow stronger in the telling. The adventure turns a new page.",
-  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "You pay the price: 6 Max HP lost, two cards gone forever. The final sentence lands, but the echo lingers."
+  "KAKAROT_INCREDIBLE_ADVENTURE.pages.GOODBYE.description": "You pay the price: 10 Max HP lost, two cards gone forever. The final sentence lands, but the echo lingers."
   ,
   "KAKAROTMOD-FRIEZA_CHALLENGE.title": "The Emperor Arrives",
   "KAKAROTMOD-FRIEZA_CHALLENGE.loss": "You fell before Frieza.",

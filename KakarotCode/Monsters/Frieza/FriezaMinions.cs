@@ -69,6 +69,28 @@ public abstract class FriezaMinionBase : CustomMonsterModel
         second.FollowUpState = first;
         return new MonsterMoveStateMachine([first, second], first);
     }
+
+    protected const string ArrivalMoveId = "ARRIVAL_POSE";
+
+    // 第二波是在玩家回合中途登场的（弗利萨掉到半血就当场召唤），
+    // 那时玩家的能量与格挡已经按旧的敌人数量分配完了，紧接着挨两份新输出没有任何招架余地。
+    // 让新到场的成员先摆一回合架势：意图照常显示，玩家看得见、下回合才需要应对。
+    protected MonsterMoveStateMachine ArrivingAlternating(MoveState first, MoveState second)
+    {
+        first.FollowUpState = second;
+        second.FollowUpState = first;
+        var arrival = new MoveState(ArrivalMoveId, ArrivalPose, new StunIntent())
+        {
+            FollowUpState = first,
+        };
+        return new MonsterMoveStateMachine([arrival, first, second], arrival);
+    }
+
+    private Task ArrivalPose(IReadOnlyList<Creature> _)
+    {
+        FriezaBossVisuals.PlayCastMotion(Creature, new Color(0.85f, 0.35f, 1.3f, 1f));
+        return Task.CompletedTask;
+    }
 }
 
 public sealed class FriezaGuldo : FriezaMinionBase
@@ -175,7 +197,7 @@ public sealed class FriezaCaptainGinyu : FriezaMinionBase
     {
         var combo = new MoveState("GINYU_COMBO", GinyuCombo, new MultiAttackIntent(6, 2));
         var command = new MoveState("FIGHTING_COMMAND", FightingCommand, new DefendIntent(), new BuffIntent());
-        return Alternating(combo, command);
+        return ArrivingAlternating(combo, command);
     }
 
     private async Task FightingCommand(IReadOnlyList<Creature> _)
@@ -208,7 +230,7 @@ public sealed class FriezaBurterJeice : FriezaMinionBase
     {
         var purpleComet = new MoveState("PURPLE_COMET", PurpleComet, new MultiAttackIntent(4, 3));
         var crusherBall = new MoveState("CRUSHER_BALL", CrusherBall, new SingleAttackIntent(12), new DebuffIntent());
-        return Alternating(purpleComet, crusherBall);
+        return ArrivingAlternating(purpleComet, crusherBall);
     }
 
     private async Task CrusherBall(IReadOnlyList<Creature> targets)

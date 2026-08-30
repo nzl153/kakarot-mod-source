@@ -20,9 +20,11 @@ namespace KakarotMod.KakarotCode.Events;
 [CustomID("KAKAROT_INCREDIBLE_ADVENTURE")]
 public sealed class KakarotIncredibleAdventure : CustomEventModel
 {
-    // 代价从「掉 6 点当前生命」改成「掉 6 点生命上限」——删 2 张牌的收益太高，
+    // 代价从「掉 6 点当前生命」改成「掉生命上限」——删 2 张牌的收益太高，
     // 用一次性掉血付账等于白送，改成永久上限才配得上移除两张牌。
-    private const decimal GoodbyeMaxHpLoss = 6m;
+    // 2026-08-26：6 → 10。压瘦卡组本身就是塔2 最强收益之一，
+    // 6 点上限在实战里几乎不构成取舍，等于无脑选。
+    private const decimal GoodbyeMaxHpLoss = 10m;
 
     public override string CustomInitialPortraitPath =>
         "res://images/events/kakarot_incredible_adventure.png";
