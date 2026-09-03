@@ -110,7 +110,7 @@
   "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.title": "野性を呼び起こす",
   "KAKAROTMOD-KAKAROT_PROVOKE_WILDNESS.description": "[gold]筋力[/gold]を{Strength:diff()}得る。[gold]手札[/gold]のカードを1枚選び、[gold]野性[/gold]を与える。",
   "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.title": "荒々しい拳",
-  "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.description": "{Damage:diff()}ダメージを与える。[gold]弱体[/gold]を{VulnerablePower:diff()}付与する。[gold]手札[/gold]のカードを{PickCount:diff()}枚選ぶ。それらは[gold]野性[/gold]を得る。",
+  "KAKAROTMOD-KAKAROT_SAVAGE_PUNCH.description": "{Damage:diff()}ダメージを与える。[gold]弱体[/gold]を{VulnerablePower:diff()}付与する。[gold]手札[/gold]のカードを{PickCount}枚選ぶ。それらは[gold]野性[/gold]を得る。",
   "KAKAROTMOD-KAKAROT_RENDING_STEP.title": "裂く踏み込み",
   "KAKAROTMOD-KAKAROT_RENDING_STEP.description": "{Damage:diff()}ダメージを与える。[gold]ブロック[/gold]を{Block:diff()}得る。このカードが[gold]野性[/gold]なら、追加で{BonusDamage:diff()}ダメージを与える。",
   "KAKAROTMOD-KAKAROT_WILD_GUARD.title": "野性ガード",
