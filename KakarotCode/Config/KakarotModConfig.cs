@@ -23,4 +23,19 @@ public sealed class KakarotModConfig : SimpleModConfig
     /// 战斗不发任何奖励、不碰卡池，故对其他角色天然安全，无需额外守卫。
     /// </summary>
     public static bool FriezaForAllCharacters { get; set; }
+
+    /// <summary>
+    /// 关闭弗利萨挑战以外的本 mod 事件。默认 false = 照常出现。
+    /// 只作用于走事件池的三个事件（不可思议的冒险 / 卡林塔试炼 / 武道会食堂），
+    /// 弗利萨挑战不受影响——它 IsAllowed 恒 false、不进池子，靠 EnterRoom 补丁换房。
+    ///
+    /// 🚨 <b>刻意用「关闭」而不是「启用」，默认必须是 false。</b>
+    /// BaseLib 读不到 cfg 时 bool 落在 false，若写成「启用事件」默认 true，
+    /// 一旦某次读取失败就会静默把三个事件全关掉；写成「关闭」则读取失败等于「不关闭」，
+    /// 行为退化成现状，坏的方向是安全的。
+    ///
+    /// 🚨 <b>仅单人生效</b>（同弗利萨开关）：IsAllowed 是各端本地跑的，
+    /// 联机时两边配置不同会让事件池不一致，抽取结果可能分叉导致不同步。
+    /// </summary>
+    public static bool DisableExtraEvents { get; set; }
 }

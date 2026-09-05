@@ -21,7 +21,7 @@ public sealed class KakarotTournamentCafeteria : CustomEventModel
         "res://images/events/kakarot_tournament_cafeteria.png";
 
     public override bool IsAllowed(IRunState runState) =>
-        KakarotEventEligibility.HasKakarot(runState);
+        KakarotEventEligibility.AllowsExtraEvent(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

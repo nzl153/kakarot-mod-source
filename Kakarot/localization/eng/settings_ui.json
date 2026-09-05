@@ -1,4 +1,5 @@
 {
   "KAKAROTMOD.mod_title": "Kakarot",
-  "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "Frieza Challenge for All Characters (singleplayer only; multiplayer still needs Kakarot in the party)"
+  "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "Frieza Challenge for All Characters (singleplayer only; multiplayer still needs Kakarot in the party)",
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "Disable this mod's events other than the Frieza Challenge (singleplayer only)"
 }

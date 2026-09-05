@@ -30,7 +30,7 @@ public sealed class KakarotIncredibleAdventure : CustomEventModel
         "res://images/events/kakarot_incredible_adventure.png";
 
     public override bool IsAllowed(IRunState runState) =>
-        KakarotEventEligibility.HasKakarot(runState);
+        KakarotEventEligibility.AllowsExtraEvent(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {

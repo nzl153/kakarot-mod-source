@@ -26,7 +26,7 @@ public sealed class KakarotKorinTowerTrial : CustomEventModel
         ResourceLoader.Exists(PortraitPath) ? PortraitPath : FallbackPortraitPath;
 
     public override bool IsAllowed(IRunState runState) =>
-        KakarotEventEligibility.HasKakarot(runState);
+        KakarotEventEligibility.AllowsExtraEvent(runState);
 
     protected override IReadOnlyList<EventOption> GenerateInitialOptions()
     {
