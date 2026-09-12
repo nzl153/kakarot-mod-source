@@ -1,0 +1,16 @@
+{
+  "KAKAROTMOD-KAKAROT.title": "Какаротто",
+  "KAKAROTMOD-KAKAROT.titleObject": "Какаротто",
+  "KAKAROTMOD-KAKAROT.description": "Сайян из другого мира. Он накапливает ярость, получая удары или разыгрывая карты «Удар», а затем тратит ее на эффекты карт и реликвий.",
+  "KAKAROTMOD-KAKAROT.pronounObject": "его",
+  "KAKAROTMOD-KAKAROT.possessiveAdjective": "его",
+  "KAKAROTMOD-KAKAROT.pronounPossessive": "его",
+  "KAKAROTMOD-KAKAROT.pronounSubject": "он",
+  "KAKAROTMOD-KAKAROT.cardsModifierTitle": "Карты Какаротто",
+  "KAKAROTMOD-KAKAROT.cardsModifierDescription": "Карты Какаротто могут появляться в наградах и магазинах.",
+  "KAKAROTMOD-KAKAROT.aromaPrinciple": "Какаротто",
+  "KAKAROTMOD-KAKAROT.eventDeathPrevention": "Это еще не конец.",
+  "KAKAROTMOD-KAKAROT.banter.alive.endTurnPing": "Продолжай бой!",
+  "KAKAROTMOD-KAKAROT.banter.dead.endTurnPing": "Я не паду.",
+  "KAKAROTMOD-KAKAROT.goldMonologue": "Я стану сильнее."
+}

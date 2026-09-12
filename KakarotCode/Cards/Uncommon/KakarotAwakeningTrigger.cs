@@ -56,7 +56,7 @@ public class KakarotAwakeningTrigger() : KakarotCard(1, CardType.Skill, CardRari
             return null;
         }
 
-        return combatState.Players.FirstOrDefault(p => p != null && p != Owner);
+        return combatState.Players.FirstOrDefault(p => p != null && p != Owner && p.Creature != null && p.Creature.IsAlive);
     }
 
     protected override void OnUpgrade()

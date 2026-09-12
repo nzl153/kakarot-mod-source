@@ -50,7 +50,7 @@ public class KakarotShareYourEnergy() : KakarotCard(0, CardType.Skill, CardRarit
             return null;
         }
 
-        return combatState.Players.FirstOrDefault(p => p != null && p != Owner);
+        return combatState.Players.FirstOrDefault(p => p != null && p != Owner && p.Creature != null && p.Creature.IsAlive);
     }
 
     protected override void OnUpgrade()

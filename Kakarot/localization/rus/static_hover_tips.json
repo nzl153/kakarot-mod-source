@@ -1,0 +1,10 @@
+{
+  "KAKAROT_STAR_COUNT.title": "Ярость",
+  "KAKAROT_STAR_COUNT.description": "Текущее количество вашей ярости ({singleStarIcon}). Некоторые карты и реликвии Какаротто расходуют ярость.",
+  "KAKAROT_RELIC_RAGE_KEYWORD.title": "Ярость",
+  "KAKAROT_RELIC_RAGE_KEYWORD.description": "Ярость питает эффекты карт и реликвий.",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.title": "S-клетки",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.description": "Когда вы разыгрываете карты, намеренно отнимающие ОЗ (кроме Кайокена), вы получаете 1 S-клетку за каждое потерянное ОЗ. При 12 S-клетках карта «Превращение» добавляется в колоду и попадает в руку (один раз за забег).",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_title": "Счетчик S-клеток",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_compendium": "Во время забега эта подсказка показывает, сколько S-клеток вы получили в этом бою и за все время. В Компендиуме числа недоступны."
+}
