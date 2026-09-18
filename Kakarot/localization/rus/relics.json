@@ -1,0 +1,23 @@
+{
+  "KAKAROTMOD-SAIYAN_BLOOD.title": "Кровь сайяна",
+  "KAKAROTMOD-SAIYAN_BLOOD.flavor": "Чем сильнее боль, тем яростнее воля.",
+  "KAKAROTMOD-SAIYAN_BLOOD.description": "Дает дополнительно 1 ярости в начале первого хода каждого боя. Дает 1 ярости, когда вы разыгрываете «Удар» или получаете урон от врага. При ОЗ ниже 20% дает 2 силы и 2 ловкости. Восполняет 6 ОЗ в конце боя, если ваши ОЗ ниже 70%.",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.title": "Лечебная капсула",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.flavor": "Восстанови тело — и воля к бою вспыхнет вновь.",
+  "KAKAROTMOD-KAKAROT_HEALING_POD.description": "Восполняет 4 ОЗ в начале каждого боя.",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.title": "Космический корабль",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.flavor": "Тактическая перегруппировка и немедленное снабжение.",
+  "KAKAROTMOD-KAKAROT_SPACE_SHIP.description": "Вы добираете 2 карты, когда впервые за бой разыгрываете Навык.",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.title": "Легендарная родословная",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.flavor": "В этой крови течет не только ярость. В ней есть инстинкт завоевателя.",
+  "KAKAROTMOD-KAKAROT_LEGENDARY_LINEAGE.description": "Дает дополнительно 2 ярости в начале первого хода каждого боя. Дает 2 ярости, когда вы разыгрываете «Удар» или получаете урон от врага. Максимум энергии +1. При ОЗ ниже 20% дает 2 силы и 2 ловкости. Восполняет 6 ОЗ в конце боя, если ваши ОЗ ниже 80%.",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.title": "Капсула № 1",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.flavor": "Компактный аварийный набор. Вскрой его, как только переведешь дух.",
+  "KAKAROTMOD-KAKAROT_CAPSULE1.description": "Восполняет 6 ОЗ, когда вы попадаете в Лагерь.",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.title": "Драконий радар",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.flavor": "На стекле мерцают семь желаний — и еще один сигнал из другой сферы.",
+  "KAKAROTMOD-KAKAROT_DRAGON_RADAR.description": "При получении вы выбираете 1 из 8 карт Шенрона и добавляете ее в колоду.",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.title": "Кувшин со священной водой",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.flavor": "Чтобы поймать Корина, одной грубой силы мало.",
+  "KAKAROTMOD-KAKAROT_SACRED_WATER_JUG.description": "Дает 1 ярости, и вы добираете 1 карту, когда впервые за ход чередуете Атаку и Навык. Таланты не прерывают последовательность."
+}

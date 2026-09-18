@@ -1,0 +1,7 @@
+{
+  "NOT_ENOUGH_STARS": "[red]怒り[/red]が\n足りない。",
+  "KAKAROTMOD_HAND_SELECT": "カードを選択。",
+  "KAKAROTMOD_DRAW_SELECT": "山札から選択。",
+  "KAKAROTMOD_DISCARD_SELECT": "捨て札から選択。",
+  "KAKAROTMOD_DRAGON_RADAR_PICK": "デッキに加える神龍の願いカードを選択。"
+}

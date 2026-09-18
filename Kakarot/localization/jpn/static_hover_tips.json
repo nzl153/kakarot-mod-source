@@ -1,0 +1,10 @@
+{
+  "KAKAROT_STAR_COUNT.title": "怒り",
+  "KAKAROT_STAR_COUNT.description": "現在の怒り（{singleStarIcon}）の数。一部のカカロットのカードやレリックが怒りを使用する。",
+  "KAKAROT_RELIC_RAGE_KEYWORD.title": "怒り",
+  "KAKAROT_RELIC_RAGE_KEYWORD.description": "怒りはカードやレリック効果の燃料になる。",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.title": "S細胞",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.description": "意図的にHPを失うカード（界王拳を除く）をプレイすると、失ったHP1につきS細胞を1得る。S細胞が12になると、変身をデッキに加えて手札に置く（一回のランで一度だけ）。",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_title": "S細胞の記録",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_compendium": "ラン中、このヒントにはこの戦闘で得たS細胞と累計数が表示される。コンペンディウムでは数値は表示されない。"
+}

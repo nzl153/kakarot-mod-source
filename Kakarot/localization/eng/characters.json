@@ -1,0 +1,16 @@
+{
+  "KAKAROTMOD-KAKAROT.title": "Kakarot",
+  "KAKAROTMOD-KAKAROT.titleObject": "Kakarot",
+  "KAKAROTMOD-KAKAROT.description": "A Saiyan from another world. Build Rage by taking hits or playing Strike cards, then spend Rage through card and relic effects.",
+  "KAKAROTMOD-KAKAROT.pronounObject": "him",
+  "KAKAROTMOD-KAKAROT.possessiveAdjective": "his",
+  "KAKAROTMOD-KAKAROT.pronounPossessive": "his",
+  "KAKAROTMOD-KAKAROT.pronounSubject": "he",
+  "KAKAROTMOD-KAKAROT.cardsModifierTitle": "Kakarot Cards",
+  "KAKAROTMOD-KAKAROT.cardsModifierDescription": "Kakarot cards can appear in rewards and shops.",
+  "KAKAROTMOD-KAKAROT.aromaPrinciple": "Kakarot",
+  "KAKAROTMOD-KAKAROT.eventDeathPrevention": "This is not over yet.",
+  "KAKAROTMOD-KAKAROT.banter.alive.endTurnPing": "Keep fighting!",
+  "KAKAROTMOD-KAKAROT.banter.dead.endTurnPing": "I will not fall.",
+  "KAKAROTMOD-KAKAROT.goldMonologue": "I will get stronger."
+}
