@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using KakarotMod.KakarotCode.Characters;
 using MegaCrit.Sts2.Core.Combat;
@@ -72,7 +73,10 @@ public sealed class KaiokenPower : KakarotPower
 
     public override async Task AfterSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, System.Collections.Generic.IEnumerable<MegaCrit.Sts2.Core.Entities.Creatures.Creature> participants)
     {
-        if (side != Owner.Side)
+        // participants 是本回合真正结束回合的生物；额外回合等情况下并非全体。
+        // 官方同类能力（Constrict / Demise / Disintegration）均以此为前提，
+        // 缺少该判断会让持有者在未结束回合时扣血，甚至在引擎未预期的时机死亡。
+        if (side != Owner.Side || !participants.Contains(Owner))
         {
             return;
         }
