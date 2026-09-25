@@ -2,13 +2,15 @@
 
 [中文](#中文) · [English](#english)
 
+**Steam 创意工坊 / Steam Workshop:** [卡卡罗特 - 龙珠主题可玩角色 / Kakarot - Playable Dragon Ball Character](https://steamcommunity.com/sharedfiles/filedetails/?id=3749037087)
+
 ---
 
 ## 中文
 
 这是《杀戮尖塔 2》可玩角色 Mod「卡卡罗特」的源码协作仓库，用于代码审阅、翻译贡献、Bug 修复和兼容性维护。
 
-仓库只包含 C# 源码、配置和本地化文本；不包含卡图、美术、动画、音频、PCK、DLL、游戏文件、BaseLib 或可直接安装的发布包。完整可玩版本请从 Steam 创意工坊获取。
+仓库只包含 C# 源码、配置和本地化文本；不包含卡图、美术、动画、音频、PCK、DLL、游戏文件、BaseLib 或可直接安装的发布包。完整可玩版本请从 [Steam 创意工坊](https://steamcommunity.com/sharedfiles/filedetails/?id=3749037087) 获取。
 
 ### 支持范围
 
@@ -61,7 +63,7 @@ dotnet build KakarotMod.csproj -c ExportRelease -p:Sts2Beta=true -p:DeployKakaro
 
 This is the source collaboration repository for **Kakarot**, a playable character mod for *Slay the Spire 2*. It exists for code review, translation contributions, bug fixes, and compatibility maintenance.
 
-The repository contains only C# source, configuration, and localization text. It does **not** contain card art, artwork, animation, audio, PCK files, DLLs, game files, BaseLib, or any directly installable release package. For a playable build, get the mod from the Steam Workshop.
+The repository contains only C# source, configuration, and localization text. It does **not** contain card art, artwork, animation, audio, PCK files, DLLs, game files, BaseLib, or any directly installable release package. For a playable build, get the mod from the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3749037087).
 
 ### Support scope
 
