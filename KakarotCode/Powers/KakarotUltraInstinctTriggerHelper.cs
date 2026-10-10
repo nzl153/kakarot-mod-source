@@ -61,6 +61,10 @@ public static class KakarotUltraInstinctTriggerHelper
         }
 
         var round = player.Creature?.CombatState?.RoundNumber ?? 0;
+        // Run seed and floor vary per run/combat; without them the same opening play rolls the same result every fight.
+        var runState = player.RunState;
+        ulong runSeed = runState?.Rng.Seed ?? 0;
+        var floor = runState?.TotalFloor ?? 0;
         var deltaScaled = (int)Math.Clamp(
             Math.Truncate(delta * 100m),
             int.MinValue + 1,
@@ -71,6 +75,9 @@ public static class KakarotUltraInstinctTriggerHelper
             uint hash = 2166136261u;
             hash = MixStable(hash, (uint)player.NetId);
             hash = MixStable(hash, (uint)(player.NetId >> 32));
+            hash = MixStable(hash, (uint)runSeed);
+            hash = MixStable(hash, (uint)(runSeed >> 32));
+            hash = MixStable(hash, (uint)floor);
             hash = MixStable(hash, (uint)round);
             hash = MixStable(hash, (uint)deltaScaled);
             hash = MixStable(hash, (uint)salt);

@@ -33,16 +33,8 @@ public class KakarotProvokeWildness() : KakarotCard(1, CardType.Skill, CardRarit
             return;
         }
 
-        IEnumerable<CardModel> chosen = [];
-        try
-        {
-            // 用区间选择（下限 0），手牌在结算中途变化时 UI 也能安全确认。
-            chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, 1, this);
-        }
-        catch
-        {
-            // 选择 UI 出问题不应该卡住整张牌的结算。
-        }
+        // 用区间选择（下限 0），手牌在结算中途变化时 UI 也能安全确认。
+        var chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, 1, this);
 
         var card = chosen.FirstOrDefault(c => c != null && c != this);
         if (card == null)

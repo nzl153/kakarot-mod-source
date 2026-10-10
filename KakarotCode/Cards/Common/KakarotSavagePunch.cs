@@ -47,16 +47,8 @@ public class KakarotSavagePunch() : KakarotCard(1, CardType.Attack, CardRarity.U
             return;
         }
 
-        IEnumerable<CardModel> chosen = [];
-        try
-        {
-            // Use range selection so UI can safely confirm even when transient hand state changes.
-            chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, pickCount, this);
-        }
-        catch
-        {
-            // Never block card resolution on selection UI issues.
-        }
+        // Use range selection so UI can safely confirm even when transient hand state changes.
+        var chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, pickCount, this);
 
         foreach (var card in chosen.Where(c => c != null && c != this).Take(pickCount))
         {

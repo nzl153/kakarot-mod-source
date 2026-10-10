@@ -35,15 +35,7 @@ public class KakarotGreatApeForm() : KakarotCard(2, CardType.Skill, CardRarity.U
         var pickCount = System.Math.Min((int)DynamicVars["WildPicks"].BaseValue, selectableCount);
         if (pickCount > 0)
         {
-            IEnumerable<CardModel> chosen = [];
-            try
-            {
-                chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, pickCount, this);
-            }
-            catch
-            {
-                // 选择 UI 出问题不应该卡住整张牌的结算。
-            }
+            var chosen = await KakarotCardSelectHelper.FromHandSelectRangeAsync(choiceContext, Owner, 0, pickCount, this);
 
             foreach (var card in chosen.Where(c => c != null && c != this).Take(pickCount))
             {

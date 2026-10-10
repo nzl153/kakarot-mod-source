@@ -64,16 +64,8 @@ public sealed class KakarotSuperSaiyan4Power : KakarotPower
             return;
         }
 
-        CardModel card = null;
-        try
-        {
-            var chosen = await KakarotCardSelectHelper.FromHandSelectAsync(choiceContext, player, 1, this);
-            card = chosen.FirstOrDefault();
-        }
-        catch
-        {
-            return;
-        }
+        var chosen = await KakarotCardSelectHelper.FromHandSelectAsync(choiceContext, player, 1, this);
+        var card = chosen.FirstOrDefault();
 
         if (card == null)
         {
