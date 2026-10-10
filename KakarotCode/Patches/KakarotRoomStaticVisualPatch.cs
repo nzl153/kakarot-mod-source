@@ -104,8 +104,9 @@ public static class KakarotMerchantStaticVisualPatch
 [HarmonyPatch(typeof(NFakeMerchant), "_Ready")]
 public static class KakarotFakeMerchantStaticVisualPatch
 {
-    private static readonly Vector2 FakeMerchantPos = new(-70f, -195f);
-    private static readonly Vector2 FakeMerchantScale = new(0.192f, 0.192f);
+    // CharacterContainer here is scaled 1.75x and sits 50px lower than the merchant room's.
+    private static readonly Vector2 FakeMerchantPos = new(-38.9f, -140f);
+    private static readonly Vector2 FakeMerchantScale = new(0.1097f, 0.1097f);
 
     private const string MerchantModelPath = "res://Kakarot/Images/Charui/kakarot_merchant_model.png";
     private const string FallbackModelPath = "res://Kakarot/Images/Charui/kakarot_combat_model.png";
@@ -155,7 +156,6 @@ public static class KakarotFakeMerchantStaticVisualPatch
         sprite.Visible = true;
         sprite.Position = FakeMerchantPos;
         sprite.Scale = FakeMerchantScale;
-        sprite.ZIndex = 100;
 
         var path = ResourceLoader.Exists(MerchantModelPath) ? MerchantModelPath : FallbackModelPath;
         if (ResourceLoader.Exists(path))

@@ -655,10 +655,10 @@ public static partial class KakarotCombatPresentation
             return cs.HittableEnemies.Where(alive).ToList();
         }
 
-        if (cardPlay.Target != null && alive(cardPlay.Target) &&
-            cs.HittableEnemies.Any(e => ReferenceEquals(e, cardPlay.Target)))
+        // Impact fx fire after damage resolves; a killed target must not fall back to every enemy.
+        if (cardPlay.Target != null)
         {
-            return [cardPlay.Target];
+            return alive(cardPlay.Target) ? [cardPlay.Target] : [];
         }
 
         return cs.HittableEnemies.Where(alive).ToList();
