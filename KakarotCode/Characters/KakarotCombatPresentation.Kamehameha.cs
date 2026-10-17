@@ -92,10 +92,6 @@ public static partial class KakarotCombatPresentation
 
     private const string KamehamehaBeamPackedScenePath = "res://Kakarot/Vfx/kakarot_kamehameha_beam.tscn";
 
-    private const string KamehamehaImpactPackedScenePath = "res://Kakarot/Vfx/kakarot_kamehameha_impact.tscn";
-
-    private const float KamehamehaImpactDelaySeconds = 0.17f;
-
     private static readonly Vector2 KamehamehaBeamCharacterOffset = new(50f, -58f);
 
     // 各形态手心位置不同，仅列出偏离默认值的形态。

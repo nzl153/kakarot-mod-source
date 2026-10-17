@@ -19,16 +19,6 @@ internal static class KakarotCardSelectHelper
 
     private static readonly LocString DrawPileSelectPrompt = new("combat_messages", "KAKAROTMOD_DRAW_SELECT");
 
-    internal static async Task<IEnumerable<CardModel>> FromHandForDiscardAsync(
-        PlayerChoiceContext choiceContext,
-        Player player,
-        int cardsToPick,
-        AbstractModel source)
-    {
-        var prefs = new CardSelectorPrefs(HandSelectPrompt, cardsToPick);
-        return await CardSelectCmd.FromHandForDiscard(choiceContext, player, prefs, null, source);
-    }
-
     internal static async Task<IEnumerable<CardModel>> FromHandSelectAsync(
         PlayerChoiceContext choiceContext,
         Player player,

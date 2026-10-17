@@ -43,43 +43,6 @@ public static partial class KakarotCombatPresentation
         return ImageTexture.CreateFromImage(img);
     }
 
-    // 沿宽度建立圆柱明暗：边缘压暗并加入偏轴高光，避免纯色矩形呈现纸片感。
-    private static ImageTexture CreateCylinderTexture(
-        int width,
-        Color edge,
-        Color body,
-        Color highlight,
-        float highlightAt)
-    {
-        const int height = 4;
-        var img = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
-        for (int x = 0; x < width; x++)
-        {
-            float t = width <= 1 ? 0.5f : x / (float)(width - 1);
-
-            float rim = Mathf.Pow(Math.Abs(t - 0.5f) * 2f, 1.5f);
-            Color c = body.Lerp(edge, rim);
-
-            float spec = Mathf.Exp(-Mathf.Pow((t - highlightAt) / 0.13f, 2f));
-            c = c.Lerp(highlight, spec * 0.85f);
-
-            for (int y = 0; y < height; y++)
-            {
-                img.SetPixel(x, y, c);
-            }
-        }
-
-        return ImageTexture.CreateFromImage(img);
-    }
-
-    // 使用同步 ImageTexture，避免异步 GradientTexture2D 未就绪时 UV 采样退化。
-    private static ImageTexture CreateSolidTexture(int width, int height)
-    {
-        var img = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
-        img.Fill(Colors.White);
-        return ImageTexture.CreateFromImage(img);
-    }
-
     internal static CanvasItemMaterial CreateAdditiveMaterial()
     {
         return new CanvasItemMaterial { BlendMode = CanvasItemMaterial.BlendModeEnum.Add };

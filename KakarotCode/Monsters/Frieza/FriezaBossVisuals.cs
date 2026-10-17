@@ -19,8 +19,6 @@ internal static class FriezaBossVisuals
     private const string SaucerTargetNodeName = "KakarotFriezaSaucerTarget";
     private const string BreathingMetaName = "KakarotFriezaBreathing";
     private const string FlashTexturePath = "res://images/vfx/dot.png";
-    private const string DeathBeamTexturePath =
-        "res://Kakarot/Images/Frieza/death_beam_vfx.png";
     private const string DeathSaucerTexturePath =
         "res://Kakarot/Images/Frieza/death_saucer_vfx.png";
 
@@ -196,21 +194,6 @@ internal static class FriezaBossVisuals
         FriezaVfxKit.PlayTransformFlash(creature, color);
     }
 
-    public static void PlayEffect(
-        Creature creature,
-        string texturePath,
-        Vector2 scale,
-        float duration = 0.55f,
-        Vector2? globalOffset = null)
-    {
-        TryVisual(() => PlayEffectInternal(
-            creature,
-            texturePath,
-            scale,
-            duration,
-            globalOffset ?? Vector2.Zero));
-    }
-
     // dark：黑金形态的光束。加法混合画不出黑，走 blend_mix 的暗色 shader
     // 打底再叠一层发光的芯，才读得出「一道黑柱」。
     public static void PlayFriezaBeam(
@@ -277,8 +260,7 @@ internal static class FriezaBossVisuals
     }
 
     // 死亡光线 = 龟波那根程序化光束，改细、改成弗利萨的配色。
-    // 原来是一张 death_beam_vfx.png 拉伸出来的，静态图两端永远是齐口，
-    // 而且粗细一变就糊。走 shader 后两端自带半圆收口。
+    // shader 两端自带半圆收口，调整粗细时无需拉伸静态贴图。
     private static void SpawnShaderBeam(
         Node container,
         Vector2 origin,
@@ -618,17 +600,6 @@ internal static class FriezaBossVisuals
         tween.Chain().TweenCallback(Callable.From(impact.QueueFreeSafely));
     }
 
-    public static void PlayImpactEffect(
-        System.Collections.Generic.IEnumerable<Creature> targets,
-        Color color,
-        float sizeMultiplier = 1f)
-    {
-        TryVisual(() => PlayImpactEffectInternal(
-            targets.Where(static target => target.IsAlive).ToArray(),
-            color,
-            sizeMultiplier));
-    }
-
     private static void PlayImpactEffectInternal(
         Creature[] targets,
         Color color,
@@ -669,34 +640,6 @@ internal static class FriezaBossVisuals
             tween.TweenProperty(impact, "modulate:a", 0f, 0.28f);
             tween.Chain().TweenCallback(Callable.From(impact.QueueFreeSafely));
         }
-    }
-
-    private static void PlayEffectInternal(
-        Creature creature,
-        string texturePath,
-        Vector2 scale,
-        float duration,
-        Vector2 globalOffset)
-    {
-        var container = NCombatRoom.Instance?.CombatVfxContainer;
-        var creatureNode = NCombatRoom.Instance?.GetCreatureNode(creature);
-        var texture = ResourceLoader.Load<Texture2D>(texturePath);
-        if (container == null || creatureNode == null || texture == null)
-        {
-            return;
-        }
-
-        var sprite = new Sprite2D
-        {
-            Texture = texture,
-            Scale = scale,
-            ZIndex = 20,
-        };
-        container.AddChildSafely(sprite);
-        sprite.GlobalPosition = creatureNode.VfxSpawnPosition + globalOffset;
-        var tween = sprite.CreateTween();
-        tween.TweenProperty(sprite, "modulate:a", 0f, duration);
-        tween.TweenCallback(Callable.From(sprite.QueueFreeSafely));
     }
 
     private static void PlayPulse(

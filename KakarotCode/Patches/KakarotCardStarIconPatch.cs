@@ -28,15 +28,15 @@ public static class KakarotCardStarIconPatch
                 var currentPath = starIcon?.Texture?.ResourcePath ?? string.Empty;
                 if (currentPath.Contains("kakarot", StringComparison.OrdinalIgnoreCase))
                 {
-                    ReplaceTexture(__instance, "%StarIcon", DefaultStarIcon);
+                    KakarotCounterVisualHelper.ReplaceTexture(__instance, "%StarIcon", DefaultStarIcon);
                 }
                 return;
             }
 
-            ReplaceTexture(__instance, "%EnergyIcon", EnergyIcon);
-            ReplaceTexture(__instance, "%StarIcon", Star1);
-            ReplaceTexture(__instance, "%StarIcon/RotationLayers/Layer1", Star2);
-            ReplaceTexture(__instance, "%StarIcon/RotationLayers/Layer2", Star3);
+            KakarotCounterVisualHelper.ReplaceTexture(__instance, "%EnergyIcon", EnergyIcon);
+            KakarotCounterVisualHelper.ReplaceTexture(__instance, "%StarIcon", Star1);
+            KakarotCounterVisualHelper.ReplaceTexture(__instance, "%StarIcon/RotationLayers/Layer1", Star2);
+            KakarotCounterVisualHelper.ReplaceTexture(__instance, "%StarIcon/RotationLayers/Layer2", Star3);
         }
         catch
         {
@@ -53,25 +53,5 @@ public static class KakarotCardStarIconPatch
 
         var id = model.Pool?.Id?.Entry;
         return !string.IsNullOrWhiteSpace(id) && id.Contains("kakarot", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static void ReplaceTexture(Node root, string nodePath, string texturePath)
-    {
-        if (!ResourceLoader.Exists(texturePath))
-        {
-            return;
-        }
-
-        var textureRect = root.GetNodeOrNull<TextureRect>(nodePath);
-        if (textureRect == null)
-        {
-            return;
-        }
-
-        var texture = ResourceLoader.Load<Texture2D>(texturePath);
-        if (texture != null)
-        {
-            textureRect.Texture = texture;
-        }
     }
 }

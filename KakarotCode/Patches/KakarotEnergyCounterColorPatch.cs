@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -75,16 +75,11 @@ public static class KakarotEnergyCounterColorPatch
             return;
         }
 
-        var stack = new Stack();
+        var stack = new Stack<Node>();
         stack.Push(root);
         while (stack.Count > 0)
         {
-            var node = stack.Pop() as Node;
-            if (node == null)
-            {
-                continue;
-            }
-
+            var node = stack.Pop();
             if (node is CanvasItem ci)
             {
                 ci.Modulate = node.Name.ToString().Contains("Rotation", StringComparison.OrdinalIgnoreCase) ? dimTint : normalTint;
@@ -99,41 +94,17 @@ public static class KakarotEnergyCounterColorPatch
 
     private static void ForceReplaceEnergyCounterTextures(NEnergyCounter counter)
     {
-        ReplaceTexture(counter, "Layers/Layer1", Orb1);
-        ReplaceTexture(counter, "Layers/RotationLayers/Layer2", Orb2);
-        ReplaceTexture(counter, "Layers/RotationLayers/Layer3", Orb3);
-        ReplaceTexture(counter, "Layers/Layer4", Orb4);
-        ReplaceTexture(counter, "Layers/Layer5", Orb5);
-    }
-
-    private static void ReplaceTexture(Node root, string nodePath, string texturePath)
-    {
-        if (!ResourceLoader.Exists(texturePath))
-        {
-            return;
-        }
-
-        var textureRect = root.GetNodeOrNull<TextureRect>(nodePath);
-        if (textureRect == null)
-        {
-            return;
-        }
-
-        var texture = ResourceLoader.Load<Texture2D>(texturePath);
-        if (texture != null)
-        {
-            textureRect.Texture = texture;
-        }
+        KakarotCounterVisualHelper.ReplaceTexture(counter, "Layers/Layer1", Orb1);
+        KakarotCounterVisualHelper.ReplaceTexture(counter, "Layers/RotationLayers/Layer2", Orb2);
+        KakarotCounterVisualHelper.ReplaceTexture(counter, "Layers/RotationLayers/Layer3", Orb3);
+        KakarotCounterVisualHelper.ReplaceTexture(counter, "Layers/Layer4", Orb4);
+        KakarotCounterVisualHelper.ReplaceTexture(counter, "Layers/Layer5", Orb5);
     }
 }
 
 [HarmonyPatch(typeof(NStarCounter), nameof(NStarCounter.Initialize))]
 public static class KakarotStarCounterScalePatch
 {
-    private const string Star1 = "res://images/ui/combat/kakarot_energy_star.png";
-    private const string Star2 = "res://images/ui/combat/kakarot_energy_star_layer_2.png";
-    private const string Star3 = "res://images/ui/combat/kakarot_energy_star_layer_3.png";
-
     public static void Postfix(NStarCounter __instance, Player player)
     {
         try
@@ -143,8 +114,8 @@ public static class KakarotStarCounterScalePatch
                 return;
             }
 
-            ApplyKakarotStarHoverTip(__instance);
-            ReplaceStarTextures(__instance);
+            KakarotCounterVisualHelper.ApplyKakarotStarHoverTip(__instance);
+            KakarotCounterVisualHelper.ReplaceStarTextures(__instance);
             __instance.Scale = new Vector2(0.62f, 0.62f);
             __instance.Position += new Vector2(0f, 16f);
             __instance.SetMeta("kakarot_star_scaled", true);
@@ -159,52 +130,12 @@ public static class KakarotStarCounterScalePatch
         var id = p?.Character?.Id.Entry;
         return !string.IsNullOrWhiteSpace(id) && id.Contains("kakarot", StringComparison.OrdinalIgnoreCase);
     }
-
-    private static void ReplaceStarTextures(Node root)
-    {
-        ReplaceTexture(root, "Icon", Star1);
-        ReplaceTexture(root, "Icon/RotationLayers/Layer1", Star2);
-        ReplaceTexture(root, "Icon/RotationLayers/Layer2", Star3);
-    }
-
-    private static void ApplyKakarotStarHoverTip(NStarCounter starCounter)
-    {
-        var description = new LocString("static_hover_tips", "KAKAROT_STAR_COUNT.description");
-        description.Add("singleStarIcon", "[img]res://images/packed/sprite_fonts/kakarot_star_icon.png[/img]");
-        var title = new LocString("static_hover_tips", "KAKAROT_STAR_COUNT.title");
-        var hoverTip = new HoverTip(title, description);
-        Traverse.Create(starCounter).Field("_hoverTip").SetValue(hoverTip);
-    }
-
-    private static void ReplaceTexture(Node root, string nodePath, string texturePath)
-    {
-        if (!ResourceLoader.Exists(texturePath))
-        {
-            return;
-        }
-
-        var textureRect = root.GetNodeOrNull<TextureRect>(nodePath);
-        if (textureRect == null)
-        {
-            return;
-        }
-
-        var texture = ResourceLoader.Load<Texture2D>(texturePath);
-        if (texture != null)
-        {
-            textureRect.Texture = texture;
-        }
-    }
 }
 
 // Reused combat UI may skip Initialize; metadata keeps the process fallback one-shot.
 [HarmonyPatch(typeof(NStarCounter), "_Process")]
 public static class KakarotStarCounterScaleRuntimePatch
 {
-    private const string Star1 = "res://images/ui/combat/kakarot_energy_star.png";
-    private const string Star2 = "res://images/ui/combat/kakarot_energy_star_layer_2.png";
-    private const string Star3 = "res://images/ui/combat/kakarot_energy_star_layer_3.png";
-
     public static void Postfix(NStarCounter __instance)
     {
         try
@@ -221,50 +152,14 @@ public static class KakarotStarCounterScaleRuntimePatch
                 return;
             }
 
-            ApplyKakarotStarHoverTip(__instance);
-            ReplaceStarTextures(__instance);
+            KakarotCounterVisualHelper.ApplyKakarotStarHoverTip(__instance);
+            KakarotCounterVisualHelper.ReplaceStarTextures(__instance);
             __instance.Scale = new Vector2(0.62f, 0.62f);
             __instance.Position += new Vector2(0f, 16f);
             __instance.SetMeta("kakarot_star_scaled", true);
         }
         catch
         {
-        }
-    }
-
-    private static void ReplaceStarTextures(Node root)
-    {
-        ReplaceTexture(root, "Icon", Star1);
-        ReplaceTexture(root, "Icon/RotationLayers/Layer1", Star2);
-        ReplaceTexture(root, "Icon/RotationLayers/Layer2", Star3);
-    }
-
-    private static void ApplyKakarotStarHoverTip(NStarCounter starCounter)
-    {
-        var description = new LocString("static_hover_tips", "KAKAROT_STAR_COUNT.description");
-        description.Add("singleStarIcon", "[img]res://images/packed/sprite_fonts/kakarot_star_icon.png[/img]");
-        var title = new LocString("static_hover_tips", "KAKAROT_STAR_COUNT.title");
-        var hoverTip = new HoverTip(title, description);
-        Traverse.Create(starCounter).Field("_hoverTip").SetValue(hoverTip);
-    }
-
-    private static void ReplaceTexture(Node root, string nodePath, string texturePath)
-    {
-        if (!ResourceLoader.Exists(texturePath))
-        {
-            return;
-        }
-
-        var textureRect = root.GetNodeOrNull<TextureRect>(nodePath);
-        if (textureRect == null)
-        {
-            return;
-        }
-
-        var texture = ResourceLoader.Load<Texture2D>(texturePath);
-        if (texture != null)
-        {
-            textureRect.Texture = texture;
         }
     }
 }
