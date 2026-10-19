@@ -1,4 +1,7 @@
 {
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "Third Eye",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "A treasure of the Demon Realm, said to awaken dormant power.",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "Once per combat: [gold]Right-click[/gold] to activate.",
   "KAKAROTMOD-SAIYAN_BLOOD.title": "Saiyan Blood",
   "KAKAROTMOD-SAIYAN_BLOOD.flavor": "Every time a Saiyan crawls back from the brink, they come back stronger.",
   "KAKAROTMOD-SAIYAN_BLOOD.description": "Gain 1 extra Rage at the start of your first turn each combat. Whenever you play a Strike or take damage from an enemy, gain 1 Rage. Below 20% HP: gain 2 Strength and 2 Dexterity. End of combat: if your HP is below 70%, heal 6 HP.",

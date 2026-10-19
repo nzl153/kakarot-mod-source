@@ -188,7 +188,8 @@ public static partial class KakarotCombatPresentation
         float holdSeconds,
         float fadeSeconds,
         bool dark = false,
-        float muzzleOrbScale = 0f)
+        float muzzleOrbScale = 0f,
+        float? coreBias = null)
     {
         string shaderPath = dark ? DarkBeamShaderPath : KamehamehaBeamShaderPath;
         if (!ResourceLoader.Exists(shaderPath))
@@ -221,6 +222,10 @@ public static partial class KakarotCombatPresentation
         material.SetShaderParameter("noise_tex", noise);
         material.SetShaderParameter("beam_color", beamColor);
         material.SetShaderParameter("core_color", coreColor);
+        if (coreBias.HasValue)
+        {
+            material.SetShaderParameter("core_bias", coreBias.Value);
+        }
         material.SetShaderParameter("progress", 0f);
         material.SetShaderParameter("intensity", 1f);
 

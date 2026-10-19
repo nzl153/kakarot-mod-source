@@ -32,6 +32,8 @@ public static partial class KakarotCombatPresentation
 
     private const string SuperSaiyanTransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_ssj_a.wav";
 
+    private const string DaimaKidTransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_daima_kid_a.wav";
+
     private const string SuperSaiyanGodTransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_divine_a.wav";
 
     private const string SuperSaiyan4TransformSfxPath = "res://Kakarot/Audio/sfx/combat/charge/sfx_transform_ss4_a.wav";
@@ -60,6 +62,8 @@ public static partial class KakarotCombatPresentation
 
     private const string SuperSaiyanTransformSfxNodeName = "TransformSfx";
 
+    private const string DaimaKidTransformSfxNodeName = "DaimaKidTransformSfx";
+
     private const string SuperSaiyanGodTransformSfxNodeName = "DivineTransformSfx";
 
     private const string SuperSaiyan4TransformSfxNodeName = "Ss4TransformSfx";
@@ -84,6 +88,7 @@ public static partial class KakarotCombatPresentation
         ["KAKAROTMOD-KAKAROT_WOLF_FANG_FIST"] = 4,
         ["KAKAROTMOD-KAKAROT_EIGHT_ARMED_FIST"] = 3,
         ["KAKAROTMOD-KAKAROT_AFTERIMAGE_FIST"] = 3,
+        ["KAKAROTMOD-KAKAROT_DAIMA_RUYI_COMBO"] = 3,
     };
 
     private static readonly HashSet<string> DefenseCardOverrides = new(StringComparer.OrdinalIgnoreCase)
@@ -97,12 +102,14 @@ public static partial class KakarotCombatPresentation
         "KAKAROTMOD-KAKAROT_TOP_FIST",
         "KAKAROTMOD-KAKAROT_INSTANT_TRANSMISSION",
         "KAKAROTMOD-KAKAROT_GREAT_APE_FORM",
+        "KAKAROTMOD-KAKAROT_DAIMA_KAIOSHIN_SUPPORT",
     };
 
     private static readonly HashSet<string> ChargeCardOverrides = new(StringComparer.OrdinalIgnoreCase)
     {
         "KAKAROTMOD-KAKAROT_CHARGE_UP",
         "KAKAROTMOD-KAKAROT_CANCEL_SUPER_SAIYAN_FORM",
+        "KAKAROTMOD-KAKAROT_DAIMA_TAIL_REGROWTH",
     };
 
     private static readonly Dictionary<string, (string Path, string NodeName, float VolumeDb)> SpecialAttackSfxOverrides = new(StringComparer.OrdinalIgnoreCase)
@@ -112,18 +119,22 @@ public static partial class KakarotCombatPresentation
         ["KAKAROTMOD-KAKAROT_DRAGON_FIST"] = (KamehamehaSfxPath, KamehamehaSfxNodeName, -3f),
         ["KAKAROTMOD-KAKAROT_TENFOLD_KAMEHAMEHA"] = (KamehamehaSfxPath, KamehamehaSfxNodeName, -3f),
         ["KAKAROTMOD-KAKAROT_FATHER_SON_WAVE"] = (KamehamehaSfxPath, KamehamehaSfxNodeName, -3f),
+        ["KAKAROTMOD-KAKAROT_DAIMA_BREAKTHROUGH_KAMEHAMEHA"] = (KamehamehaSfxPath, KamehamehaSfxNodeName, -3f),
     };
 
     private static readonly Dictionary<string, (string Path, string NodeName)> SpecialSkillSfxOverrides = new(StringComparer.OrdinalIgnoreCase)
     {
         ["KAKAROTMOD-KAKAROT_KAIOKEN"] = (KaiokenSfxPath, KaiokenSfxNodeName),
         ["KAKAROTMOD-KAKAROT_SUPER_SAIYAN_TRANSFORM"] = (SuperSaiyanTransformSfxPath, SuperSaiyanTransformSfxNodeName),
+        ["KAKAROTMOD-KAKAROT_DAIMA_TRANSFORM"] = (DaimaKidTransformSfxPath, DaimaKidTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_SUPER_SAIYAN_GOD_TRANSFORM"] = (SuperSaiyanGodTransformSfxPath, SuperSaiyanGodTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_SUPER_SAIYAN_BLUE_TRANSFORM"] = (SuperSaiyanGodTransformSfxPath, SuperSaiyanGodTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_RETURN_TO_ORIGIN"] = (SuperSaiyan4TransformSfxPath, SuperSaiyan4TransformSfxNodeName),
+        [KakarotAuraFormResolver.DaimaSs4AwakeningId] = (DaimaKidTransformSfxPath, DaimaKidTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN"] = (UltraInstinctTransformSfxPath, UltraInstinctTransformSfxNodeName),
         ["KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT"] = (UltraInstinctTransformSfxPath, UltraInstinctTransformSfxNodeName),
-        ["KAKAROTMOD-KAKAROT_NIMBUS_CLOUD"] = (NimbusCloudSfxPath, NimbusCloudSfxNodeName),
+        [NimbusCloudCardId] = (NimbusCloudSfxPath, NimbusCloudSfxNodeName),
+        ["KAKAROTMOD-KAKAROT_DAIMA_NIMBUS_DASH"] = (NimbusCloudSfxPath, NimbusCloudSfxNodeName),
     };
 
     public static void TryPlayAttackWindup(Player player, CardPlay cardPlay)
@@ -209,7 +220,8 @@ public static partial class KakarotCombatPresentation
                     TrySwapToPose(player.Creature, staticModel, KakarotFormVisuals.ResolveAttackPosePath(player.Creature), attackPoseDuration);
                     ScheduleMeleeImpactFx(staticModel, visualsRoot, player, cardPlay, repeatCount);
 
-                    if (string.Equals(cardEntryId, RuyiStaffCardId, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(cardEntryId, RuyiStaffCardId, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(cardEntryId, "KAKAROTMOD-KAKAROT_DAIMA_RUYI_COMBO", StringComparison.OrdinalIgnoreCase))
                     {
                         TryPlayRuyiStaffVfx(player, cardPlay, visualsRoot, staticModel);
                     }
@@ -246,6 +258,10 @@ public static partial class KakarotCombatPresentation
 
             // 解析器会过滤无关卡牌；这里只发起纯表现播放。
             KakarotAuraVfx.TryPlay(staticModel, player.Creature, cardEntryId);
+            if (string.Equals(cardEntryId, KakarotAuraFormResolver.DaimaSs4AwakeningId, StringComparison.OrdinalIgnoreCase))
+            {
+                TryPlayDaimaTransformation(player.Creature, growUp: true);
+            }
 
             // 「我要药」的 CardType 是 Skill，但它指定敌人、也真的造成伤害，
             // 所以它需要攻击分支那套朝向/姿势处理，光挂个特效会变成「背对着敌人放龙」。
@@ -283,7 +299,7 @@ public static partial class KakarotCombatPresentation
             {
                 // 筋斗云是一条平直无起音的持续哨音，没有瞬态穿不透战斗混音，
                 // 源文件已归一到 -1dBFS，播放再单独抬到 0dB；其余专属音维持 -4dB。
-                float db = string.Equals(cardEntryId, NimbusCloudCardId, StringComparison.OrdinalIgnoreCase) ? 0f : -4f;
+                float db = string.Equals(skillSfx.Path, NimbusCloudSfxPath, StringComparison.OrdinalIgnoreCase) ? 0f : -4f;
                 PlaySfx(visualsRoot, skillSfx.NodeName, skillSfx.Path, db, true);
             }
             else if (cardPlay.Card.Type is CardType.Skill or CardType.Power)
@@ -295,6 +311,67 @@ public static partial class KakarotCombatPresentation
         }
         catch
         {
+        }
+    }
+
+    public static void TryPlayDaimaTransformation(Creature creature, bool growUp)
+    {
+        try
+        {
+            var visualsRoot = NCombatRoom.Instance?.GetCreatureNode(creature)?.Visuals;
+            var staticModel = visualsRoot?.GetNodeOrNull<Sprite2D>("StaticModel");
+            if (staticModel == null || !GodotObject.IsInstanceValid(staticModel))
+            {
+                return;
+            }
+
+            if (growUp)
+            {
+                var burst = new Node2D { Name = "KakarotDaimaSs4Burst", ZIndex = 40 };
+                visualsRoot.AddChild(burst);
+                burst.GlobalPosition = staticModel.GlobalPosition;
+                burst.GlobalScale = Vector2.One;
+
+                var gold = new Color(1f, 0.7f, 0.18f);
+                var platinum = new Color(1f, 0.97f, 0.82f);
+                SpawnBlastRing(burst, gold, new Color(1f, 0.16f, 0.08f), 3.8f, 0.65f, 0.48f);
+                SpawnKiSparks(burst, 14, 0.8f, gold, -Mathf.Pi / 2f, 0.65f, 150f, 310f, 0.72f);
+                var flare = new Sprite2D
+                {
+                    Texture = CreateSoftGlowTexture(128, Colors.White, platinum, 0.35f, 1.8f),
+                    Material = CreateAdditiveMaterial(),
+                    Scale = new Vector2(2.4f, 3.2f),
+                };
+                burst.AddChild(flare);
+                var flareTween = flare.CreateTween();
+                flareTween.TweenProperty(flare, "modulate:a", 0f, 0.22);
+                var lifetime = burst.CreateTween();
+                lifetime.TweenInterval(0.76);
+                lifetime.TweenCallback(Callable.From(() => FreeIfValid(burst)));
+                PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Short, hitStop: false);
+                return;
+            }
+
+            KakarotAuraVfx.Stop(staticModel);
+            PlaySfx(visualsRoot, DaimaKidTransformSfxNodeName, DaimaKidTransformSfxPath, -4f, false);
+            var flash = new Sprite2D
+            {
+                Texture = CreateSoftGlowTexture(128, Colors.White, Colors.White, 0.4f, 1.6f),
+                Scale = new Vector2(2.2f, 2.8f),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+                ZIndex = 40,
+            };
+            visualsRoot.AddChild(flash);
+            flash.GlobalPosition = staticModel.GlobalPosition;
+            var tween = flash.CreateTween();
+            tween.TweenProperty(flash, "modulate:a", 1f, 0.04);
+            tween.TweenProperty(flash, "modulate:a", 0f, 0.18)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+            tween.TweenCallback(Callable.From(flash.QueueFree));
+        }
+        catch
+        {
+            // Missing or freed visual nodes must not interrupt combat resolution.
         }
     }
 

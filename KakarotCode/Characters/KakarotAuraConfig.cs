@@ -14,6 +14,7 @@ internal enum KakarotAuraForm
     SuperSaiyan4,
     UltraInstinctOmen,
     PerfectUltraInstinct,
+    SuperSaiyanBlueKaioken,
 }
 
 internal enum KakarotAuraPlayback
@@ -46,6 +47,7 @@ internal static class KakarotAuraConfig
     internal const float FrontPhaseOffset = 5.37f;
     internal const float PersistentIntensity = 0.24f;
     internal const float PersistentFlowSpeedScale = 0.65f;
+    internal const float KaiokenOuterOpacity = 0.46f;
 
     internal const float ChargeDuration = 1.16f;
     internal const float TransformDuration = 1.48f;
@@ -89,6 +91,8 @@ internal static class KakarotAuraConfig
 
     internal static readonly Vector2 Offset = new(6f, 4f);
     internal static readonly Vector2 SpriteScale = new(370f / 338f, 500f / 582f);
+    internal static readonly Vector2 KaiokenOuterScale = new(1.26f, 1.12f);
+    internal static readonly Vector2 KaiokenOuterOffset = new(0f, -24f);
     internal static readonly Color LightningCoreColor = Colors.White;
 
     internal static bool IsPersistent(KakarotAuraForm form) => form is
@@ -97,6 +101,7 @@ internal static class KakarotAuraConfig
         KakarotAuraForm.SuperSaiyan2 or
         KakarotAuraForm.SuperSaiyan3 or
         KakarotAuraForm.SuperSaiyanBlue or
+        KakarotAuraForm.SuperSaiyanBlueKaioken or
         KakarotAuraForm.SuperSaiyan4 or
         KakarotAuraForm.UltraInstinctOmen or
         KakarotAuraForm.PerfectUltraInstinct;
@@ -108,7 +113,8 @@ internal static class KakarotAuraConfig
         KakarotAuraForm.SuperSaiyan2 => GoldenAura(true),
         KakarotAuraForm.SuperSaiyan3 => GoldenAura(false),
         KakarotAuraForm.SuperSaiyanGod => new(new Color("ff3b52"), new Color("a01030"), Colors.White, false),
-        KakarotAuraForm.SuperSaiyanBlue => new(new Color("5eeaff"), new Color("087fc4"), Colors.White, false),
+        KakarotAuraForm.SuperSaiyanBlue or KakarotAuraForm.SuperSaiyanBlueKaioken =>
+            new(new Color("5eeaff"), new Color("087fc4"), Colors.White, false),
         KakarotAuraForm.SuperSaiyan4 => GoldenAura(false),
         KakarotAuraForm.UltraInstinctOmen => UltraInstinctAura(),
         KakarotAuraForm.PerfectUltraInstinct => UltraInstinctAura(),

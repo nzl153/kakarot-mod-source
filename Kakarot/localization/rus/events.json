@@ -38,5 +38,13 @@
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.INITIAL.options.LEAVE.description": "Не брать ничего.",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.CHASE_KORIN.description": "Вы гоняетесь за Корином вокруг башни, пока тело не доходит до предела. Наконец вы выхватываете Кувшин со священной водой у него из рук.",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.TAKE_SENZU_JAR.description": "Корин бросает вам банку. Вы ловите ее точным движением и получаете спасительный запас.",
-  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "Вы откладываете испытание на другой день. Корин поглаживает усы и смотрит вам вслед."
+  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "Вы откладываете испытание на другой день. Корин поглаживает усы и смотрит вам вслед.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.title": "Врата в Мир демонов",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.description": "Гоку превратился в ребёнка, а перед вами появились врата в Мир демонов. Маленький Кайошин останавливается рядом: «Пройдя через них, вы потеряете часть жизненных сил, но обретёте силу Третьего глаза». В его ладони загорается мягкий свет: «Или позвольте мне сначала залечить ваши раны».",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.title": "Пройти через врата в Мир демонов",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.description": "Отнимает 10 максимальных ОЗ. Даёт Третий глаз. Только для Какарота.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.title": "Принять исцеление Кайошина",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.description": "Восстанавливает 10 ОЗ.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ENTER_GATE.description": "Вы проходите через врата, и холод отнимает часть ваших жизненных сил, пока Третий глаз открывается у вас на ладони.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ACCEPT_HEALING.description": "Кайошин подносит руку к вашим ранам, и мягкий свет постепенно унимает боль."
 }

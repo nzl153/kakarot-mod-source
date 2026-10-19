@@ -1,4 +1,7 @@
 {
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "Третий глаз",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "Сокровище Царства демонов, пробуждающее дремлющую силу.",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "Раз за бой: [gold]ПКМ[/gold], чтобы активировать.",
   "KAKAROTMOD-SAIYAN_BLOOD.title": "Кровь сайяна",
   "KAKAROTMOD-SAIYAN_BLOOD.flavor": "Чем сильнее боль, тем яростнее воля.",
   "KAKAROTMOD-SAIYAN_BLOOD.description": "Дает дополнительно 1 ярости в начале первого хода каждого боя. Дает 1 ярости, когда вы разыгрываете «Удар» или получаете урон от врага. При ОЗ ниже 20% дает 2 силы и 2 ловкости. Восполняет 6 ОЗ в конце боя, если ваши ОЗ ниже 70%.",

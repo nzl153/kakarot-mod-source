@@ -30,7 +30,7 @@ public sealed class KaiokenPower : KakarotPower
     [
         new DynamicVar("Strength", 2m),
         new DynamicVar("Dexterity", 0m),
-        new DynamicVar("HpLoss", 2m),
+        new KaiokenHpLossVar(),
     ];
 
     public void Configure(int strengthBonus, int dexterityBonus, int hpLossPerTurn)
@@ -54,6 +54,16 @@ public sealed class KaiokenPower : KakarotPower
     public int StrengthBonus => _strengthBonus;
     public int DexterityBonus => _dexterityBonus;
     public int HpLossPerTurn => _hpLossPerTurn;
+    private int EffectiveHpLossPerTurn => _hpLossPerTurn * (Owner.HasPower<KakarotSuperSaiyanBluePower>() ? 2 : 1);
+
+    // Resolve on read so losing Blue immediately restores the normal cost without changing stacked totals.
+    private sealed class KaiokenHpLossVar() : DynamicVar("HpLoss", 2m)
+    {
+        protected override decimal GetBaseValueForIConvertible() =>
+            _owner is KaiokenPower { IsMutable: true } power ? power.EffectiveHpLossPerTurn : BaseValue;
+
+        public override string ToString() => GetBaseValueForIConvertible().ToString();
+    }
 
     public override async Task BeforeApplied(Creature target, decimal amount, Creature applier, CardModel cardSource)
     {
@@ -82,7 +92,7 @@ public sealed class KaiokenPower : KakarotPower
         }
 
         Flash();
-        await CreatureCmd.Damage(choiceContext, Owner, _hpLossPerTurn, ValueProp.Unblockable | ValueProp.Unpowered, Owner);
+        await CreatureCmd.Damage(choiceContext, Owner, EffectiveHpLossPerTurn, ValueProp.Unblockable | ValueProp.Unpowered, Owner);
         await PowerCmd.Decrement(this);
     }
 

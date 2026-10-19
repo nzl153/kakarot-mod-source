@@ -1,0 +1,10 @@
+{
+  "KAKAROT_STAR_COUNT.title": "분노",
+  "KAKAROT_STAR_COUNT.description": "현재 분노({singleStarIcon}) 수치입니다. 카카로트의 일부 카드와 유물은 분노를 사용합니다.",
+  "KAKAROT_RELIC_RAGE_KEYWORD.title": "분노",
+  "KAKAROT_RELIC_RAGE_KEYWORD.description": "분노로 카드와 유물의 효과를 발동합니다.",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.title": "S세포",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.description": "스스로 체력을 잃는 카드를 사용하면(계왕권 제외), 잃은 체력 1당 S세포를 1개 얻습니다. S세포가 12개가 되면 변신을 덱에 추가하고 손으로 가져옵니다(게임당 1번).",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_title": "S세포 기록",
+  "KAKAROT_RELIC_S_CELL_KEYWORD.stats_compendium": "게임 중에는 이번 전투에서 얻은 S세포 수와 이번 게임의 누적 수를 표시합니다. 백과사전에서는 수치를 표시하지 않습니다."
+}

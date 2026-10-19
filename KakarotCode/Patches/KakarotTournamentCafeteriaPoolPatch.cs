@@ -25,6 +25,7 @@ public static class KakarotTournamentCafeteriaPoolPatch
             ModelDb.Event<KakarotTournamentCafeteria>(),
             ModelDb.Event<KakarotIncredibleAdventure>(),
             ModelDb.Event<KakarotKorinTowerTrial>(),
+            ModelDb.Event<KakarotDaimaDemonRealmGate>(),
         ];
 
         foreach (ActModel act in state.Acts)

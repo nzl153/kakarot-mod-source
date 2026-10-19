@@ -8,7 +8,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 
 namespace KakarotMod.KakarotCode.Patches;
 
-// The original picks from Ancient pool cards minus Archaic Tooth cards, which is empty for Kakarot.
+// Kakarot's Dusty Tome always offers Father-Son Wave instead of a random Ancient card.
 [HarmonyPatch(typeof(DustyTome), nameof(DustyTome.SetupForPlayer))]
 public static class KakarotDustyTomeAncientCardPatch
 {
@@ -22,6 +22,18 @@ public static class KakarotDustyTomeAncientCardPatch
 
         __instance.AncientCard = ModelDb.Card<KakarotFatherSonWave>().Id;
         return false;
+    }
+
+    // Postfixes run even when another mod's prefix skips ours, so the offer text always matches the reward.
+    [HarmonyPostfix]
+    public static void Postfix(DustyTome __instance, Player player)
+    {
+        if (player.Character is not KakarotCharacter)
+        {
+            return;
+        }
+
+        __instance.AncientCard = ModelDb.Card<KakarotFatherSonWave>().Id;
     }
 }
 

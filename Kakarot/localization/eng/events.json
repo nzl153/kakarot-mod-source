@@ -39,5 +39,13 @@
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.INITIAL.options.LEAVE.description": "Take nothing.",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.CHASE_KORIN.description": "You chase Korin around the tower until your legs give out, then lunge one last time. Somehow, the Sacred Water Jug ends up in your hands.",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.TAKE_SENZU_JAR.description": "Korin tosses you the jar. One bean keeps a fighter going for ten days. Make them count.",
-  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "You leave the trial for another day. Korin strokes his whiskers and goes back to his nap."
+  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "You leave the trial for another day. Korin strokes his whiskers and goes back to his nap.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.title": "Demon Realm Gate",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.description": "Goku has been turned small, and a gate to the Demon Realm stands before you. Mini Supreme Kai blocks the way. \"Crossing will cost you some of your life, but you can gain the power of the Third Eye.\" A soft light gathers in his hand. \"Or let me tend to those wounds first.\"",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.title": "Cross the Demon Realm Gate",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.description": "Lose 10 Max HP. Obtain the Third Eye. Kakarot only.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.title": "Accept Supreme Kai's Healing",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.description": "Heal 10 HP.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ENTER_GATE.description": "You cross the gate, and a chill drains away part of your life as the Third Eye opens in your palm.",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ACCEPT_HEALING.description": "Supreme Kai rests his hand over your wounds, and the gentle light slowly eases the pain."
 }

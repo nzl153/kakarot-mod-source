@@ -1,0 +1,16 @@
+{
+  "KAKAROTMOD-KAKAROT.title": "카카로트",
+  "KAKAROTMOD-KAKAROT.titleObject": "카카로트",
+  "KAKAROTMOD-KAKAROT.description": "이세계에서 온 사이어인. 공격받거나 타격 카드를 사용해 분노를 쌓고, 분노로 카드와 유물의 효과를 발동합니다.",
+  "KAKAROTMOD-KAKAROT.pronounObject": "그를",
+  "KAKAROTMOD-KAKAROT.possessiveAdjective": "그의",
+  "KAKAROTMOD-KAKAROT.pronounPossessive": "그의 것",
+  "KAKAROTMOD-KAKAROT.pronounSubject": "그",
+  "KAKAROTMOD-KAKAROT.cardsModifierTitle": "카카로트 카드",
+  "KAKAROTMOD-KAKAROT.cardsModifierDescription": "카카로트의 카드가 보상과 상점에 등장합니다.",
+  "KAKAROTMOD-KAKAROT.aromaPrinciple": "카카로트",
+  "KAKAROTMOD-KAKAROT.eventDeathPrevention": "아직 끝나지 않았어!",
+  "KAKAROTMOD-KAKAROT.banter.alive.endTurnPing": "계속 싸우자!",
+  "KAKAROTMOD-KAKAROT.banter.dead.endTurnPing": "난 쓰러지지 않아!",
+  "KAKAROTMOD-KAKAROT.goldMonologue": "난 더 강해질 거야."
+}

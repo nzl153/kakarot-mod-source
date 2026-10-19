@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
+using KakarotMod.KakarotCode.Daima;
 
 namespace KakarotMod.KakarotCode.Powers;
 
@@ -22,7 +23,9 @@ public static class KakarotJusticeHeartRitualHandler
         }
 
         var creature = owner.Creature;
-        if (creature.HasPower<KakarotSuperSaiyanGodPower>() || HasPendingSuperSaiyanGodTransform(owner))
+        if (KakarotDaima.IsActive(creature)
+            || creature.HasPower<KakarotSuperSaiyanGodPower>()
+            || HasPendingSuperSaiyanGodTransform(owner))
         {
             return;
         }

@@ -39,5 +39,13 @@
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.INITIAL.options.LEAVE.description": "不拿走任何东西。",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.CHASE_KORIN.description": "你追着卡林仙人在塔顶来回疾驰。体力被逼到极限，但最后还是从他手里夺下了超圣水壶。",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.TAKE_SENZU_JAR.description": "卡林仙人把仙豆罐抛了过来。你稳稳接住，将这份救命的储备收好。",
-  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "你决定把试炼留到以后。卡林仙人捋着胡须，笑着目送你离开塔顶。"
+  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "你决定把试炼留到以后。卡林仙人捋着胡须，笑着目送你离开塔顶。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.title": "魔界之门",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.description": "悟空的身体被变小了，眼前却出现了一扇通往魔界的大门。小界王神拦在门旁：「穿过去会折损你的生命，但也能得到第三只眼的力量。」他抬起手，掌心亮起柔和的光：「不急的话，我先替你疗伤。」",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.title": "穿过魔界之门",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.description": "失去10点最大生命，获得第三只眼。仅卡卡罗特可选。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.title": "接受界王神的治疗",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.description": "回复10点生命。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ENTER_GATE.description": "你穿过大门，一阵寒意抽走了身体里的部分生命，第三只眼却在掌心睁开。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ACCEPT_HEALING.description": "界王神把手放在你的伤口上，柔和的光芒缓缓抚平了疼痛。"
 }

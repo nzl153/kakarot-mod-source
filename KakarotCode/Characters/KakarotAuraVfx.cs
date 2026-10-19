@@ -11,6 +11,8 @@ internal sealed partial class KakarotAuraVfx : Node2D
     private Creature _creature;
     private ShaderMaterial _backMaterial;
     private ShaderMaterial _frontMaterial;
+    private ShaderMaterial _kaiokenOuterMaterial;
+    private Sprite2D _kaiokenOuterAura;
     private LightningBolt[] _lightningBolts = [];
 
     private KakarotAuraPalette _fromPalette;
@@ -195,6 +197,14 @@ internal sealed partial class KakarotAuraVfx : Node2D
             KakarotAuraConfig.FrontPhaseOffset,
             KakarotAuraConfig.FrontFlowSpeed);
 
+        _kaiokenOuterMaterial = CreateMaterial(
+            shader, false, KakarotAuraConfig.KaiokenOuterOpacity,
+            KakarotAuraConfig.FrontPhaseOffset, KakarotAuraConfig.BackFlowSpeed);
+        SetPalette(_kaiokenOuterMaterial, KakarotAuraConfig.GetPalette(KakarotAuraForm.Kaioken));
+        _kaiokenOuterAura = CreateAuraLayer("KaiokenOuterAura", KakarotAuraConfig.BackZIndex, texture, _kaiokenOuterMaterial);
+        _kaiokenOuterAura.Scale *= KakarotAuraConfig.KaiokenOuterScale;
+        _kaiokenOuterAura.Position = KakarotAuraConfig.KaiokenOuterOffset;
+        AddChild(_kaiokenOuterAura);
         AddChild(CreateAuraLayer("BackAura", KakarotAuraConfig.BackZIndex, texture, _backMaterial));
         AddChild(CreateAuraLayer("FrontAura", KakarotAuraConfig.FrontZIndex, texture, _frontMaterial));
         CreateLightningArcs();
@@ -392,12 +402,15 @@ internal sealed partial class KakarotAuraVfx : Node2D
 
         _backMaterial.SetShaderParameter("intensity", intensity);
         _frontMaterial.SetShaderParameter("intensity", intensity);
+        _kaiokenOuterAura.Visible = _targetForm == KakarotAuraForm.SuperSaiyanBlueKaioken;
+        _kaiokenOuterMaterial.SetShaderParameter("intensity", intensity);
         float flowScale = Mathf.Lerp(
             KakarotAuraConfig.PersistentFlowSpeedScale,
             1f,
             activity);
         _backMaterial.SetShaderParameter("flow_speed", KakarotAuraConfig.BackFlowSpeed * flowScale);
         _frontMaterial.SetShaderParameter("flow_speed", KakarotAuraConfig.FrontFlowSpeed * flowScale);
+        _kaiokenOuterMaterial.SetShaderParameter("flow_speed", KakarotAuraConfig.BackFlowSpeed * flowScale);
     }
 
     private KakarotAuraPalette InterpolatePalette()

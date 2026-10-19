@@ -1,4 +1,7 @@
 {
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "第三只眼",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "魔界的宝物，据说能唤醒沉睡的力量。",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "每场战斗一次：[gold]右键点击[/gold]激活。",
   "KAKAROTMOD-SAIYAN_BLOOD.title": "赛亚人之血",
   "KAKAROTMOD-SAIYAN_BLOOD.flavor": "越是受伤，越能燃起斗志。",
   "KAKAROTMOD-SAIYAN_BLOOD.description": "每场战斗首个回合额外获得1点怒气。当你打出打击牌或挨打时增加1点怒气。生命值低于20%时获得2点力量与2点敏捷。生命值低于70%时战斗结束回复6点生命。",

@@ -3,6 +3,7 @@ using Godot;
 using KakarotMod.KakarotCode.Powers;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using KakarotMod.KakarotCode.Daima;
 
 namespace KakarotMod.KakarotCode.Characters;
 
@@ -232,6 +233,12 @@ public static class KakarotFormVisuals
         if (creature.IsDead && ResourceLoader.Exists(DeadModelPath))
         {
             return DeadModelPath;
+        }
+
+        var daimaPath = KakarotDaima.ResolveModelPath(creature);
+        if (daimaPath != null && ResourceLoader.Exists(daimaPath))
+        {
+            return daimaPath;
         }
 
         if (creature.HasPower<KakarotPerfectUltraInstinctPower>())

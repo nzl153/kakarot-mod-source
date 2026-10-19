@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using KakarotMod.KakarotCode.Daima;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -32,6 +33,7 @@ public static partial class KakarotCombatPresentation
         "KAKAROTMOD-KAKAROT_TENFOLD_KAMEHAMEHA",
         "KAKAROTMOD-KAKAROT_FATHER_SON_WAVE",
         "KAKAROTMOD-KAKAROT_DRAGON_FIST",
+        "KAKAROTMOD-KAKAROT_DAIMA_BREAKTHROUGH_KAMEHAMEHA",
     };
 
     // 光束配色。未列出的卡使用蓝色默认值。
@@ -275,7 +277,19 @@ public static partial class KakarotCombatPresentation
                     palette = (KamehamehaBeamColorDefault, KamehamehaCoreColorDefault);
                 }
 
-                spawned = TryPlayKamehamehaBeamShader(anchor, beamOriginWorld, beamEndWorld, palette.Beam, palette.Core);
+                var isBreakthrough = string.Equals(beamEntry, "KAKAROTMOD-KAKAROT_DAIMA_BREAKTHROUGH_KAMEHAMEHA", StringComparison.OrdinalIgnoreCase);
+                if (isBreakthrough)
+                {
+                    // A black core cancels the additive halo's center, preserving the blue beam.
+                    SpawnEnergyBeam(anchor, beamOriginWorld, beamEndWorld,
+                        new Color(1.0f, 0.75f, 0.2f), Colors.Black,
+                        KamehamehaShaderBeamThickness * 1.5f,
+                        KamehamehaShaderBeamGrowSeconds, KamehamehaShaderBeamHoldSeconds, KamehamehaShaderBeamFadeSeconds,
+                        coreBias: 0.4f);
+                }
+
+                spawned = TryPlayKamehamehaBeamShader(anchor, beamOriginWorld, beamEndWorld, palette.Beam, palette.Core,
+                    isBreakthrough ? 1.1f : 1f);
             }
 
             if (!spawned && ResourceLoader.Exists(KamehamehaBeamTexturePath))
@@ -304,6 +318,23 @@ public static partial class KakarotCombatPresentation
 
     private static Vector2 ComputeKamehamehaBeamOriginWorld(Sprite2D staticModel, Creature caster)
     {
+        float dir = staticModel.FlipH ? -1f : 1f;
+        if (staticModel.Texture?.ResourcePath.EndsWith("_kamehameha_pose.png", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            // Palm contacts measured from the centered 1420 x 1920 Daima pose textures.
+            Vector2? handOffset = caster?.Powers.OfType<KakarotDaimaStagePower>().LastOrDefault() switch
+            {
+                KakarotDaimaKidPower => new Vector2(466f, 120f),
+                KakarotDaimaSs1Power => new Vector2(466f, 128f),
+                KakarotDaimaSs3Power or KakarotDaimaSs4KidPower => new Vector2(482f, 128f),
+                _ => null,
+            };
+            if (handOffset is Vector2 hand)
+            {
+                return staticModel.ToGlobal(new Vector2(hand.X * dir, hand.Y));
+            }
+        }
+
         var offset = KamehamehaBeamCharacterOffset;
         if (caster != null
             && KamehamehaBeamOffsetByForm.TryGetValue(KakarotAuraFormResolver.ResolveCurrent(caster), out var formOffset))
@@ -311,7 +342,6 @@ public static partial class KakarotCombatPresentation
             offset = formOffset;
         }
 
-        float dir = staticModel.FlipH ? -1f : 1f;
         return staticModel.GlobalPosition + new Vector2(offset.X * dir, offset.Y);
     }
 
@@ -506,7 +536,8 @@ public static partial class KakarotCombatPresentation
         return nearestFacing ?? nearestAny;
     }
 
-    private static bool TryPlayKamehamehaBeamShader(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Color beamColor, Color coreColor)
+    private static bool TryPlayKamehamehaBeamShader(Node2D anchor, Vector2 originWorld, Vector2 endWorld, Color beamColor, Color coreColor,
+        float thicknessScale = 1f)
     {
         return SpawnEnergyBeam(
             anchor,
@@ -514,7 +545,7 @@ public static partial class KakarotCombatPresentation
             endWorld,
             beamColor,
             coreColor,
-            KamehamehaShaderBeamThickness,
+            KamehamehaShaderBeamThickness * thicknessScale,
             KamehamehaShaderBeamGrowSeconds,
             KamehamehaShaderBeamHoldSeconds,
             KamehamehaShaderBeamFadeSeconds,

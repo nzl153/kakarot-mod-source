@@ -1,4 +1,7 @@
 {
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "第三の目",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "魔界の秘宝。眠れる力を呼び覚ますという。",
+  "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "戦闘ごとに1回：[gold]右クリック[/gold]で発動。",
   "KAKAROTMOD-SAIYAN_BLOOD.title": "サイヤ人の血",
   "KAKAROTMOD-SAIYAN_BLOOD.flavor": "痛みが深いほど、意志は激しく燃える。",
   "KAKAROTMOD-SAIYAN_BLOOD.description": "各戦闘の最初のターン開始時、追加で怒りを1得る。ストライクをプレイするか敵からダメージを受けるたび、怒りを1得る。HPが20%未満なら筋力2と敏捷2を得る。戦闘終了時、HPが70%未満ならHPを6回復。",

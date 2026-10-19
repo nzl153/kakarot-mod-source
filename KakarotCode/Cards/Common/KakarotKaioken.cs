@@ -23,7 +23,6 @@ public class KakarotKaioken() : KakarotCard(0, CardType.Skill, CardRarity.Uncomm
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await KakarotUltraInstinctTriggerHelper.RemoveUltraInstinctForms(Owner.Creature);
-        await PowerCmd.Remove<KakarotSuperSaiyanBluePower>(Owner.Creature);
         await PowerCmd.Remove<KakarotSuperSaiyanGodPower>(Owner.Creature);
         await PowerCmd.Remove<KakarotSuperSaiyan4Power>(Owner.Creature);
         await PowerCmd.Remove<KakarotSuperSaiyan4EnergyCapPower>(Owner.Creature);

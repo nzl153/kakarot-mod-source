@@ -1,0 +1,7 @@
+{
+  "NOT_ENOUGH_STARS": "[red]분노[/red]가\n부족해!",
+  "KAKAROTMOD_HAND_SELECT": "손에 있는 카드를 선택하세요.",
+  "KAKAROTMOD_DRAW_SELECT": "뽑을 카드 더미에서 선택하세요.",
+  "KAKAROTMOD_DISCARD_SELECT": "버린 카드 더미에서 선택하세요.",
+  "KAKAROTMOD_DRAGON_RADAR_PICK": "덱에 추가할 신룡의 소원 카드를 1장 선택하세요."
+}

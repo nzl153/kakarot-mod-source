@@ -1,6 +1,7 @@
 using System;
 using KakarotMod.KakarotCode.Powers;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using KakarotMod.KakarotCode.Daima;
 
 namespace KakarotMod.KakarotCode.Characters;
 
@@ -14,6 +15,8 @@ internal static class KakarotAuraFormResolver
     private const string UltraInstinctOmenId = "KAKAROTMOD-KAKAROT_ULTRA_INSTINCT_OMEN";
     private const string PeakUltraInstinctId = "KAKAROTMOD-KAKAROT_PEAK_ULTRA_INSTINCT";
     private const string ReturnToOriginId = "KAKAROTMOD-KAKAROT_RETURN_TO_ORIGIN";
+    private const string DaimaTransformId = "KAKAROTMOD-KAKAROT_DAIMA_TRANSFORM";
+    internal const string DaimaSs4AwakeningId = "KAKAROTMOD-KAKAROT_DAIMA_SS4_AWAKENING";
 
     internal static KakarotAuraForm ResolveCurrent(Creature creature)
     {
@@ -23,6 +26,11 @@ internal static class KakarotAuraFormResolver
         }
 
         // 优先级必须与 KakarotFormVisuals.ResolveModelPath 保持一致。
+        if (KakarotDaima.IsActive(creature))
+        {
+            return ResolveDaima(creature);
+        }
+
         if (creature.HasPower<KakarotPerfectUltraInstinctPower>())
         {
             return KakarotAuraForm.PerfectUltraInstinct;
@@ -40,7 +48,9 @@ internal static class KakarotAuraFormResolver
 
         if (creature.HasPower<KakarotSuperSaiyanBluePower>())
         {
-            return KakarotAuraForm.SuperSaiyanBlue;
+            return creature.HasPower<KaiokenPower>()
+                ? KakarotAuraForm.SuperSaiyanBlueKaioken
+                : KakarotAuraForm.SuperSaiyanBlue;
         }
 
         if (creature.HasPower<KakarotSuperSaiyanGodPower>())
@@ -87,10 +97,19 @@ internal static class KakarotAuraFormResolver
             return true;
         }
 
+        if (EqualsId(cardEntryId, DaimaTransformId))
+        {
+            playback = KakarotAuraPlayback.Transform;
+            target = ResolveNextDaima(creature);
+            return true;
+        }
+
         if (EqualsId(cardEntryId, KaiokenId))
         {
             playback = KakarotAuraPlayback.Transform;
-            target = KakarotAuraForm.Kaioken;
+            target = creature.HasPower<KakarotSuperSaiyanBluePower>()
+                ? KakarotAuraForm.SuperSaiyanBlueKaioken
+                : KakarotAuraForm.Kaioken;
             return true;
         }
 
@@ -108,7 +127,7 @@ internal static class KakarotAuraFormResolver
             return true;
         }
 
-        if (EqualsId(cardEntryId, ReturnToOriginId))
+        if (EqualsId(cardEntryId, ReturnToOriginId) || EqualsId(cardEntryId, DaimaSs4AwakeningId))
         {
             playback = KakarotAuraPlayback.Transform;
             target = KakarotAuraForm.SuperSaiyan4;
@@ -138,6 +157,33 @@ internal static class KakarotAuraFormResolver
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_GOD_KI") ||
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_GREAT_APE_FORM") ||
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_SHENRON_WISH_TRANSFORM");
+
+    // 小悟空不带气焰；小超四和成年超四共用超四的红色。
+    private static KakarotAuraForm ResolveDaima(Creature creature)
+    {
+        if (creature.HasPower<KakarotDaimaSs1Power>())
+        {
+            return KakarotAuraForm.SuperSaiyan1;
+        }
+
+        if (creature.HasPower<KakarotDaimaSs3Power>())
+        {
+            return KakarotAuraForm.SuperSaiyan3;
+        }
+
+        return creature.HasPower<KakarotDaimaKidPower>() ? KakarotAuraForm.Base : KakarotAuraForm.SuperSaiyan4;
+    }
+
+    // 解析发生在变身卡结算之前，所以要往前看一阶。
+    private static KakarotAuraForm ResolveNextDaima(Creature creature)
+    {
+        if (creature.HasPower<KakarotDaimaKidPower>())
+        {
+            return KakarotAuraForm.SuperSaiyan1;
+        }
+
+        return creature.HasPower<KakarotDaimaSs1Power>() ? KakarotAuraForm.SuperSaiyan3 : KakarotAuraForm.SuperSaiyan4;
+    }
 
     private static KakarotAuraForm ResolveNextSuperSaiyan(Creature creature)
     {

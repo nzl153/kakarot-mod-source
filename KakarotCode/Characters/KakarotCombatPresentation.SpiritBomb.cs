@@ -58,7 +58,7 @@ public static partial class KakarotCombatPresentation
             }
 
             // 球在举手的悟空头顶成型，而不是敌人头顶。
-            var gatherWorld = staticModel.GlobalPosition + new Vector2(0f, -300f);
+            var gatherWorld = staticModel.GlobalPosition + new Vector2(0f, -380f);
 
             var holder = new Node2D { Name = "KakarotSpiritBombFx", ZIndex = 30 };
             anchor.AddChild(holder);
@@ -85,9 +85,9 @@ public static partial class KakarotCombatPresentation
             tween.SetPauseMode(Tween.TweenPauseMode.Process);
 
             // ① 汇聚：球随着元气飞入而长大
-            tween.TweenProperty(glow, "scale", new Vector2(3.0f, 3.0f), SpiritBombGatherSeconds)
+            tween.TweenProperty(glow, "scale", new Vector2(4.5f, 4.5f), SpiritBombGatherSeconds)
                 .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.In);
-            tween.Parallel().TweenProperty(core, "scale", new Vector2(1.7f, 1.7f), SpiritBombGatherSeconds)
+            tween.Parallel().TweenProperty(core, "scale", new Vector2(2.5f, 2.5f), SpiritBombGatherSeconds)
                 .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.In);
 
             // ② 成型停顿 + 预备动作：身体先后拉蓄力，再甩出去
@@ -104,7 +104,7 @@ public static partial class KakarotCombatPresentation
                 // 音效跟着落点走，不再跟出拳那一下绑定。
                 PlaySfx(visualsRoot, SpiritBombSfxNodeName, HitSfxPath, -2f, true);
                 PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
-                SpawnRadialBurst(anchor, impactWorld, 5.0f, 0.45f);
+                SpawnRadialBurst(anchor, impactWorld, 7.0f, 0.5f);
             }));
             tween.TweenInterval(0.45);
             tween.TweenCallback(Callable.From(() =>

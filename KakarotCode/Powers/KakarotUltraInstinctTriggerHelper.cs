@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
+using KakarotMod.KakarotCode.Daima;
 
 namespace KakarotMod.KakarotCode.Powers;
 
@@ -125,6 +126,12 @@ public static class KakarotUltraInstinctTriggerHelper
     public static async Task OnPlayerTookHpLoss(Player player, Creature creature, ICombatState combatState, decimal delta)
     {
         if (combatState is null || delta >= 0 || !CombatManager.Instance.IsInProgress || player.Character is not KakarotCharacter)
+        {
+            return;
+        }
+
+        // Ultra Instinct is unreachable on the Daima route.
+        if (KakarotDaima.IsActive(creature))
         {
             return;
         }

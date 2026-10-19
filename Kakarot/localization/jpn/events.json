@@ -39,5 +39,13 @@
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.INITIAL.options.LEAVE.description": "何も受け取らない。",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.CHASE_KORIN.description": "限界まで塔の上を駆け回り、ついにカリン様の手から超聖水の壺を奪い取った。",
   "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.TAKE_SENZU_JAR.description": "カリン様が仙豆の瓶を放る。しっかりと受け止め、命を救う備えをしまった。",
-  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "試練はまた今度にすることにした。カリン様はひげを撫でながら、去っていく姿を見送った。"
+  "KAKAROTMOD-KAKAROT_KORIN_TOWER_TRIAL.pages.LEAVE.description": "試練はまた今度にすることにした。カリン様はひげを撫でながら、去っていく姿を見送った。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.title": "魔界への扉",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.description": "小さな姿にされてしまった悟空の前に、魔界へ続く扉が現れた。界王神（ミニ）が扉のそばで足を止める。「くぐれば命を削られますが、第三の目の力が手に入ります。」その手に柔らかな光が灯った。「その前に、傷を治しましょうか。」",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.title": "魔界への扉をくぐる",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ENTER_GATE.description": "最大HPを10失い、第三の目を得る。カカロットのみ選択可能。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.title": "界王神の治療を受ける",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.INITIAL.options.ACCEPT_HEALING.description": "HPを10回復する。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ENTER_GATE.description": "扉をくぐると冷気が命の一部を奪い、手のひらの第三の目が開いた。",
+  "KAKAROTMOD-KAKAROT_DAIMA_DEMON_REALM_GATE.pages.ACCEPT_HEALING.description": "界王神が傷に手をかざすと、柔らかな光がゆっくりと痛みを和らげた。"
 }
