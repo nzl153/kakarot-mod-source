@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +19,33 @@ internal static class FriezaBossVisuals
     private const string SaucerTargetNodeName = "KakarotFriezaSaucerTarget";
     private const string BreathingMetaName = "KakarotFriezaBreathing";
     private const string FlashTexturePath = "res://images/vfx/dot.png";
-    private const string DeathSaucerTexturePath =
-        "res://Kakarot/Images/Frieza/death_saucer_vfx.png";
+
+    internal static void PlaySfx(Node anchor, string clip, float volumeDb = -5f)
+    {
+        // Match combat presentation's spatial player and gain, without changing Goku's private helper.
+        string name = $"FriezaSfx_{clip}";
+        var player = anchor.GetNodeOrNull<AudioStreamPlayer2D>(name);
+        if (player == null)
+        {
+            string path = $"res://Kakarot/Audio/sfx/frieza/{clip}.wav";
+            AudioStream? stream = ResourceLoader.Load<AudioStream>(path);
+            if (stream == null)
+            {
+                GD.PrintErr($"[Kakarot][Frieza] sound missing: {path}");
+                return;
+            }
+            player = new AudioStreamPlayer2D { Name = name, Stream = stream, MaxPolyphony = 6 };
+            anchor.AddChild(player);
+        }
+        player.VolumeDb = volumeDb;
+        player.Play();
+    }
+
+    private static void PlaySfx(Creature creature, string clip, float volumeDb = -5f)
+    {
+        Sprite2D? sprite = GetStaticModel(creature);
+        if (sprite != null) PlaySfx(sprite, clip, volumeDb);
+    }
 
     private static readonly string[] PhaseTextures =
     [
@@ -36,6 +61,8 @@ internal static class FriezaBossVisuals
 
     private static void SetPhaseInternal(Creature creature, int phase, bool animate)
     {
+        FriezaSupernovaVfx.EnsureCharge(creature);
+
         // 黑金形态贴身缠绕的暗气。只有第三形态有，切走就撤掉。
         FriezaVfxKit.EnsureDarkAura(creature, phase >= 3, new Color(0.52f, 0.12f, 0.88f));
 
@@ -145,7 +172,19 @@ internal static class FriezaBossVisuals
         Tween tween = sprite.CreateTween();
         tween.TweenProperty(sprite, "modulate", color, 0.12f);
         tween.TweenProperty(sprite, "modulate", Colors.White, 0.28f);
-        PlayPulse(creature, color, 0.42f);
+        string clip = creature.Monster switch
+        {
+            FriezaGuldo => "guldo_psychic",
+            FriezaRecoome => "recoome_charge",
+            FriezaCaptainGinyu => "ginyu_command",
+            FriezaBurterJeice => "squad_arrival",
+            _ => "emperor_command",
+        };
+        PlaySfx(sprite, clip, -7f);
+        if (creature.Monster is FriezaMinionBase)
+            FriezaVfxKit.PlaySquadImpact(creature, color, 0.70f, "bind");
+        else
+            PlayPulse(creature, color, 0.42f);
     }
 
     public static void PlaySummonEffect(Creature creature)
@@ -194,8 +233,6 @@ internal static class FriezaBossVisuals
         FriezaVfxKit.PlayTransformFlash(creature, color);
     }
 
-    // dark：黑金形态的光束。加法混合画不出黑，走 blend_mix 的暗色 shader
-    // 打底再叠一层发光的芯，才读得出「一道黑柱」。
     public static void PlayFriezaBeam(
         Creature creature,
         IEnumerable<Creature> targets,
@@ -222,18 +259,13 @@ internal static class FriezaBossVisuals
         bool dark)
     {
         Node? container = NCombatRoom.Instance?.CombatVfxContainer;
-        NCreature? sourceNode = NCombatRoom.Instance?.GetCreatureNode(creature);
-        if (container == null || sourceNode == null)
+        Sprite2D? sourceSprite = GetStaticModel(creature);
+        if (container == null || sourceSprite == null)
         {
             return;
         }
 
-        Vector2 sourcePosition = sourceNode.VfxSpawnPosition + new Vector2(-48f, -42f);
-        int visibleBursts = Math.Clamp(bursts, 1, 3);
-
-        // 指尖先攒一个点，整条光束顺延。没有前摇的话光是「凭空出现」的。
-        const float chargeSeconds = 0.26f;
-        FriezaVfxKit.PlayBeamCharge(container, sourcePosition, tint, chargeSeconds);
+        float leftmostTargetX = GetMuzzlePosition(sourceSprite).X;
         foreach (Creature target in targets)
         {
             NCreature? targetNode = NCombatRoom.Instance?.GetCreatureNode(target);
@@ -242,79 +274,99 @@ internal static class FriezaBossVisuals
                 continue;
             }
 
-            Vector2 targetPosition = targetNode.VfxSpawnPosition;
-            for (int burst = 0; burst < visibleBursts; burst++)
-            {
-                SpawnShaderBeam(
-                    container,
-                    sourcePosition,
-                    targetPosition,
-                    tint,
-                    thickness,
-                    chargeSeconds + burst * 0.11f,
-                    dark);
-            }
+            leftmostTargetX = Mathf.Min(leftmostTargetX, targetNode.VfxSpawnPosition.X);
         }
 
-        SpawnImpact(container, sourcePosition, tint, 1.15f, 0f);
+        FriezaVfxKit.PlayBeamCharge(container, sourceSprite, tint, 0.045f);
+        PlaySfx(sourceSprite, bursts > 1 ? "death_beam_double" : "death_beam");
+        SpawnShaderBeam(container, sourceSprite, leftmostTargetX, tint, thickness, bursts, dark);
+        NGame.Instance?.ScreenShake(ShakeStrength.Weak, ShakeDuration.Short, 180f);
     }
 
-    // 死亡光线 = 龟波那根程序化光束，改细、改成弗利萨的配色。
-    // shader 两端自带半圆收口，调整粗细时无需拉伸静态贴图。
+    // Targets set only the length; hit flashes remain owned by AttackCommand.
+    internal static float GetHorizontalEndX(Sprite2D sourceSprite, float leftmostTargetX)
+    {
+        float screenLeft = (sourceSprite.GetCanvasTransform().AffineInverse() *
+            sourceSprite.GetViewportRect().Position).X;
+        return Mathf.Min(screenLeft - 160f, leftmostTargetX - 180f);
+    }
+
     private static void SpawnShaderBeam(
         Node container,
-        Vector2 origin,
-        Vector2 end,
+        Sprite2D sourceSprite,
+        float leftmostTargetX,
         Color tint,
         float thickness,
-        float delay,
+        int bursts,
         bool dark)
     {
-        if ((end - origin).LengthSquared() < 1f)
-        {
-            return;
-        }
-
-        // tint 是招式配色，芯往白推一截，读作烧穿而不是染色。
-        Color core = tint.Lerp(new Color(1f, 1f, 1f), 0.62f);
+        Color core = tint.Lerp(Colors.White, 0.62f);
         core.A = 1f;
-        Color beam = tint;
-        beam.A = 1f;
+        float pixels = Mathf.Clamp(thickness * 650f, 86f, 210f);
+        float sustain = 0.26f + (Math.Clamp(bursts, 1, 3) - 1) * 0.11f;
+        float lifetime = 0.08f + sustain + 0.14f;
+        var holder = new Node2D { Name = "FriezaDeathBeam", ZIndex = 24 };
+        container.AddChild(holder);
+        holder.GlobalPosition = GetMuzzlePosition(sourceSprite);
+        holder.GlobalScale = Vector2.One;
+        holder.GlobalRotation = Mathf.Pi;
 
-        // thickness 原本是贴图的 scale:y（0.18 量级），这里要的是像素高度。
-        // 系数 620 换算出来 90~190px，比龟波还接近——死亡光线是「一根针」，
-        // 不是龟波那种能量洪流，收到 400。
-        float pixels = Mathf.Clamp(thickness * 400f, 34f, 132f);
-
-        void Spawn()
+        var image = Image.CreateEmpty(8, 8, false, Image.Format.Rgba8);
+        image.Fill(Colors.White);
+        var canvas = ImageTexture.CreateFromImage(image);
+        var layers = new ShaderMaterial[2];
+        var sprites = new Sprite2D[2];
+        for (int i = 0; i < layers.Length; i++)
         {
-            if (dark)
+            string path = i == 0
+                ? "res://Kakarot/Shaders/frieza_death_beam_base.gdshader"
+                : "res://Kakarot/Shaders/frieza_death_beam.gdshader";
+            var shader = ResourceLoader.Load<Shader>(path);
+            if (shader == null)
             {
-                // 暗层打底：真正遮住背景的那根黑柱，比亮芯宽一圈。
-                KakarotCombatPresentation.SpawnEnergyBeam(
-                    container, origin, end,
-                    new Color(0.05f, 0.01f, 0.08f, 1f),
-                    new Color(0.16f, 0.04f, 0.24f, 1f),
-                    pixels * 1.35f, 0.10f, 0.12f, 0.16f, dark: true);
+                GD.PrintErr($"[Kakarot][Frieza] beam shader missing: {path}");
+                holder.QueueFree();
+                return;
             }
-
-            // 亮芯：暗层上面这一道才是「能量」。
-            KakarotCombatPresentation.SpawnEnergyBeam(
-                container, origin, end, beam, core,
-                dark ? pixels * 0.55f : pixels, 0.10f, 0.12f, 0.16f);
+            var material = new ShaderMaterial { Shader = shader };
+            material.SetShaderParameter("beam_color", tint);
+            material.SetShaderParameter("core_color", core);
+            material.SetShaderParameter("dark", dark);
+            material.SetShaderParameter("sustain", sustain);
+            layers[i] = material;
+            var sprite = new Sprite2D
+            {
+                Texture = canvas,
+                Offset = new Vector2(4f, 0f),
+                Material = material,
+            };
+            holder.AddChild(sprite);
+            sprites[i] = sprite;
         }
 
-        var timer = container.GetTree()?.CreateTimer(delay);
-        if (timer == null)
+        void Update(float age)
         {
-            Spawn();
-        }
-        else
-        {
-            timer.Timeout += Spawn;
+            // Tween callbacks can outlive the source when combat ends.
+            if (!GodotObject.IsInstanceValid(sourceSprite))
+            {
+                holder.QueueFree();
+                return;
+            }
+            Vector2 origin = GetMuzzlePosition(sourceSprite);
+            holder.GlobalPosition = origin;
+            float length = origin.X - GetHorizontalEndX(sourceSprite, leftmostTargetX);
+            for (int i = 0; i < layers.Length; i++)
+            {
+                sprites[i].Scale = new Vector2(length / 8f, pixels / 8f);
+                layers[i].SetShaderParameter("age", age);
+            }
         }
 
-        SpawnImpact(container, end, tint, 1.55f, delay + 0.05f);
+        // Damage has no fixed windup here, so the pilot beam must exist on the first frame.
+        Update(0f);
+        Tween tween = holder.CreateTween();
+        tween.TweenMethod(Callable.From<float>(Update), 0f, lifetime, lifetime);
+        tween.TweenCallback(Callable.From(holder.QueueFree));
     }
 
     public static void PlayEnergyBolts(
@@ -337,216 +389,168 @@ internal static class FriezaBossVisuals
     }
 
     private static void PlayEnergyBoltsInternal(
-        Creature source,
-        Creature[] targets,
-        Color primary,
-        Color secondary,
-        int hits,
-        float sizeMultiplier,
-        float arcHeight)
+        Creature source, Creature[] targets, Color primary, Color secondary,
+        int hits, float sizeMultiplier, float arcHeight)
     {
         Node? container = NCombatRoom.Instance?.CombatVfxContainer;
-        NCreature? sourceNode = NCombatRoom.Instance?.GetCreatureNode(source);
-        Texture2D? texture = ResourceLoader.Load<Texture2D>(FlashTexturePath);
-        if (container == null || sourceNode == null || texture == null)
-        {
-            return;
-        }
+        Sprite2D? sprite = GetStaticModel(source);
+        if (container == null || sprite == null) return;
 
-        int visibleHits = Math.Clamp(hits, 1, 5);
+        float leftmost = GetMuzzlePosition(sprite).X;
         foreach (Creature target in targets)
         {
-            NCreature? targetNode = NCombatRoom.Instance?.GetCreatureNode(target);
-            if (targetNode == null)
-            {
-                continue;
-            }
-
-            Vector2 rawOrigin = sourceNode.VfxSpawnPosition;
-            Vector2 rawEnd = targetNode.VfxSpawnPosition;
-            Vector2 direction = (rawEnd - rawOrigin).Normalized();
-            Vector2 perpendicular = new(-direction.Y, direction.X);
-            Vector2 origin = rawOrigin + direction * 46f + new Vector2(0f, -28f);
-            Vector2 end = rawEnd - direction * 16f;
-            for (int hitIndex = 0; hitIndex < visibleHits; hitIndex++)
-            {
-                float lane = (hitIndex - (visibleHits - 1) * 0.5f) * 18f;
-                float alternatingArc = hitIndex % 2 == 0 ? -arcHeight : arcHeight * 0.45f;
-                Vector2 start = origin + perpendicular * lane;
-                Vector2 finish = end + perpendicular * lane * 0.35f;
-                Vector2 control = (start + finish) * 0.5f + new Vector2(0f, alternatingArc);
-                Color color = hitIndex % 2 == 0 ? primary : secondary;
-                SpawnEnergyBolt(
-                    container,
-                    texture,
-                    start,
-                    control,
-                    finish,
-                    color,
-                    sizeMultiplier,
-                    hitIndex * 0.065f);
-            }
+            NCreature? node = NCombatRoom.Instance?.GetCreatureNode(target);
+            if (node != null) leftmost = Mathf.Min(leftmost, node.VfxSpawnPosition.X);
+        }
+        bool fast = source.Monster is FriezaBurterJeice;
+        PlaySfx(sprite, fast ? (hits > 1 ? "burter_comet" : "jeice_crusher") : "recoome_bomber");
+        FriezaVfxKit.PlayBeamCharge(container, sprite, primary, 0.025f,
+            secondaryHand: fast && primary.B > primary.R);
+        for (int i = 0; i < Math.Clamp(hits, 1, 5); i++)
+        {
+            SpawnEnergyBolt(container, sprite, leftmost, i % 2 == 0 ? primary : secondary,
+                sizeMultiplier, i * 0.055f, fast);
         }
     }
 
     private static void SpawnEnergyBolt(
-        Node container,
-        Texture2D texture,
-        Vector2 origin,
-        Vector2 control,
-        Vector2 end,
-        Color color,
-        float sizeMultiplier,
-        float delay)
+        Node container, Sprite2D source, float leftmost, Color color,
+        float size, float delay, bool fast)
     {
-        var bolt = new Node2D
+        var holder = new Node2D { Name = "FriezaSquadBolt", ZIndex = 32, Visible = false };
+        container.AddChild(holder);
+        holder.GlobalScale = Vector2.One;
+        Color core = color.Lerp(Colors.White, 0.6f);
+        float length = fast ? 190f : 110f;
+        for (int layer = 0; layer < 2; layer++)
         {
-            ZIndex = 36,
-        };
-        var outer = new Sprite2D
-        {
-            Texture = texture,
-            Scale = new Vector2(0.045f, 0.045f) * sizeMultiplier,
-            Modulate = new Color(color.R, color.G, color.B, color.A * 0.82f),
-        };
-        var core = new Sprite2D
-        {
-            Texture = texture,
-            Scale = new Vector2(0.017f, 0.017f) * sizeMultiplier,
-            Modulate = new Color(1.5f, 1.5f, 1.5f, 1f),
-            ZIndex = 1,
-        };
-        var trail = new Line2D
-        {
-            Width = 9f * sizeMultiplier,
-            DefaultColor = new Color(color.R, color.G, color.B, color.A * 0.58f),
-            Antialiased = true,
-            ZIndex = 35,
-        };
-        trail.AddPoint(Vector2.Zero);
-        trail.AddPoint(Vector2.Zero);
-        container.AddChildSafely(trail);
-        container.AddChildSafely(bolt);
-        bolt.GlobalPosition = origin;
-        bolt.AddChildSafely(outer);
-        bolt.AddChildSafely(core);
-
-        Vector2 previous = origin;
-        Tween tween = bolt.CreateTween();
-        tween.TweenInterval(delay);
-        tween.TweenMethod(
-                Callable.From<float>(progress =>
-                {
-                    Vector2 position = MathHelper.BezierCurve(origin, end, control, progress);
-                    bolt.GlobalPosition = position;
-                    trail.GlobalPosition = position;
-                    trail.SetPointPosition(0, previous - position);
-                    trail.SetPointPosition(1, Vector2.Zero);
-                    previous = position;
-                }),
-                0f,
-                1f,
-                0.24f)
-            .SetTrans(Tween.TransitionType.Sine)
-            .SetEase(Tween.EaseType.In);
+            bool light = layer == 1;
+            var tail = new Sprite2D
+            {
+                Texture = KakarotCombatPresentation.CreateShardTexture(72, 18,
+                    light ? core : Colors.Black, light ? color : Colors.Black),
+                Position = new Vector2(length * 0.5f * size, 0f),
+                Scale = new Vector2(length / 72f, fast ? 0.65f : 1.65f) * size * (light ? 1f : 1.3f),
+                Material = light ? KakarotCombatPresentation.CreateAdditiveMaterial() : null,
+            };
+            var head = new Sprite2D
+            {
+                Texture = KakarotCombatPresentation.CreateRadialGlowTexture(64,
+                    light ? core : Colors.Black, light ? color : Colors.Black),
+                Scale = new Vector2(fast ? 1.25f : 1.8f, fast ? 0.60f : 1.65f) * size * (light ? 1f : 1.5f),
+                Material = light ? KakarotCombatPresentation.CreateAdditiveMaterial() : null,
+            };
+            holder.AddChild(tail);
+            holder.AddChild(head);
+        }
+        Vector2 origin = Vector2.Zero;
+        Vector2 end = Vector2.Zero;
+        Tween tween = holder.CreateTween();
+        if (delay > 0f) tween.TweenInterval(delay);
         tween.TweenCallback(Callable.From(() =>
-            SpawnImpact(container, end, color, 1.2f * sizeMultiplier, 0f)));
-        tween.TweenProperty(bolt, "modulate:a", 0f, 0.055f);
-        tween.Parallel().TweenProperty(trail, "modulate:a", 0f, 0.08f);
-        tween.TweenCallback(Callable.From(bolt.QueueFreeSafely));
-        tween.TweenCallback(Callable.From(trail.QueueFreeSafely));
+        {
+            if (!GodotObject.IsInstanceValid(source) || !source.IsInsideTree())
+            {
+                tween.Kill();
+                holder.QueueFree();
+                return;
+            }
+            origin = GetMuzzlePosition(source, fast && color.B > color.R);
+            end = new Vector2(GetHorizontalEndX(source, leftmost), origin.Y);
+            holder.GlobalPosition = origin;
+            holder.Visible = true;
+        }));
+        tween.TweenMethod(Callable.From<float>(p => holder.GlobalPosition = origin.Lerp(end, p)),
+            0f, 1f, fast ? 0.12f : 0.16f);
+        tween.TweenCallback(Callable.From(holder.QueueFree));
     }
 
-    public static void PlayDeathSaucerFlight(Creature source, Creature target, bool reflected)
+    public static void PlayDeathSaucerFlight(Creature source, Creature target, bool reflected, bool resolving = false)
     {
-        TryVisual(() => PlayDeathSaucerFlightInternal(source, target, reflected));
+        TryVisual(() => PlayDeathSaucerFlightInternal(source, target, reflected, resolving));
     }
 
     private static void PlayDeathSaucerFlightInternal(
-        Creature source,
-        Creature target,
-        bool reflected)
+        Creature source, Creature target, bool reflected, bool resolving)
     {
         Node? container = NCombatRoom.Instance?.CombatVfxContainer;
         NCreature? sourceNode = NCombatRoom.Instance?.GetCreatureNode(source);
         NCreature? targetNode = NCombatRoom.Instance?.GetCreatureNode(target);
-        Texture2D? texture = ResourceLoader.Load<Texture2D>(DeathSaucerTexturePath);
-        if (container == null || sourceNode == null || targetNode == null || texture == null)
-        {
-            return;
-        }
+        if (container == null || sourceNode == null || targetNode == null) return;
+        PlaySfx(source, resolving ? "saucer_cut" : "saucer_spin", -6f);
 
-        Vector2 origin = sourceNode.VfxSpawnPosition + new Vector2(0f, -48f);
+        Sprite2D? sprite = GetStaticModel(source);
+        Vector2 origin = source.Monster is FriezaBoss && sprite != null
+            ? GetMuzzlePosition(sprite) : sourceNode.VfxSpawnPosition;
         Vector2 end = targetNode.VfxSpawnPosition + new Vector2(0f, -20f);
-        float arcDirection = reflected ? 1f : -1f;
-        Vector2 control = (origin + end) * 0.5f + new Vector2(0f, 230f * arcDirection);
-        var saucer = new Sprite2D
+        Vector2 control = (origin + end) * 0.5f + new Vector2(0f, reflected ? 170f : -220f);
+        Color color = reflected ? new Color(1f, 0.65f, 0.16f) : new Color(0.84f, 0.24f, 1f);
+        float travel = resolving ? 0.10f : 0.46f;
+        Node2D saucer = FriezaVfxKit.CreateField(container, "frieza_saucer", new Vector2(170f, 65f), out var materials);
+        saucer.Name = "FriezaDeathSaucer";
+        saucer.ZIndex = 39;
+        foreach (var material in materials) material.SetShaderParameter("blade_color", color);
+        if (resolving)
         {
-            Texture = texture,
-            Scale = new Vector2(0.11f, 0.11f),
-            Modulate = new Color(1.15f, 0.9f, 1.25f, 0f),
-            ZIndex = 39,
-        };
-        container.AddChildSafely(saucer);
-        saucer.GlobalPosition = origin;
-
-        // 拖尾用同一条贝塞尔，飞盘划过时逐段点亮。
-        FriezaVfxKit.SpawnSaucerTrail(
-            container,
-            p => MathHelper.BezierCurve(origin, end, control, p),
-            reflected ? new Color(1f, 0.72f, 0.20f) : new Color(0.86f, 0.24f, 1f),
-            0.58f);
-
+            // The resolution damage has no windup; put the cut on the damage frame.
+            FriezaVfxKit.PlaySquadImpact(target, color, 1.65f, "cut");
+        }
+        FriezaVfxKit.SpawnSaucerTrail(container,
+            p => MathHelper.BezierCurve(origin, end, control, p), color, travel);
+        void Update(float age)
+        {
+            float p = Mathf.Clamp(age / travel, 0f, 1f);
+            saucer.GlobalPosition = MathHelper.BezierCurve(origin, end, control, p);
+            Vector2 tangent = (control - origin) * (1f - p) + (end - control) * p;
+            // Spin inside the projected disc instead of tumbling the whole oval.
+            saucer.Rotation = tangent.Angle() + (end.X < origin.X ? Mathf.Pi : 0f);
+            saucer.GlobalScale = new Vector2(1f, 0.88f + 0.12f * Mathf.Sin(age * 48f));
+            saucer.Modulate = new Color(1f, 1f, 1f, 1f - Mathf.Clamp((age - travel) / 0.09f, 0f, 1f));
+            foreach (var material in materials) material.SetShaderParameter("age", reflected ? -age : age);
+        }
+        Update(0f);
         Tween tween = saucer.CreateTween();
-        tween.SetParallel();
-        tween.TweenProperty(saucer, "modulate:a", 1f, 0.08f);
-        tween.TweenProperty(saucer, "rotation", reflected ? -Mathf.Tau * 3f : Mathf.Tau * 3f, 0.58f)
-            .SetTrans(Tween.TransitionType.Linear);
-        tween.TweenProperty(saucer, "scale", new Vector2(0.17f, 0.17f), 0.30f)
-            .SetTrans(Tween.TransitionType.Sine);
-        tween.TweenMethod(
-                Callable.From<float>(progress =>
-                    saucer.GlobalPosition = MathHelper.BezierCurve(origin, end, control, progress)),
-                0f,
-                1f,
-                0.58f)
-            .SetTrans(Tween.TransitionType.Sine)
-            .SetEase(Tween.EaseType.InOut);
-        tween.Chain();
-        tween.TweenCallback(Callable.From(() =>
-            SpawnImpact(
-                container,
-                end,
-                reflected
-                    ? new Color(1.5f, 0.85f, 0.25f, 1f)
-                    : new Color(1.25f, 0.18f, 1.4f, 1f),
-                2.1f,
-                0f)));
-        tween.TweenProperty(saucer, "modulate:a", 0f, 0.09f);
-        tween.TweenCallback(Callable.From(saucer.QueueFreeSafely));
+        tween.TweenMethod(Callable.From<float>(Update), 0f, travel + 0.09f, travel + 0.09f);
+        tween.TweenCallback(Callable.From(saucer.QueueFree));
     }
 
     public static void PlayTargetPulse(
         IEnumerable<Creature> targets,
         Color color,
-        float sizeMultiplier = 1f)
+        float sizeMultiplier = 1f,
+        string style = "bind")
     {
-        TryVisual(() => PlayImpactEffectInternal(
-            targets.Where(static target => target.IsAlive).ToArray(),
-            color,
-            sizeMultiplier));
+        TryVisual(() =>
+        {
+            string? clip = style switch
+            {
+                "heavy" => "recoome_heavy",
+                "combo" => "ginyu_combo",
+                "psychic" => "guldo_strike",
+                _ => null,
+            };
+            if (clip != null)
+            {
+                Creature? target = targets.FirstOrDefault(static target => target.IsAlive);
+                if (target != null) PlaySfx(target, clip, -6f);
+            }
+            foreach (Creature target in targets.Where(static target => target.IsAlive))
+                FriezaVfxKit.PlaySquadImpact(target, color, sizeMultiplier, style);
+        });
     }
 
     public static void PlayShockwave(Creature creature, Color color, float sizeMultiplier = 1f)
     {
         // 原本是两个放大的 dot.png。一个点再怎么放大也还是一个点。
         FriezaVfxKit.PlayShockwave(creature, color, sizeMultiplier);
+        if (sizeMultiplier < 1.5f) TryVisual(() => PlaySfx(creature, "emperor_shockwave"));
     }
 
-    public static void PlayHeavyWindup(Creature creature, bool strongest = false)
+    public static void PlayHeavyWindup(Creature creature, bool strongest = false, string? sound = "heavy_impact")
     {
         TryVisual(() =>
         {
+            if (sound != null) PlaySfx(creature, sound);
             PlayAttackMotionInternal(creature, strongest ? 88f : 64f);
             NCombatRoom.Instance?.RadialBlur(VfxPosition.Left);
             NGame.Instance?.ScreenShake(
@@ -562,84 +566,6 @@ internal static class FriezaBossVisuals
             NGame.Instance?.DoHitStop(
                 strongest ? ShakeStrength.Strong : ShakeStrength.Weak,
                 strongest ? ShakeDuration.Normal : ShakeDuration.Short));
-    }
-
-    private static void SpawnImpact(
-        Node container,
-        Vector2 position,
-        Color color,
-        float sizeMultiplier,
-        float delay)
-    {
-        Texture2D? texture = ResourceLoader.Load<Texture2D>(FlashTexturePath);
-        if (texture == null)
-        {
-            return;
-        }
-
-        var impact = new Sprite2D
-        {
-            Texture = texture,
-            Scale = new Vector2(0.035f, 0.035f) * sizeMultiplier,
-            Modulate = new Color(color.R, color.G, color.B, 0f),
-            ZIndex = 38,
-        };
-        container.AddChildSafely(impact);
-        impact.GlobalPosition = position;
-
-        Tween tween = impact.CreateTween();
-        tween.TweenInterval(delay);
-        tween.TweenProperty(impact, "modulate:a", color.A, 0.025f);
-        tween.SetParallel();
-        tween.TweenProperty(
-            impact,
-            "scale",
-            new Vector2(0.16f, 0.16f) * sizeMultiplier,
-            0.24f);
-        tween.TweenProperty(impact, "modulate:a", 0f, 0.24f);
-        tween.Chain().TweenCallback(Callable.From(impact.QueueFreeSafely));
-    }
-
-    private static void PlayImpactEffectInternal(
-        Creature[] targets,
-        Color color,
-        float sizeMultiplier)
-    {
-        Node? container = NCombatRoom.Instance?.CombatVfxContainer;
-        Texture2D? texture = ResourceLoader.Load<Texture2D>(FlashTexturePath);
-        if (container == null || texture == null)
-        {
-            return;
-        }
-
-        foreach (Creature target in targets)
-        {
-            NCreature? targetNode = NCombatRoom.Instance?.GetCreatureNode(target);
-            if (targetNode == null)
-            {
-                continue;
-            }
-
-            var impact = new Sprite2D
-            {
-                Texture = texture,
-                Scale = new Vector2(0.025f, 0.025f) * sizeMultiplier,
-                Modulate = color,
-                ZIndex = 38,
-            };
-            container.AddChildSafely(impact);
-            impact.GlobalPosition = targetNode.VfxSpawnPosition;
-
-            Tween tween = impact.CreateTween();
-            tween.SetParallel();
-            tween.TweenProperty(
-                impact,
-                "scale",
-                new Vector2(0.12f, 0.12f) * sizeMultiplier,
-                0.28f);
-            tween.TweenProperty(impact, "modulate:a", 0f, 0.28f);
-            tween.Chain().TweenCallback(Callable.From(impact.QueueFreeSafely));
-        }
     }
 
     private static void PlayPulse(
@@ -680,12 +606,32 @@ internal static class FriezaBossVisuals
             .GetNodeOrNull<Node2D>("Visuals");
     }
 
-    private static Sprite2D? GetStaticModel(Creature creature)
+    internal static Sprite2D? GetStaticModel(Creature creature)
     {
         return NCombatRoom.Instance?
             .GetCreatureNode(creature)?
             .Visuals
             .GetNodeOrNull<Sprite2D>("Visuals/StaticModel");
+    }
+
+    internal static Vector2 GetMuzzlePosition(Sprite2D sprite, bool secondaryHand = false)
+    {
+        // Art-space hand anchors; ToGlobal includes breathing, attacks and aspect-ratio scaling.
+        Vector2 local = sprite.Texture!.ResourcePath switch
+        {
+            "res://Kakarot/Images/Frieza/frieza_golden.png" => new Vector2(-469f, -342f),
+            "res://Kakarot/Images/Frieza/frieza_black.png" => new Vector2(-471f, -365f),
+            "res://Kakarot/Images/Frieza/guldo.png" => new Vector2(-386f, -202f),
+            "res://Kakarot/Images/Frieza/recoome.png" => new Vector2(-302f, -318f),
+            "res://Kakarot/Images/Frieza/captain_ginyu.png" => new Vector2(-377f, -417f),
+            "res://Kakarot/Images/Frieza/burter_jeice.png" => new Vector2(-512f, -88.5f),
+            _ => new Vector2(-495f, -475f),
+        };
+        if (secondaryHand && sprite.Texture.ResourcePath == "res://Kakarot/Images/Frieza/burter_jeice.png")
+            local = new Vector2(-4f, -240.5f);
+        if (sprite.FlipH) local.X = -local.X;
+        if (sprite.FlipV) local.Y = -local.Y;
+        return sprite.ToGlobal(local);
     }
 
     public static void SyncSaucerTarget(FriezaBoss boss)
@@ -727,30 +673,43 @@ internal static class FriezaBossVisuals
             return;
         }
 
-        Texture2D? texture = ResourceLoader.Load<Texture2D>(
-            "res://Kakarot/Images/Frieza/death_saucer_target.png");
-        if (texture == null)
-        {
-            return;
-        }
+        Texture2D texture = KakarotCombatPresentation.CreateRingTexture(256, 0.045f,
+            Colors.White, new Color(0.84f, 0.24f, 1f));
 
         var marker = new Sprite2D
         {
             Name = SaucerTargetNodeName,
             Texture = texture,
-            Scale = new Vector2(0.14f, 0.14f),
+            Scale = new Vector2(0.70f, 0.70f),
             Modulate = new Color(1f, 1f, 1f, 0.9f),
             ZIndex = 40,
         };
         targetNode.AddChildSafely(marker);
         marker.GlobalPosition = targetNode.VfxSpawnPosition + new Vector2(0f, -35f);
 
-        Tween spinTween = marker.CreateTween().SetLoops();
-        spinTween.TweenProperty(marker, "rotation", Mathf.Tau, 1.2f)
-            .SetTrans(Tween.TransitionType.Linear);
-        Tween pulseTween = marker.CreateTween().SetLoops();
-        pulseTween.TweenProperty(marker, "modulate:a", 0.55f, 0.45f);
-        pulseTween.TweenProperty(marker, "modulate:a", 0.9f, 0.45f);
+        marker.AddChild(new Sprite2D
+        {
+            Texture = texture,
+            Scale = Vector2.One * 1.12f,
+            Modulate = new Color(0.06f, 0.015f, 0.08f, 0.9f),
+            ZIndex = -1,
+        });
+        Tween pulse = marker.CreateTween().SetLoops();
+        pulse.TweenMethod(Callable.From<float>(age =>
+        {
+            var power = boss.Creature.GetPower<KakarotMod.KakarotCode.Powers.FriezaDeathSaucerPower>();
+            if (power == null || !targetNode.Entity.IsAlive || !boss.Creature.IsAlive)
+            {
+                marker.Visible = false;
+                marker.QueueFree();
+                return;
+            }
+            bool ready = power.Damage >= power.DynamicVars["Threshold"].IntValue;
+            Color tint = ready ? new Color(1f, 0.75f, 0.30f) : Colors.White;
+            tint.A = 0.75f + 0.15f * Mathf.Cos(age * Mathf.Tau);
+            marker.Modulate = tint;
+            marker.Rotation = age * Mathf.Tau * (ready ? -0.65f : 0.35f);
+        }), 0f, 20f, 20f);
     }
 
     public static void ClearSaucerTarget()
@@ -778,9 +737,10 @@ internal static class FriezaBossVisuals
         {
             action();
         }
-        catch
+        catch (Exception ex)
         {
             // Presentation failures must not interrupt synchronized combat.
+            GD.PrintErr($"[Kakarot][Frieza] presentation failed: {ex}");
         }
     }
 }

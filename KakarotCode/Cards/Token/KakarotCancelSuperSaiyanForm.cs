@@ -17,7 +17,7 @@ public class KakarotCancelSuperSaiyanForm() : KakarotCard(0, CardType.Skill, Car
 
     public override bool CanBeGeneratedByModifiers => false;
 
-    // 只在超一 / 超二 / 超三 下可用。神、蓝、超四、自在极意兆、巅峰极易都不允许手动解除。
+    // 只在超一 / 超二 / 超三 下可用。神、蓝、超四、自在极意兆、巅峰极意都不允许手动解除。
     protected override bool IsPlayable
     {
         get

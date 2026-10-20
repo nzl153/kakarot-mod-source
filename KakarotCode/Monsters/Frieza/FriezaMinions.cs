@@ -125,7 +125,7 @@ public sealed class FriezaGuldo : FriezaMinionBase
         FriezaBossVisuals.PlayTargetPulse(
             LivingPlayerCreatures(),
             new Color(0.1f, 1.25f, 0.78f, 0.9f),
-            1.15f);
+            1.15f, style: "psychic");
         return Attack(5, hitFx: "vfx/vfx_attack_lightning");
     }
 }
@@ -175,11 +175,11 @@ public sealed class FriezaRecoome : FriezaMinionBase
         FriezaBossVisuals.PlayTargetPulse(
             LivingPlayerCreatures(),
             new Color(1.5f, 0.4f, 0.08f, 0.9f),
-            1.35f);
+            1.35f, style: "heavy");
         await Attack(
             15,
             hitFx: "vfx/vfx_heavy_blunt",
-            fallbackSfx: "heavy_attack.mp3",
+            fallbackSfx: null,
             hitVfxAtBase: true);
     }
 }
@@ -213,7 +213,9 @@ public sealed class FriezaCaptainGinyu : FriezaMinionBase
     private Task GinyuCombo(IReadOnlyList<Creature> _)
     {
         FriezaBossVisuals.PlayAttackMotion(Creature, 42f);
-        return Attack(6, 2, "vfx/vfx_attack_slash");
+        FriezaBossVisuals.PlayTargetPulse(LivingPlayerCreatures(),
+            new Color(0.70f, 0.30f, 0.95f), 0.95f, style: "combo");
+        return Attack(6, 2, "vfx/vfx_attack_blunt");
     }
 }
 

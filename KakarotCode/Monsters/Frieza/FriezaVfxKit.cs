@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -47,7 +47,7 @@ internal static class FriezaVfxKit
         });
     }
 
-    // 气弹齐射：辉光弹头与锥形拖尾沿弧线飞向目标。
+    // Keep one horizontal volley regardless of the player count.
     public static void PlayBolts(
         Creature source,
         IEnumerable<Creature> targets,
@@ -58,42 +58,59 @@ internal static class FriezaVfxKit
     {
         Run(() =>
         {
-            if (!TryAnchor(source, out Node container, out Vector2 originWorld))
+            Node? container = NCombatRoom.Instance?.CombatVfxContainer;
+            Sprite2D? sourceSprite = FriezaBossVisuals.GetStaticModel(source);
+            if (container == null || sourceSprite == null)
             {
                 return;
             }
 
             Color core = Lighten(color, 0.70f);
-            Vector2 muzzle = originWorld + new Vector2(-46f, -26f);
             int shots = Math.Clamp(hits, 1, 6);
-
+            float leftmostTargetX = FriezaBossVisuals.GetMuzzlePosition(sourceSprite).X;
             foreach (Creature target in targets)
             {
-                if (target == null || !target.IsAlive || !TryAnchor(target, out _, out Vector2 endWorld))
+                if (!target.IsAlive || !TryAnchor(target, out _, out Vector2 endWorld))
                 {
                     continue;
                 }
-
-                for (int i = 0; i < shots; i++)
-                {
-                    SpawnBolt(container, muzzle, endWorld, core, color, size, arcHeight, i * 0.075f, i);
-                }
+                leftmostTargetX = Mathf.Min(leftmostTargetX, endWorld.X);
+            }
+            PlayBeamCharge(container, sourceSprite, color, 0.035f);
+            for (int i = 0; i < shots; i++)
+            {
+                SpawnBolt(container, sourceSprite, leftmostTargetX, core, color, size, i * 0.075f);
             }
         });
     }
 
     private static void SpawnBolt(
         Node container,
-        Vector2 from,
-        Vector2 to,
+        Sprite2D sourceSprite,
+        float leftmostTargetX,
         Color core,
         Color edge,
         float size,
-        float arcHeight,
-        float delay,
-        int index)
+        float delay)
     {
+        Vector2 from = FriezaBossVisuals.GetMuzzlePosition(sourceSprite);
         var holder = NewHolder(container, from, "FriezaBolt", 33);
+        holder.Visible = false;
+
+        // Ordinary blending preserves the silhouette against bright terrain.
+        var tailShade = new Sprite2D
+        {
+            Texture = KakarotCombatPresentation.CreateShardTexture(72, 18, Colors.Black, Colors.Black),
+            Scale = new Vector2(2.6f * size, 1.8f * size),
+            Position = new Vector2(82.8f * size, 0f),
+        };
+        holder.AddChild(tailShade);
+        var headShade = new Sprite2D
+        {
+            Texture = KakarotCombatPresentation.CreateRadialGlowTexture(64, Colors.Black, Colors.Black),
+            Scale = Vector2.One * 1.65f * size,
+        };
+        holder.AddChild(headShade);
 
         // 拖尾先绘制，弹头覆盖在前方。
         var tail = new Sprite2D
@@ -102,7 +119,8 @@ internal static class FriezaVfxKit
             Centered = true,
             Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
             Scale = new Vector2(2.3f * size, 1.25f * size),
-            Modulate = new Color(1f, 1f, 1f, 0f),
+            Position = new Vector2(82.8f * size, 0f),
+            Modulate = new Color(1f, 1f, 1f, 0.9f),
         };
         holder.AddChild(tail);
 
@@ -113,68 +131,34 @@ internal static class FriezaVfxKit
             Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
             // 弹头尺寸需与拖尾保持可辨识比例。
             Scale = new Vector2(1.05f * size, 1.05f * size),
-            Modulate = new Color(1f, 1f, 1f, 0f),
         };
         holder.AddChild(head);
 
-        // 同批弹道交替弧高，避免多发完全重叠。
-        float lift = arcHeight * (index % 2 == 0 ? 1f : -0.55f) * Mathf.Lerp(0.7f, 1.15f, GD.Randf());
-        Vector2 mid = (from + to) * 0.5f + new Vector2(0f, -lift);
-        float travel = 0.24f;
-
-        // 拖尾方向使用起点到终点的近似方向。
-        float angle = (to - from).Angle();
-        tail.Rotation = angle;
-        tail.Position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (34f * size);
+        Vector2 to = from;
+        const float travel = 0.16f;
 
         var tween = holder.CreateTween();
         tween.TweenInterval(delay);
         tween.TweenCallback(Callable.From(() =>
         {
-            if (!GodotObject.IsInstanceValid(head))
+            if (!GodotObject.IsInstanceValid(sourceSprite))
             {
+                tween.Kill();
+                holder.QueueFree();
                 return;
             }
 
-            head.Modulate = new Color(1f, 1f, 1f, 1f);
-            tail.Modulate = new Color(1f, 1f, 1f, 0.9f);
+            from = FriezaBossVisuals.GetMuzzlePosition(sourceSprite);
+            to = new Vector2(FriezaBossVisuals.GetHorizontalEndX(sourceSprite, leftmostTargetX), from.Y);
+            holder.Visible = true;
+            FriezaBossVisuals.PlaySfx(sourceSprite, "energy_bolt", -7f);
         }));
 
-        // 两段缓动近似弧形轨迹。
-        tween.TweenProperty(holder, "global_position", mid, travel * 0.5)
-            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-        tween.TweenProperty(holder, "global_position", to, travel * 0.5)
-            .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-
-        tween.TweenCallback(Callable.From(() =>
+        tween.TweenMethod(Callable.From<float>(progress =>
         {
-            if (!GodotObject.IsInstanceValid(holder))
-            {
-                return;
-            }
-
-            KakarotCombatPresentation.FreeIfValid(tail);
-            SpawnBoltImpact(holder, core, edge, size);
-        }));
-        tween.TweenProperty(head, "scale", new Vector2(2.4f * size, 2.4f * size), 0.10)
-            .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
-        tween.Parallel().TweenProperty(head, "modulate:a", 0f, 0.16);
+            holder.GlobalPosition = from.Lerp(to, progress);
+        }), 0f, 1f, travel).SetTrans(Tween.TransitionType.Linear);
         tween.TweenCallback(Callable.From(() => KakarotCombatPresentation.FreeIfValid(holder)));
-    }
-
-    private static void SpawnBoltImpact(Node2D holder, Color core, Color edge, float size)
-    {
-        // 小型命中环限制尺寸，避免覆盖目标主体。
-        SpawnRing(holder, core, edge, 1.3f * size, 0.62f, 0f, 0.16f);
-
-        holder.AddChild(KakarotCombatPresentation.CreateBurst(
-            KakarotCombatPresentation.GetParticleDotTexture(),
-            core, edge,
-            amount: 22, lifetime: 0.34f,
-            speedMin: 120f, speedMax: 380f,
-            scaleMin: 0.5f * size, scaleMax: 1.2f * size,
-            baseAngle: 0f, halfSpread: Mathf.Pi,
-            gravity: new Vector2(0f, 300f), damping: 0f));
     }
 
     // 第三形态开场重击。
@@ -190,7 +174,21 @@ internal static class FriezaVfxKit
             var holder = NewHolder(container, world, "FriezaBlackFlash", 34);
             Color core = Lighten(color, 0.80f);
 
-            // 加法混合无法压暗背景，因此用暗红辉光与后续白芯的明度反差表现蓄势。
+            // Keep the brief darkening behind the creature instead of tinting its silhouette.
+            var shade = new Sprite2D
+            {
+                Texture = KakarotCombatPresentation.CreateRadialGlowTexture(128, Colors.Black, Colors.Black),
+                Modulate = new Color(1f, 1f, 1f, 0f),
+            };
+            NCombatRoom.Instance!.BackCombatVfxContainer.AddChild(shade);
+            shade.GlobalPosition = world;
+            shade.GlobalScale = new Vector2(2f, 2f);
+            var shadeTween = shade.CreateTween();
+            shadeTween.TweenProperty(shade, "modulate:a", 0.32f, 0.08);
+            shadeTween.TweenInterval(0.04);
+            shadeTween.TweenProperty(shade, "modulate:a", 0f, 0.06);
+            shadeTween.TweenCallback(Callable.From(shade.QueueFree));
+
             var dark = new Sprite2D
             {
                 Texture = KakarotCombatPresentation.CreateRadialGlowTexture(
@@ -214,9 +212,6 @@ internal static class FriezaVfxKit
             };
             holder.AddChild(burst);
 
-            // 径向模糊强化重击反馈。
-            NCombatRoom.Instance?.RadialBlur(VfxPosition.Center);
-
             var tween = holder.CreateTween();
             // 蓄势。
             tween.TweenProperty(dark, "modulate:a", 1f, 0.08);
@@ -225,7 +220,8 @@ internal static class FriezaVfxKit
             // 爆闪。
             tween.TweenCallback(Callable.From(() =>
             {
-                SpawnCross(holder, core, color);
+                SpawnRing(holder, core, color, 3.4f, 0.85f, 0f, 0.24f);
+                SpawnRing(holder, core, color, 2.5f, 0.60f, 0.035f, 0.26f);
                 SpawnShards(holder, 20, core, color, 1.35f, 300f, 720f, 0.36f, verticalSquash: 0.85f);
                 holder.AddChild(KakarotCombatPresentation.CreateBurst(
                     KakarotCombatPresentation.GetParticleDotTexture(),
@@ -246,38 +242,6 @@ internal static class FriezaVfxKit
 
             FreeAfter(holder, 1.4f);
         });
-    }
-
-    // 十字光条为爆闪提供方向结构。
-    private static void SpawnCross(Node2D holder, Color core, Color edge)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            float angle = Mathf.Pi * 0.5f * i + Mathf.DegToRad(12f);
-            var bar = new Sprite2D
-            {
-                Texture = KakarotCombatPresentation.CreateShardTexture(96, 14, core, edge),
-                Centered = true,
-                Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
-                Rotation = angle,
-                Scale = new Vector2(0.4f, 1.6f),
-                Modulate = new Color(1f, 1f, 1f, 1f),
-                ZIndex = 3,
-            };
-            holder.AddChild(bar);
-            bar.Position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 40f;
-
-            var tw = bar.CreateTween();
-            tw.SetParallel(true);
-            tw.TweenProperty(bar, "scale", new Vector2(3.4f, 0.55f), 0.22)
-                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
-            tw.TweenProperty(bar, "position",
-                bar.Position + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 130f, 0.22)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-            tw.TweenProperty(bar, "modulate:a", 0f, 0.24)
-                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-            tw.Chain().TweenCallback(Callable.From(() => KakarotCombatPresentation.FreeIfValid(bar)));
-        }
     }
 
     // 变身闪光：脚下光环、上升粒子和白芯爆闪。
@@ -412,85 +376,190 @@ internal static class FriezaVfxKit
         });
     }
 
-    // 指尖蓄力点在光束射出前提供明确前摇。
-    public static void PlayBeamCharge(Node container, Vector2 muzzle, Color color, float seconds)
+    public static void PlayBeamCharge(Node container, Sprite2D sourceSprite, Color color, float seconds,
+        bool secondaryHand = false)
     {
         Run(() =>
         {
-            var holder = NewHolder(container, muzzle, "FriezaBeamCharge", 35);
+            var holder = NewHolder(container, FriezaBossVisuals.GetMuzzlePosition(sourceSprite, secondaryHand), "FriezaBeamCharge", 35);
             Color core = Lighten(color, 0.72f);
+
+            var shade = new Sprite2D
+            {
+                Texture = KakarotCombatPresentation.CreateRadialGlowTexture(128, Colors.Black, Colors.Black),
+                Scale = Vector2.One * 0.8f,
+            };
+            holder.AddChild(shade);
 
             var dot = new Sprite2D
             {
                 Texture = KakarotCombatPresentation.CreateRadialGlowTexture(64, core, color),
                 Centered = true,
                 Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
-                Modulate = new Color(1f, 1f, 1f, 0f),
-                Scale = new Vector2(0.12f, 0.12f),
+                Scale = Vector2.One * 0.28f,
             };
             holder.AddChild(dot);
 
+            var pressure = new Sprite2D
+            {
+                Texture = KakarotCombatPresentation.CreateRingTexture(160, 0.035f, core, color),
+                Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
+                Scale = new Vector2(0.14f, 0.7f),
+            };
+            holder.AddChild(pressure);
+            var ringTween = pressure.CreateTween().SetParallel(true);
+            ringTween.TweenProperty(pressure, "scale", new Vector2(0.45f, 1.9f), 0.16f)
+                .SetDelay(seconds).SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            ringTween.TweenProperty(pressure, "modulate:a", 0f, 0.16f).SetDelay(seconds);
+
             var tw = dot.CreateTween();
             tw.SetParallel(true);
-            tw.TweenProperty(dot, "modulate:a", 1f, seconds * 0.6f);
-            tw.TweenProperty(dot, "scale", new Vector2(0.62f, 0.62f), seconds)
+            tw.TweenProperty(dot, "scale", Vector2.One * 0.85f, seconds)
                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-            // 射出时收缩并淡出，使蓄力点自然过渡到光束。
-            tw.Chain().TweenProperty(dot, "scale", new Vector2(0.2f, 0.2f), 0.05)
-                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.In);
-            tw.Parallel().TweenProperty(dot, "modulate:a", 0f, 0.06);
-            tw.Chain().TweenCallback(Callable.From(() => KakarotCombatPresentation.FreeIfValid(dot)));
+            tw.Chain().TweenProperty(dot, "scale", new Vector2(2.4f, 1.3f), 0.035f)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            tw.Chain().TweenProperty(dot, "scale", Vector2.One * 0.35f, 0.16f);
+            tw.Parallel().TweenProperty(dot, "modulate:a", 0f, 0.16f);
+            tw.Parallel().TweenProperty(shade, "modulate:a", 0f, 0.16f);
 
-            holder.AddChild(KakarotCombatPresentation.CreateStream(
-                KakarotCombatPresentation.GetParticleDotTexture(),
-                core, color,
-                amount: 46, lifetime: seconds * 0.8f, duration: seconds,
-                radialVelocity: -260f, emissionRadius: 120f,
-                scaleMin: 0.3f, scaleMax: 0.8f,
-                gravity: Vector2.Zero));
-
-            FreeAfter(holder, seconds + 0.6f);
+            // Both the charge and beam follow the same moving fingertip.
+            var follow = holder.CreateTween();
+            follow.TweenMethod(Callable.From<float>(_ =>
+            {
+                if (!GodotObject.IsInstanceValid(sourceSprite))
+                {
+                    holder.QueueFree();
+                    return;
+                }
+                holder.GlobalPosition = FriezaBossVisuals.GetMuzzlePosition(sourceSprite, secondaryHand);
+            }), 0f, 1f, seconds + 0.195f);
+            follow.TweenCallback(Callable.From(holder.QueueFree));
         });
     }
 
-    // 飞盘路径上生成分段辉光作为拖尾。
+    internal static Node2D CreateField(Node parent, string shaderName, Vector2 size, out ShaderMaterial[] materials)
+    {
+        var holder = new Node2D();
+        parent.AddChild(holder);
+        holder.GlobalScale = Vector2.One;
+        var image = Image.CreateEmpty(8, 8, false, Image.Format.Rgba8);
+        image.Fill(Colors.White);
+        var texture = ImageTexture.CreateFromImage(image);
+        materials = new ShaderMaterial[2];
+        for (int i = 0; i < 2; i++)
+        {
+            string path = $"res://Kakarot/Shaders/{shaderName}{(i == 0 ? "_base" : "")}.gdshader";
+            Shader? shader = ResourceLoader.Load<Shader>(path);
+            if (shader == null)
+            {
+                holder.QueueFree();
+                throw new InvalidOperationException($"Missing Frieza shader: {path}");
+            }
+            var material = new ShaderMaterial { Shader = shader };
+            materials[i] = material;
+            holder.AddChild(new Sprite2D { Texture = texture, Scale = size / 8f, Material = material });
+        }
+        return holder;
+    }
+
+    public static void PlaySquadImpact(Creature target, Color color, float size, string style)
+    {
+        Run(() =>
+        {
+            if (!TryAnchor(target, out Node container, out Vector2 world)) return;
+            var holder = NewHolder(container, world, "FriezaSquadImpact", 35);
+            Color core = Lighten(color, 0.7f);
+            bool cut = style == "cut";
+            int strokes = cut ? 1 : style == "combo" ? 2 : style == "heavy" ? 7 : 4;
+            for (int i = 0; i < strokes; i++)
+            {
+                Vector2[] points;
+                if (cut)
+                {
+                    points = new Vector2[17];
+                    for (int j = 0; j < points.Length; j++)
+                    {
+                        float x = Mathf.Lerp(-82f, 82f, j / 16f);
+                        points[j] = new Vector2(x, -22f * (1f - x * x / (82f * 82f)));
+                    }
+                }
+                else if (style == "combo")
+                {
+                    points = new Vector2[25];
+                    Vector2 offset = i == 0 ? new(-32f, -20f) : new(34f, 24f);
+                    for (int j = 0; j < points.Length; j++)
+                    {
+                        float angle = Mathf.Tau * j / 24f;
+                        points[j] = offset + new Vector2(Mathf.Cos(angle) * 26f, Mathf.Sin(angle) * 18f);
+                    }
+                }
+                else if (style == "heavy")
+                {
+                    Vector2 dir = Vector2.FromAngle(Mathf.Tau * i / strokes);
+                    points = [dir * 16f, dir * 70f, dir * 90f];
+                }
+                else
+                {
+                    float a = Mathf.Pi * 0.5f * i;
+                    points = new Vector2[9];
+                    for (int j = 0; j < points.Length; j++)
+                    {
+                        float angle = a + Mathf.Lerp(0.20f, 1.37f, j / 8f);
+                        points[j] = new Vector2(Mathf.Cos(angle) * 70f, Mathf.Sin(angle) * 60f);
+                    }
+                }
+                for (int layer = 0; layer < 2; layer++)
+                {
+                    holder.AddChild(new Line2D
+                    {
+                        Points = points,
+                        Width = layer == 0 ? (cut ? 16f : 12f) : (cut ? 4f : 3f),
+                        DefaultColor = layer == 0 ? new Color(0.035f, 0.018f, 0.025f, 0.9f) : core,
+                        Material = layer == 1 ? KakarotCombatPresentation.CreateAdditiveMaterial() : null,
+                        Antialiased = true,
+                    });
+                }
+            }
+            if (style == "psychic") holder.Rotation = Mathf.Pi * 0.25f;
+            holder.GlobalScale = Vector2.One * size;
+            var tween = holder.CreateTween();
+            bool bind = style is "bind" or "psychic";
+            tween.TweenProperty(holder, "global_scale", Vector2.One * size * (bind ? 0.68f : 1.3f), 0.085f)
+                .SetTrans(Tween.TransitionType.Expo).SetEase(Tween.EaseType.Out);
+            tween.TweenProperty(holder, "global_scale", Vector2.One * size * (bind ? 1.02f : 1.5f), 0.22f);
+            tween.Parallel().TweenProperty(holder, "modulate:a", 0f, 0.22f);
+            tween.TweenCallback(Callable.From(holder.QueueFree));
+        });
+    }
+
     public static void SpawnSaucerTrail(Node container, Func<float, Vector2> pathAt, Color color, float flightSeconds)
     {
         Run(() =>
         {
-            const int segments = 30;
-            Color core = Lighten(color, 0.6f);
-            var tex = KakarotCombatPresentation.CreateRadialGlowTexture(64, core, color);
-
-            for (int i = 0; i < segments; i++)
+            var holder = NewHolder(container, Vector2.Zero, "FriezaSaucerWake", 38);
+            var lines = new Line2D[2];
+            for (int i = 0; i < 2; i++)
             {
-                float t = (i + 0.5f) / segments;
-                Vector2 at = pathAt(t);
-                Vector2 next = pathAt(Mathf.Min(1f, t + 0.02f));
-                float angle = (next - at).Angle();
-                float width = Mathf.Lerp(0.10f, 0.26f, t);
-
-                var seg = new Sprite2D
+                lines[i] = new Line2D
                 {
-                    Texture = tex,
-                    Centered = true,
-                    Material = KakarotCombatPresentation.CreateAdditiveMaterial(),
-                    Rotation = angle,
-                    Modulate = new Color(1f, 1f, 1f, 0f),
-                    ZIndex = 38,
+                    Width = i == 0 ? 13f : 3.5f,
+                    DefaultColor = i == 0 ? new Color(0.055f, 0.015f, 0.065f, 0.8f) : color,
+                    Material = i == 1 ? KakarotCombatPresentation.CreateAdditiveMaterial() : null,
+                    Antialiased = true,
                 };
-                container.AddChildSafely(seg);
-                seg.GlobalPosition = at;
-                seg.GlobalScale = new Vector2(width * 2.2f, width);
-
-                var tw = seg.CreateTween();
-                tw.TweenInterval(t * flightSeconds);
-                tw.TweenProperty(seg, "modulate:a", 0.8f, 0.05);
-                tw.TweenInterval(0.08);
-                tw.TweenProperty(seg, "modulate:a", 0f, 0.26)
-                    .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.In);
-                tw.TweenCallback(Callable.From(() => KakarotCombatPresentation.FreeIfValid(seg)));
+                holder.AddChild(lines[i]);
             }
+            var tween = holder.CreateTween();
+            tween.TweenMethod(Callable.From<float>(age =>
+            {
+                float head = Mathf.Min(1f, age / flightSeconds);
+                float tail = Mathf.Max(0f, (age - 0.10f) / flightSeconds);
+                var points = new Vector2[16];
+                for (int i = 0; i < points.Length; i++)
+                    points[i] = pathAt(Mathf.Lerp(tail, head, i / 15f));
+                foreach (var line in lines) line.Points = points;
+            }), 0f, flightSeconds + 0.10f, flightSeconds + 0.10f);
+            tween.TweenCallback(Callable.From(holder.QueueFree));
         });
     }
 

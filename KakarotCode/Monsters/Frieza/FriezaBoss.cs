@@ -790,7 +790,7 @@ public sealed class FriezaBoss : CustomMonsterModel
                 FriezaBossVisuals.PlayDeathSaucerFlight(
                     target.Creature,
                     Creature,
-                    reflected: true);
+                    reflected: true, resolving: true);
             }
             await CreatureCmd.Damage(
                 new ThrowingPlayerChoiceContext(),
@@ -806,13 +806,13 @@ public sealed class FriezaBoss : CustomMonsterModel
                 FriezaBossVisuals.PlayDeathSaucerFlight(
                     Creature,
                     target.Creature,
-                    reflected: false);
+                    reflected: false, resolving: true);
                 for (int i = 0; i < 2; i++)
                 {
                     await CreatureCmd.Damage(
                         new ThrowingPlayerChoiceContext(),
                         target.Creature,
-                        26m,
+                        22m,
                         ValueProp.Move,
                         Creature);
                 }
@@ -829,7 +829,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         await Attack(
             34,
             hitFx: "vfx/vfx_heavy_blunt",
-            fallbackSfx: "heavy_attack.mp3",
+            fallbackSfx: null,
             hitVfxAtBase: true);
         FriezaBossVisuals.PlayHitStop();
         await KakarotPowerCmd.Apply<VulnerablePower>(targets, 2m, Creature, null);
@@ -871,7 +871,7 @@ public sealed class FriezaBoss : CustomMonsterModel
     private async Task BlackFlash(IReadOnlyList<Creature> _)
     {
         BlackOpeningDone = true;
-        FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
+        FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true, sound: "black_flash");
         foreach (Creature flashTarget in LivingPlayerCreatures())
         {
             FriezaVfxKit.PlayBlackFlash(flashTarget, PhaseKiColor);
@@ -879,8 +879,8 @@ public sealed class FriezaBoss : CustomMonsterModel
 
         await Attack(
             40,
-            hitFx: "vfx/vfx_giant_horizontal_slash",
-            fallbackSfx: "heavy_attack.mp3");
+            hitFx: "vfx/vfx_heavy_blunt",
+            fallbackSfx: null);
         FriezaBossVisuals.PlayHitStop(strongest: true);
     }
 
@@ -907,7 +907,7 @@ public sealed class FriezaBoss : CustomMonsterModel
         await Attack(
             34,
             hitFx: "vfx/vfx_heavy_blunt",
-            fallbackSfx: "heavy_attack.mp3",
+            fallbackSfx: null,
             hitVfxAtBase: true);
         FriezaBossVisuals.PlayHitStop();
         await KakarotPowerCmd.Apply<WeakPower>(targets, 2m, Creature, null);
@@ -976,14 +976,14 @@ public sealed class FriezaBoss : CustomMonsterModel
     {
         foreach (Creature blastTarget in LivingPlayerCreatures())
         {
-            FriezaSupernovaVfx.PlayDetonate(blastTarget);
+            FriezaSupernovaVfx.PlayDetonate(Creature);
         }
 
         FriezaBossVisuals.PlayShockwave(
             Creature,
             new Color(1.5f, 0.35f, 0.05f, 1f),
             1.65f);
-        FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true);
+        FriezaBossVisuals.PlayHeavyWindup(Creature, strongest: true, sound: null);
         // 处决：绕过格挡直接扣血，否则 2 回合蓄力会被一个格挡完全消化。
         foreach (Creature supernovaTarget in LivingPlayerCreatures())
         {
