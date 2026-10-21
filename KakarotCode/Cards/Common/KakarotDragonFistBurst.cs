@@ -34,7 +34,6 @@ public class KakarotDragonFistBurst() : KakarotCard(1, CardType.Attack, CardRari
             .WithHitCount(hits)
             .FromKakarotCard(this, cardPlay)
             .TargetingAllOpponents(CombatState)
-            .WithHitFx("vfx/vfx_attack_blunt")
             .Execute(choiceContext);
     }
 

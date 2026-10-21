@@ -158,9 +158,11 @@ public static partial class KakarotCombatPresentation
 
             tween.TweenCallback(Callable.From(() =>
             {
-                SpawnRuyiSwingArc(anchor, chestWorld, staffLength);
+                // 残影与爆闪对齐棍身中心，否则群体时会停在首个目标上像第二根棍。
+                var swingWorld = new Vector2(spanCenterX, chestWorld.Y);
+                SpawnRuyiSwingArc(anchor, swingWorld, staffLength);
                 PlayImpactFeedback(ShakeStrength.Medium, ShakeDuration.Short, hitStop: true);
-                SpawnRadialBurst(anchor, chestWorld, 2.4f, 0.30f);
+                SpawnRadialBurst(anchor, swingWorld, 2.4f, 0.30f);
             }));
 
             // 落地后增加轻微余震并淡出。

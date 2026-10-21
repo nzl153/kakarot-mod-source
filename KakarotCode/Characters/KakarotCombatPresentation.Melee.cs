@@ -89,7 +89,7 @@ public static partial class KakarotCombatPresentation
         }
     }
 
-    private static void SpawnRadialBurst(Node2D anchor, Vector2 world, float maxScale, float duration)
+    private static void SpawnRadialBurst(Node2D anchor, Vector2 world, float maxScale, float duration, Color? tint = null)
     {
         var burst = new Node2D { Name = "KakarotRadialBurst", ZIndex = 31 };
         anchor.AddChild(burst);
@@ -97,6 +97,7 @@ public static partial class KakarotCombatPresentation
 
         var flash = CreateRadialGlowSprite(0.95f, 0f);
         flash.Scale = new Vector2(0.4f, 0.4f);
+        flash.Modulate = tint ?? Colors.White;
         burst.AddChild(flash);
 
         var tween = burst.CreateTween();

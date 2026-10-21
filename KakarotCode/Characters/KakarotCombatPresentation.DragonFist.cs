@@ -31,6 +31,8 @@ public static partial class KakarotCombatPresentation
     // 横向拉伸用于保持长龙轮廓。
     private const float DragonFistStretch = 2.0f;
 
+    private static readonly Color DragonFistGlowTint = new(1f, 0.82f, 0.35f, 1f);
+
     // 神龙许愿攻击复用龙拳龙形，通过色调区分。
     private static readonly Color ShenronWishDragonTint = new(0.45f, 1.25f, 0.55f, 1f);
 
@@ -57,7 +59,7 @@ public static partial class KakarotCombatPresentation
             var mote = CreateRadialGlowSprite(0.9f, 0f);
             float size = Mathf.Lerp(0.10f, 0.20f, 1f - t);
             mote.Scale = new Vector2(size, size);
-            mote.Modulate = new Color(1f, 0.82f, 0.35f, 0f);
+            mote.Modulate = DragonFistGlowTint with { A = 0f };
             mote.ZIndex = 25;
             anchor.AddChild(mote);
             mote.GlobalPosition = at;
@@ -163,6 +165,7 @@ public static partial class KakarotCombatPresentation
             // 出膛闪光用于强化龙形从拳头位置生成的反馈。
             var muzzle = CreateRadialGlowSprite(0.95f, 0f);
             muzzle.Scale = new Vector2(0.25f, 0.25f);
+            muzzle.Modulate = tint ?? DragonFistGlowTint;
             muzzle.ZIndex = 27;
             anchor.AddChild(muzzle);
             muzzle.GlobalPosition = originWorld;
@@ -202,7 +205,7 @@ public static partial class KakarotCombatPresentation
             tween.TweenCallback(Callable.From(() =>
             {
                 PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Normal, hitStop: true);
-                SpawnRadialBurst(anchor, feedbackWorld, 3.4f, 0.38f);
+                SpawnRadialBurst(anchor, feedbackWorld, 3.4f, 0.38f, tint ?? DragonFistGlowTint);
             }));
             tween.TweenProperty(sprite, "modulate:a", 0f, 0.22);
             tween.TweenCallback(Callable.From(() =>
