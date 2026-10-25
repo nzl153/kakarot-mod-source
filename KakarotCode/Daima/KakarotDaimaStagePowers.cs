@@ -135,7 +135,10 @@ public sealed class KakarotDaimaSs4KidPower : KakarotDaimaStagePower
 
     public override async Task AfterCardPlayed(PlayerChoiceContext context, CardPlay cardPlay)
     {
-        if (cardPlay.Card.Owner == Owner.Player && cardPlay.Card.Type == CardType.Attack)
+        if (cardPlay.Card.Owner == Owner.Player
+            && cardPlay.Card.Type == CardType.Attack
+            && !cardPlay.IsAutoPlay
+            && cardPlay.IsFirstInSeries)
         {
             Flash();
             await KakarotDaima.GrantWish(Owner.Player);

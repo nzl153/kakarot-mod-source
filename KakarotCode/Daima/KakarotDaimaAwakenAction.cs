@@ -24,8 +24,25 @@ public sealed class KakarotDaimaAwakenAction(Player player) : GameAction
             return;
         }
 
+        // A request deferred through the enemy turn can arrive after its owner went down.
+        if (!Player.Creature.IsAlive)
+        {
+            relic.RequestPending = false;
+            return;
+        }
+
         relic.MarkUsed();
         await KakarotDaima.Enter(Player);
+    }
+
+    // The host drops player actions once the turn is ending; let the relic be clicked again.
+    protected override void CancelAction()
+    {
+        var relic = Player.GetRelic<KakarotDaimaThirdEye>();
+        if (relic != null)
+        {
+            relic.RequestPending = false;
+        }
     }
 
     public override INetAction ToNetAction() => default(NetKakarotDaimaAwakenAction);
