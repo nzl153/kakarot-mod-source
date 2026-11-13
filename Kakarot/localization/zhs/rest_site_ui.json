@@ -1,0 +1,4 @@
+{
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.name": "修行",
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.description": "回复最大生命的10%（{Heal}点生命）。永久获得每场战斗开始时+1点[gold]力量[/gold]，可以叠加。"
+}

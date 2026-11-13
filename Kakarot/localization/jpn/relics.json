@@ -1,4 +1,10 @@
 {
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.title": "七つのドラゴンボール",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.description": "{Set:choose(0|1|2|3|4):未選択|地球のドラゴンボール|ナメック星のドラゴンボール|超ドラゴンボール|究極のドラゴンボール}。\n{Wished:choose(0|1):収集数：{Balls}/{RequiredBalls}個。\nすべて集めると、戦闘中の自分が行動できる間に[gold]右クリック[/gold]して神龍を召喚できる。|叶えられた願い：}{EarthHeal:choose(0|1):|\n全回復}{EarthRemove:choose(0|1):|\nカード除去}{EarthUpgrade:choose(0|1):|\nカード強化}{EarthGold:choose(0|1):|\nゴールド}{EarthSlay:choose(0|1):|\n敵を倒す}{NamekHeal:choose(0|1):|\nHP回復}{NamekUpgrade:choose(0|1):|\nカード強化}{NamekRemove:choose(0|1):|\nカード除去}{NamekGold:choose(0|1):|\nゴールド}{NamekStrength:choose(0|1):|\n筋力}{NamekEnergy:choose(0|1):|\nエナジーとドロー}{SuperEnergy:choose(0|1):|\nエナジーと怒り}{SuperRitual:choose(0|1):|\n三つの儀式}{SuperVitality:choose(0|1):|\n強靭な体}{SuperBasics:choose(0|1):|\nストライクと防御}{BlackStarDraw:choose(0|1):|\n追加ドロー}{BlackStarPower:choose(0|1):|\n筋力と敏捷性}{BlackStarRelics:choose(0|1):|\nレアレリック}",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.flavor": "",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.title": "重力修行",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.description": "[gold]{Gravity}倍重力[/gold]：敵のHP+{HpBoost}%、攻撃ダメージ+{DamageBoost}%。\n各戦闘で最初のアタック：怒気+{Rage}。{VictoryUnlocked:choose(1):\n戦闘勝利：最大HP+1（エリート・ボスは+2）。|}{RestUnlocked:choose(1):\n休憩所で[gold]修行[/gold]：HPを10%回復、戦闘開始時の[gold]筋力[/gold]+1（現在{TrainingStrength}）。|}\n各戦闘1回、[gold]右クリック[/gold]で重りを外す：このターン[gold]敏捷性[/gold]+{Dexterity}{VictoryUnlocked:choose(1):、この戦闘では最大HPが増えない|}。",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.flavor": "重さを増す世界で、己の力を鍛え上げる。",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "第三の目",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "魔界の秘宝。眠れる力を呼び覚ますという。",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "戦闘ごとに1回：[gold]右クリック[/gold]で発動。",

@@ -1,5 +1,20 @@
 {
+  "KAKAROTMOD-GRAVITY_TRAINING.title": "重力修行（シングルプレイ・新規ランのみ）",
+  "KAKAROTMOD-GRAVITY_TRAINING.Off": "オフ",
+  "KAKAROTMOD-GRAVITY_TRAINING.TenTimes": "10倍重力",
+  "KAKAROTMOD-GRAVITY_TRAINING.FiftyTimes": "50倍重力",
+  "KAKAROTMOD-GRAVITY_TRAINING.HundredTimes": "100倍重力",
   "KAKAROTMOD.mod_title": "カカロット",
   "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "フリーザの挑戦を全キャラクターに開放（シングルプレイのみ／マルチではパーティーにカカロットが必要）",
-  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "フリーザの挑戦以外の本MODイベントを無効化（シングルプレイのみ）"
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "フリーザの挑戦以外の本MODイベントを無効化（シングルプレイのみ）",
+  "KAKAROTMOD-GRAVITY_PANEL.title": "重力修行",
+  "KAKAROTMOD-GRAVITY_PANEL.off": "敵が強くなる代わりに、カカロットは戦闘で修行の成果を得る。倍率が高いほど成果が増える。\n[color=#948c78]シングルプレイの新規ランのみ。アセンションと重複する。[/color]",
+  "KAKAROTMOD-GRAVITY_PANEL.enemy": "[gold]敵[/gold]：HP+{HpBoost}%、攻撃ダメージ+{DamageBoost}%",
+  "KAKAROTMOD-GRAVITY_PANEL.reward1": "各戦闘で最初にプレイするアタック：怒気+1",
+  "KAKAROTMOD-GRAVITY_PANEL.reward2": "戦闘勝利：最大HP+1、エリートとボスは+2",
+  "KAKAROTMOD-GRAVITY_PANEL.reward3": "休憩所で[gold]修行[/gold]を選べる：HPを10%回復し、以降の戦闘開始時に筋力+1。累積する",
+  "KAKAROTMOD-GRAVITY_PANEL.locked": "（{Tier}で解放）",
+  "KAKAROTMOD-GRAVITY_PANEL.weights": "[gold]重りを外す[/gold]：戦闘中にレリックを右クリック、各戦闘1回。このターン敏捷性+5、ただしその戦闘では最大HPが増えない。",
+  "KAKAROTMOD-GRAVITY_PANEL.weightsNoCost": "[gold]重りを外す[/gold]：戦闘中にレリックを右クリック、各戦闘1回。このターン敏捷性+5。",
+  "KAKAROTMOD-GRAVITY_PANEL.note": "シングルプレイの新規ランのみ。アセンションと重複する。"
 }

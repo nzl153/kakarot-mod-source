@@ -1,5 +1,20 @@
 {
+  "KAKAROTMOD-GRAVITY_TRAINING.title": "중력 수련 (싱글플레이, 새 게임부터 적용)",
+  "KAKAROTMOD-GRAVITY_TRAINING.Off": "끄기",
+  "KAKAROTMOD-GRAVITY_TRAINING.TenTimes": "10배 중력",
+  "KAKAROTMOD-GRAVITY_TRAINING.FiftyTimes": "50배 중력",
+  "KAKAROTMOD-GRAVITY_TRAINING.HundredTimes": "100배 중력",
   "KAKAROTMOD.mod_title": "카카로트",
   "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "모든 캐릭터에게 프리저 도전 개방(싱글플레이 전용, 멀티플레이에서는 여전히 파티에 카카로트 필요)",
-  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "프리저 도전 외의 이 모드 이벤트 비활성화(싱글플레이 전용)"
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "프리저 도전 외의 이 모드 이벤트 비활성화(싱글플레이 전용)",
+  "KAKAROTMOD-GRAVITY_PANEL.title": "중력 수련",
+  "KAKAROTMOD-GRAVITY_PANEL.off": "적이 강해지는 대신 카카로트는 전투에서 수련 성과를 얻습니다. 배율이 높을수록 성과가 늘어납니다.\n[color=#948c78]싱글플레이 새 게임에만 적용. 승천과 중첩됩니다.[/color]",
+  "KAKAROTMOD-GRAVITY_PANEL.enemy": "[gold]적[/gold]: 체력 +{HpBoost}%, 공격 피해 +{DamageBoost}%",
+  "KAKAROTMOD-GRAVITY_PANEL.reward1": "전투마다 처음 내는 공격 카드: 분노 +1",
+  "KAKAROTMOD-GRAVITY_PANEL.reward2": "전투 승리: 최대 체력 +1, 정예와 보스는 +2",
+  "KAKAROTMOD-GRAVITY_PANEL.reward3": "휴식 장소에서 [gold]수련[/gold] 선택 가능: 체력 10% 회복, 이후 매 전투 시작 시 힘 +1. 중첩됩니다",
+  "KAKAROTMOD-GRAVITY_PANEL.locked": " ({Tier}에서 해금)",
+  "KAKAROTMOD-GRAVITY_PANEL.weights": "[gold]무게추 벗기[/gold]: 전투 중 유물을 우클릭, 전투마다 한 번. 이번 턴 민첩 +5, 대신 그 전투에서는 최대 체력이 늘지 않습니다.",
+  "KAKAROTMOD-GRAVITY_PANEL.weightsNoCost": "[gold]무게추 벗기[/gold]: 전투 중 유물을 우클릭, 전투마다 한 번. 이번 턴 민첩 +5.",
+  "KAKAROTMOD-GRAVITY_PANEL.note": "싱글플레이 새 게임에만 적용. 승천과 중첩됩니다."
 }

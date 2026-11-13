@@ -1,0 +1,4 @@
+{
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.name": "修行",
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.description": "最大HPの10%（{Heal}HP）を回復する。以降の各戦闘開始時に得る[gold]筋力[/gold]が永続的に1増加する。累積する。"
+}

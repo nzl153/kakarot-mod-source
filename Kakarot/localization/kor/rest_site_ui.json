@@ -1,0 +1,4 @@
+{
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.name": "수련",
+  "OPTION_KAKAROTMOD_GRAVITY_TRAIN.description": "최대 체력의 10%({Heal} 체력)를 회복합니다. 매 전투 시작 시 얻는 [gold]힘[/gold]이 영구적으로 1 증가합니다. 중첩됩니다."
+}

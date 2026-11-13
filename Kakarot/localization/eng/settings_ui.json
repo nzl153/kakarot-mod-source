@@ -1,5 +1,20 @@
 {
+  "KAKAROTMOD-GRAVITY_TRAINING.title": "Gravity Training (singleplayer, new runs only)",
+  "KAKAROTMOD-GRAVITY_TRAINING.Off": "Off",
+  "KAKAROTMOD-GRAVITY_TRAINING.TenTimes": "10× Gravity",
+  "KAKAROTMOD-GRAVITY_TRAINING.FiftyTimes": "50× Gravity",
+  "KAKAROTMOD-GRAVITY_TRAINING.HundredTimes": "100× Gravity",
   "KAKAROTMOD.mod_title": "Kakarot",
   "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "Frieza Challenge for All Characters (singleplayer only; multiplayer still needs Kakarot in the party)",
-  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "Disable this mod's events other than the Frieza Challenge (singleplayer only)"
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "Disable this mod's events other than the Frieza Challenge (singleplayer only)",
+  "KAKAROTMOD-GRAVITY_PANEL.title": "Gravity Training",
+  "KAKAROTMOD-GRAVITY_PANEL.off": "Enemies get stronger, and Kakarot earns training rewards in return. Higher gravity unlocks more rewards.\n[color=#948c78]Singleplayer, new runs only. Stacks with Ascension.[/color]",
+  "KAKAROTMOD-GRAVITY_PANEL.enemy": "[gold]Enemies[/gold]: +{HpBoost}% HP, +{DamageBoost}% attack damage",
+  "KAKAROTMOD-GRAVITY_PANEL.reward1": "First Attack you play each combat: +1 Rage",
+  "KAKAROTMOD-GRAVITY_PANEL.reward2": "Win a combat: +1 Max HP, +2 for Elites and Bosses",
+  "KAKAROTMOD-GRAVITY_PANEL.reward3": "Rest Sites offer [gold]Train[/gold]: heal 10% HP and start every later combat with +1 Strength. Stacks",
+  "KAKAROTMOD-GRAVITY_PANEL.locked": " ({Tier})",
+  "KAKAROTMOD-GRAVITY_PANEL.weights": "[gold]Drop your weights[/gold]: right-click the relic in combat, once per combat. +5 Dexterity this turn, but no Max HP from that combat.",
+  "KAKAROTMOD-GRAVITY_PANEL.weightsNoCost": "[gold]Drop your weights[/gold]: right-click the relic in combat, once per combat. +5 Dexterity this turn.",
+  "KAKAROTMOD-GRAVITY_PANEL.note": "Singleplayer, new runs only. Stacks with Ascension."
 }

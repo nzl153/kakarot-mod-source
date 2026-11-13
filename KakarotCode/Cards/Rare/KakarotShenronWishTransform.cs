@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using KakarotMod.KakarotCode.Cards.Token;
 using KakarotMod.KakarotCode.Powers;
 using KakarotMod.KakarotCode.Wild;
 using MegaCrit.Sts2.Core.Commands;
@@ -12,12 +13,6 @@ namespace KakarotMod.KakarotCode.Cards.Rare;
 
 public class KakarotShenronWishTransform() : KakarotCard(0, CardType.Skill, CardRarity.Rare, TargetType.Self)
 {
-    private const int JusticeThreshold = 30;
-    private const int WildThreshold = 60;
-    private const int SCellThreshold = 90;
-
-    private const int SCellGrant = 3;
-
     protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
         HoverTipFactory.FromPower<KakarotJusticeHeartRitualPower>(),
@@ -27,26 +22,31 @@ public class KakarotShenronWishTransform() : KakarotCard(0, CardType.Skill, Card
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        var roll = Owner.RunState.Rng.Niche.NextInt(100);
-        if (roll < JusticeThreshold)
+        List<CardModel> options =
+        [
+            ModelDb.Card<KakarotTransformWishJustice>().ToMutable(),
+            ModelDb.Card<KakarotTransformWishWild>().ToMutable(),
+            ModelDb.Card<KakarotTransformWishSCell>().ToMutable(),
+        ];
+        foreach (var option in options)
         {
-            await KakarotJusticeHeartRitualHandler.AddProgressAndResolve(choiceContext, Owner, this, 1);
-            return;
+            option.Owner = Owner;
         }
 
-        if (roll < WildThreshold)
+        var picked = await CardSelectCmd.FromChooseACardScreen(choiceContext, options, Owner);
+        int amount = picked!.DynamicVars["Amount"].IntValue;
+        switch (picked)
         {
-            await KakarotWildRitualHandler.AddRitualProgress(choiceContext, Owner, this, 1);
-            return;
+            case KakarotTransformWishJustice:
+                await KakarotJusticeHeartRitualHandler.AddProgressAndResolve(choiceContext, Owner, this, amount);
+                break;
+            case KakarotTransformWishWild:
+                await KakarotWildRitualHandler.AddRitualProgress(choiceContext, Owner, this, amount);
+                break;
+            default:
+                await KakarotSCellPower.TryGrantCellsAsync(choiceContext, Owner, amount, this);
+                break;
         }
-
-        if (roll < SCellThreshold)
-        {
-            await KakarotSCellPower.TryGrantCellsAsync(choiceContext, Owner, SCellGrant, this);
-            return;
-        }
-
-        await CardPileCmd.Draw(choiceContext, 1, Owner);
     }
 
     protected override void OnUpgrade()

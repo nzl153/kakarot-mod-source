@@ -1,5 +1,20 @@
 {
+  "KAKAROTMOD-GRAVITY_TRAINING.title": "Тренировка гравитацией (одиночная игра, новые забеги)",
+  "KAKAROTMOD-GRAVITY_TRAINING.Off": "Выкл.",
+  "KAKAROTMOD-GRAVITY_TRAINING.TenTimes": "Гравитация ×10",
+  "KAKAROTMOD-GRAVITY_TRAINING.FiftyTimes": "Гравитация ×50",
+  "KAKAROTMOD-GRAVITY_TRAINING.HundredTimes": "Гравитация ×100",
   "KAKAROTMOD.mod_title": "Какаротто",
   "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "Испытание Фризы для всех персонажей (только в одиночной игре; в сетевой игре в отряде по-прежнему нужен Какаротто)",
-  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "Отключить события этого мода, кроме Испытания Фризы (только в одиночной игре)"
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "Отключить события этого мода, кроме Испытания Фризы (только в одиночной игре)",
+  "KAKAROTMOD-GRAVITY_PANEL.title": "Гравитация",
+  "KAKAROTMOD-GRAVITY_PANEL.off": "Враги становятся сильнее, а Какарот получает в бою плоды тренировок. Чем выше гравитация, тем больше наград.\n[color=#948c78]Только новые одиночные забеги. Складывается с Возвышением.[/color]",
+  "KAKAROTMOD-GRAVITY_PANEL.enemy": "[gold]Враги[/gold]: +{HpBoost}% здоровья, +{DamageBoost}% урона атак",
+  "KAKAROTMOD-GRAVITY_PANEL.reward1": "Первая разыгранная Атака в бою: +1 ярости",
+  "KAKAROTMOD-GRAVITY_PANEL.reward2": "Победа в бою: +1 к макс. здоровью, +2 за элиту и боссов",
+  "KAKAROTMOD-GRAVITY_PANEL.reward3": "На отдыхе доступна [gold]Тренировка[/gold]: лечит 10% здоровья и навсегда даёт +1 Силы в начале боя. Складывается",
+  "KAKAROTMOD-GRAVITY_PANEL.locked": " ({Tier})",
+  "KAKAROTMOD-GRAVITY_PANEL.weights": "[gold]Снять утяжелители[/gold]: ПКМ по реликвии в бою, раз за бой. +5 Ловкости на этот ход, но без прибавки к макс. здоровью за этот бой.",
+  "KAKAROTMOD-GRAVITY_PANEL.weightsNoCost": "[gold]Снять утяжелители[/gold]: ПКМ по реликвии в бою, раз за бой. +5 Ловкости на этот ход.",
+  "KAKAROTMOD-GRAVITY_PANEL.note": "Только новые одиночные забеги. Складывается с Возвышением."
 }

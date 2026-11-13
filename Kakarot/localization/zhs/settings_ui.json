@@ -1,5 +1,20 @@
 {
+  "KAKAROTMOD-GRAVITY_TRAINING.title": "重力修行（仅单人，新局生效）",
+  "KAKAROTMOD-GRAVITY_TRAINING.Off": "关闭",
+  "KAKAROTMOD-GRAVITY_TRAINING.TenTimes": "十倍重力",
+  "KAKAROTMOD-GRAVITY_TRAINING.FiftyTimes": "五十倍重力",
+  "KAKAROTMOD-GRAVITY_TRAINING.HundredTimes": "百倍重力",
   "KAKAROTMOD.mod_title": "卡卡罗特",
   "KAKAROTMOD-FRIEZA_FOR_ALL_CHARACTERS.title": "弗利萨挑战对全角色开放（仅单人；联机仍需队伍中有卡卡罗特）",
-  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "关闭弗利萨挑战以外的本 MOD 事件（仅单人）"
+  "KAKAROTMOD-DISABLE_EXTRA_EVENTS.title": "关闭弗利萨挑战以外的本 MOD 事件（仅单人）",
+  "KAKAROTMOD-GRAVITY_PANEL.title": "重力修行",
+  "KAKAROTMOD-GRAVITY_PANEL.off": "开启后敌人更强，卡卡罗特则在战斗中获得修行成果，倍数越高成果越多。\n[color=#948c78]仅单人新局生效，可与进阶叠加。[/color]",
+  "KAKAROTMOD-GRAVITY_PANEL.enemy": "[gold]敌人[/gold]：生命+{HpBoost}%，攻击伤害+{DamageBoost}%",
+  "KAKAROTMOD-GRAVITY_PANEL.reward1": "每场战斗打出的第一张攻击牌：怒气+1",
+  "KAKAROTMOD-GRAVITY_PANEL.reward2": "战斗胜利：生命上限+1，精英和Boss+2",
+  "KAKAROTMOD-GRAVITY_PANEL.reward3": "篝火可选[gold]修行[/gold]：回复10%生命，此后每场战斗开始时力量+1，可叠加",
+  "KAKAROTMOD-GRAVITY_PANEL.locked": "（{Tier}解锁）",
+  "KAKAROTMOD-GRAVITY_PANEL.weights": "[gold]脱掉负重[/gold]：战斗中右键点击遗物，每场一次。本回合敏捷+5，但本场不涨生命上限。",
+  "KAKAROTMOD-GRAVITY_PANEL.weightsNoCost": "[gold]脱掉负重[/gold]：战斗中右键点击遗物，每场一次。本回合敏捷+5。",
+  "KAKAROTMOD-GRAVITY_PANEL.note": "仅单人新局生效，可与进阶叠加。"
 }

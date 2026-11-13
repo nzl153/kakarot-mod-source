@@ -1,4 +1,10 @@
 {
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.title": "일곱 개의 드래곤볼",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.description": "{Set:choose(0|1|2|3|4):아직 선택하지 않음|지구 드래곤볼|나메크 드래곤볼|슈퍼 드래곤볼|검은 별 드래곤볼}.\n{Wished:choose(0|1):수집: {Balls}/{RequiredBalls}개.\n모두 모으면 전투 중 자신이 행동할 수 있을 때 [gold]우클릭[/gold]하여 신룡을 소환합니다.|이루어진 소원:}{EarthHeal:choose(0|1):|\n생명력 완전 회복}{EarthRemove:choose(0|1):|\n카드 제거}{EarthUpgrade:choose(0|1):|\n카드 강화}{EarthGold:choose(0|1):|\n골드}{EarthSlay:choose(0|1):|\n적 처치}{NamekHeal:choose(0|1):|\n생명력 회복}{NamekUpgrade:choose(0|1):|\n카드 강화}{NamekRemove:choose(0|1):|\n카드 제거}{NamekGold:choose(0|1):|\n골드}{NamekStrength:choose(0|1):|\n힘}{NamekEnergy:choose(0|1):|\n에너지와 드로우}{SuperEnergy:choose(0|1):|\n에너지와 분노}{SuperRitual:choose(0|1):|\n세 가지 의식}{SuperVitality:choose(0|1):|\n강인한 육체}{SuperBasics:choose(0|1):|\n타격과 수비}{BlackStarDraw:choose(0|1):|\n추가 드로우}{BlackStarPower:choose(0|1):|\n힘과 민첩}{BlackStarRelics:choose(0|1):|\n희귀 유물}",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.flavor": "",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.title": "중력 수련",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.description": "[gold]{Gravity}배 중력[/gold]: 적 체력 +{HpBoost}%, 공격 피해 +{DamageBoost}%.\n전투마다 첫 공격 카드: 분노 +{Rage}.{VictoryUnlocked:choose(1):\n전투 승리: 최대 체력 +1 (정예·보스는 +2).|}{RestUnlocked:choose(1):\n휴식 장소 [gold]수련[/gold]: 체력 10% 회복, 전투 시작 시 [gold]힘[/gold] +1 (현재 {TrainingStrength}).|}\n전투마다 한 번, [gold]우클릭[/gold]으로 무게추를 벗습니다: 이번 턴 [gold]민첩[/gold] +{Dexterity}{VictoryUnlocked:choose(1):, 이 전투에서는 최대 체력이 늘지 않음|}.",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.flavor": "더 무거운 세상에서 자신의 힘을 단련한다.",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "제3의 눈",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "마계의 보물. 잠든 힘을 깨운다고 한다.",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "전투당 1회: [gold]우클릭[/gold]으로 발동합니다.",

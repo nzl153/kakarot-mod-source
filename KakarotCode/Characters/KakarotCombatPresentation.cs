@@ -263,9 +263,9 @@ public static partial class KakarotCombatPresentation
                 TryPlayDaimaTransformation(player.Creature, growUp: true);
             }
 
-            // 「我要药」的 CardType 是 Skill，但它指定敌人、也真的造成伤害，
-            // 所以它需要攻击分支那套朝向/姿势处理，光挂个特效会变成「背对着敌人放龙」。
-            if (string.Equals(cardEntryId, ShenronWishPotionCardId, StringComparison.OrdinalIgnoreCase))
+            // 「我要药」「神龙裁决」是 Skill，但都指定敌人，
+            // 需要攻击分支那套朝向/姿势处理，光挂个特效会变成「背对着敌人放龙」。
+            if (!string.IsNullOrWhiteSpace(cardEntryId) && ShenronTargetedSkillCardIds.Contains(cardEntryId))
             {
                 if (cardPlay.Target != null)
                 {

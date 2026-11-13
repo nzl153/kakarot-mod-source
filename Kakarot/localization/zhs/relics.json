@@ -1,4 +1,10 @@
 {
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.title": "七龙珠",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.description": "{Set:choose(0|1|2|3|4):尚未选择|地球龙珠|娜美克龙珠|超级龙珠|黑星龙珠}。\n{Wished:choose(0|1):已收集{Balls}/{RequiredBalls}颗。\n集齐后，在自己的战斗行动阶段[gold]右键点击[/gold]召唤神龙。|已实现的愿望：}{EarthHeal:choose(0|1):|\n回满生命}{EarthRemove:choose(0|1):|\n移除牌}{EarthUpgrade:choose(0|1):|\n升级牌}{EarthGold:choose(0|1):|\n获得金币}{EarthSlay:choose(0|1):|\n击杀敌人}{NamekHeal:choose(0|1):|\n回复生命}{NamekUpgrade:choose(0|1):|\n升级牌}{NamekRemove:choose(0|1):|\n移除牌}{NamekGold:choose(0|1):|\n获得金币}{NamekStrength:choose(0|1):|\n获得力量}{NamekEnergy:choose(0|1):|\n能量与抽牌}{SuperEnergy:choose(0|1):|\n能量与怒气}{SuperRitual:choose(0|1):|\n三重仪式}{SuperVitality:choose(0|1):|\n强健体魄}{SuperBasics:choose(0|1):|\n打击与防御}{BlackStarDraw:choose(0|1):|\n每回合抽牌}{BlackStarPower:choose(0|1):|\n力量与敏捷}{BlackStarRelics:choose(0|1):|\n获得稀有遗物}",
+  "KAKAROTMOD-KAKAROT_SEVEN_DRAGON_BALLS.flavor": "",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.title": "重力修行",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.description": "[gold]{Gravity}倍重力[/gold]：敌人生命+{HpBoost}%，攻击伤害+{DamageBoost}%。\n每场首张攻击牌：怒气+{Rage}。{VictoryUnlocked:choose(1):\n战斗胜利：生命上限+1，精英和Boss+2。|}{RestUnlocked:choose(1):\n篝火[gold]修行[/gold]：回复10%生命，开场力量+1（已有{TrainingStrength}）。|}\n每场一次，[gold]右键[/gold]脱掉负重：本回合敏捷+{Dexterity}{VictoryUnlocked:choose(1):，本场不涨生命上限|}。",
+  "KAKAROTMOD-KAKAROT_GRAVITY_WEIGHTS.flavor": "在更沉重的世界里，磨炼自己的力量。",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.title": "第三只眼",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.flavor": "魔界的宝物，据说能唤醒沉睡的力量。",
   "KAKAROTMOD-KAKAROT_DAIMA_THIRD_EYE.description": "每场战斗一次：[gold]右键点击[/gold]激活。",

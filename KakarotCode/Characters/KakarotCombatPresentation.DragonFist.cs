@@ -36,8 +36,12 @@ public static partial class KakarotCombatPresentation
     // 神龙许愿攻击复用龙拳龙形，通过色调区分。
     private static readonly Color ShenronWishDragonTint = new(0.45f, 1.25f, 0.55f, 1f);
 
-    // 该技能类型卡也造成伤害，因此在 OnCardPlayed 中单独接入龙形演出。
-    private const string ShenronWishPotionCardId = "KAKAROTMOD-KAKAROT_SHENRON_WISH_POTION";
+    // 这些是指定敌人的技能卡，走不到攻击分支，在 OnCardPlayed 中单独接入龙形演出。
+    private static readonly HashSet<string> ShenronTargetedSkillCardIds = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "KAKAROTMOD-KAKAROT_SHENRON_WISH_POTION",
+        "KAKAROTMOD-KAKAROT_SHENRON_SLAY",
+    };
 
     // 仅攻击类愿望卡使用龙形，避免选牌 UI 遮挡技能演出。
     private static readonly HashSet<string> ShenronWishDragonCardIds = new(StringComparer.OrdinalIgnoreCase)
@@ -48,7 +52,7 @@ public static partial class KakarotCombatPresentation
     };
 
     // 沿飞行路径按时间生成光点作为拖尾。
-    private static void SpawnDragonFistTrail(Node2D anchor, Vector2 originWorld, Vector2 impactWorld)
+    private static void SpawnDragonFistTrail(Node2D anchor, Vector2 originWorld, Vector2 impactWorld, Color glow)
     {
         const int trailCount = 10;
         for (int i = 0; i < trailCount; i++)
@@ -59,7 +63,7 @@ public static partial class KakarotCombatPresentation
             var mote = CreateRadialGlowSprite(0.9f, 0f);
             float size = Mathf.Lerp(0.10f, 0.20f, 1f - t);
             mote.Scale = new Vector2(size, size);
-            mote.Modulate = DragonFistGlowTint with { A = 0f };
+            mote.Modulate = glow with { A = 0f };
             mote.ZIndex = 25;
             anchor.AddChild(mote);
             mote.GlobalPosition = at;
@@ -155,11 +159,12 @@ public static partial class KakarotCombatPresentation
                 // 朝左发招时翻转纵向，保持龙形朝向正确。
                 FlipV = Mathf.Cos(angle) < 0f,
             };
+            var warpMaterial = AttachDragonWarp(sprite);
+            // 着色器直接写 COLOR，modulate 染不上色，换色交给着色器。
             if (tint.HasValue)
             {
-                sprite.Modulate = tint.Value;
+                warpMaterial?.SetShaderParameter("recolor", 1f);
             }
-            var warpMaterial = AttachDragonWarp(sprite);
             holder.AddChild(sprite);
 
             // 出膛闪光用于强化龙形从拳头位置生成的反馈。
@@ -200,7 +205,7 @@ public static partial class KakarotCombatPresentation
                 .SetTrans(Tween.TransitionType.Cubic)
                 .SetEase(Tween.EaseType.Out);
 
-            SpawnDragonFistTrail(anchor, originWorld, impactWorld);
+            SpawnDragonFistTrail(anchor, originWorld, impactWorld, tint ?? DragonFistGlowTint);
 
             tween.TweenCallback(Callable.From(() =>
             {
