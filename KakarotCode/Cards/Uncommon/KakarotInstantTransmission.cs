@@ -28,7 +28,7 @@ public class KakarotInstantTransmission() : KakarotCard(0, CardType.Skill, CardR
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
 
         var listener = (KakarotInstantTransmissionListenerPower)ModelDb.Power<KakarotInstantTransmissionListenerPower>().ToMutable();
         await KakarotPowerCmd.Apply(choiceContext, listener, Owner.Creature, 1m, Owner.Creature, this);

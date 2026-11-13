@@ -52,11 +52,10 @@ public sealed class KakarotKorinTowerTrial : CustomEventModel
 
     private async Task ChaseKorin()
     {
-        await CreatureCmd.LoseMaxHp(
+        await KakarotBetaCompat.LoseMaxHpNotFromCard(
             new ThrowingPlayerChoiceContext(),
             Owner.Creature,
-            MaxHpLoss,
-            isFromCard: false);
+            MaxHpLoss);
         await RelicCmd.Obtain<KakarotSacredWaterJug>(Owner);
         SetEventFinished(PageDescription("CHASE_KORIN"));
     }

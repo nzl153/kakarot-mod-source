@@ -23,7 +23,7 @@ public class KakarotNonHuman() : KakarotCard(0, CardType.Skill, CardRarity.Commo
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
 
         if (Owner.PlayerCombatState.Hand.Cards.Count > 0)
         {

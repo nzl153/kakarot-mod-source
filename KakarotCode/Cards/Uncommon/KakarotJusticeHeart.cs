@@ -31,7 +31,7 @@ public class KakarotJusticeHeart() : KakarotCard(1, CardType.Skill, CardRarity.C
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
         await CreatureCmd.Heal(Owner.Creature, DynamicVars["Heal"].BaseValue);
         await KakarotJusticeHeartRitualHandler.AddProgressAndResolve(choiceContext, Owner, this, 1);
     }

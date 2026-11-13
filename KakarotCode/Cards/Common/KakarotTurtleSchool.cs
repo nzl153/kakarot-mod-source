@@ -21,7 +21,7 @@ public class KakarotTurtleSchool() : KakarotCard(1, CardType.Skill, CardRarity.C
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
         await CardPileCmd.Draw(choiceContext, DynamicVars["Draw"].IntValue, Owner);
     }
 

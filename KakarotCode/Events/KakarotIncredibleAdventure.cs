@@ -72,11 +72,10 @@ public sealed class KakarotIncredibleAdventure : CustomEventModel
 
     private async Task Goodbye()
     {
-        await CreatureCmd.LoseMaxHp(
+        await KakarotBetaCompat.LoseMaxHpNotFromCard(
             new ThrowingPlayerChoiceContext(),
             Owner!.Creature,
-            GoodbyeMaxHpLoss,
-            isFromCard: false);
+            GoodbyeMaxHpLoss);
         List<CardModel> cards = (await CardSelectCmd.FromDeckForRemoval(
             Owner,
             new CardSelectorPrefs(CardSelectorPrefs.RemoveSelectionPrompt, 2))).ToList();

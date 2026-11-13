@@ -45,10 +45,12 @@ public sealed class KakarotReducedHpLossVar : DynamicVar
         PreviewValue = Compute();
     }
 
+#if !STS2_BETA
     protected override decimal GetBaseValueForIConvertible()
     {
         return Compute();
     }
+#endif
 
     public override string ToString()
     {

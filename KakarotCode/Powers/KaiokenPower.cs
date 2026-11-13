@@ -59,10 +59,14 @@ public sealed class KaiokenPower : KakarotPower
     // Resolve on read so losing Blue immediately restores the normal cost without changing stacked totals.
     private sealed class KaiokenHpLossVar() : DynamicVar("HpLoss", 2m)
     {
-        protected override decimal GetBaseValueForIConvertible() =>
+        private decimal Resolved =>
             _owner is KaiokenPower { IsMutable: true } power ? power.EffectiveHpLossPerTurn : BaseValue;
 
-        public override string ToString() => GetBaseValueForIConvertible().ToString();
+#if !STS2_BETA
+        protected override decimal GetBaseValueForIConvertible() => Resolved;
+#endif
+
+        public override string ToString() => Resolved.ToString();
     }
 
     public override async Task BeforeApplied(Creature target, decimal amount, Creature applier, CardModel cardSource)

@@ -488,6 +488,9 @@ public sealed class FriezaBoss : CustomMonsterModel
     public override Task AfterDeath(
         PlayerChoiceContext choiceContext,
         Creature creature,
+#if STS2_BETA
+        CardModel? source,
+#endif
         bool wasRemovalPrevented,
         float deathAnimLength)
     {

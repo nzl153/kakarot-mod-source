@@ -28,7 +28,7 @@ public class KakarotGreatApeForm() : KakarotCard(2, CardType.Skill, CardRarity.U
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
 
         // 与激发野性同因：结算期间自己还在手牌里，按 Count 算会要求选一张选不出来的牌。
         var selectableCount = Owner.PlayerCombatState.Hand.Cards.Count(c => c != this);

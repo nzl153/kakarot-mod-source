@@ -68,4 +68,16 @@ public static class KakarotBetaCompat
         return CreatureCmd.LoseBlock(target, amount);
 #endif
     }
+
+    public static Task LoseMaxHpNotFromCard(
+        PlayerChoiceContext choiceContext,
+        Creature creature,
+        decimal amount)
+    {
+#if STS2_BETA
+        return CreatureCmd.LoseMaxHp(choiceContext, creature, amount, cardSource: null);
+#else
+        return CreatureCmd.LoseMaxHp(choiceContext, creature, amount, isFromCard: false);
+#endif
+    }
 }

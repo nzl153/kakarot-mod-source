@@ -17,8 +17,10 @@ public sealed class FriezaBossEncounter : CustomEncounterModel
     {
     }
 
+#pragma warning disable CS0672 // BaseLib 3.4.8 标了过时，旧写法两个分支都还能用
     public override string CustomScenePath =>
         "res://scenes/encounters/kakarotmod-frieza_boss_encounter.tscn";
+#pragma warning restore CS0672
     public override BackgroundAssets CustomEncounterBackground(ActModel parentAct, Rng rng) =>
         new("kakarotmod_frieza", rng);
     public override bool ShouldGiveRewards => false;

@@ -20,7 +20,7 @@ public class KakarotSaiyanGuard() : KakarotCard(1, CardType.Skill, CardRarity.Co
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardBlock(this, cardPlay);
+        await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
         await PlayerCmd.GainStars(DynamicVars["Stars"].BaseValue, Owner);
     }
 

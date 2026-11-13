@@ -40,11 +40,10 @@ public sealed class KakarotDaimaDemonRealmGate : CustomEventModel
 
     private async Task EnterGate()
     {
-        await CreatureCmd.LoseMaxHp(
+        await KakarotBetaCompat.LoseMaxHpNotFromCard(
             new ThrowingPlayerChoiceContext(),
             Owner.Creature,
-            MaxHpLoss,
-            isFromCard: false);
+            MaxHpLoss);
         await RelicCmd.Obtain<KakarotDaimaThirdEye>(Owner);
         SetEventFinished(PageDescription("ENTER_GATE"));
     }
