@@ -186,7 +186,8 @@ public static partial class KakarotCombatPresentation
                 // 元气弹是"举起来蓄力再扔"，不该有近战前冲，也不该切出拳姿势。
                 var isSpiritBomb = string.Equals(cardEntryId, SpiritBombCardId, StringComparison.OrdinalIgnoreCase);
                 // 眼射线站着放，不前冲也不切姿势，不然眼睛位置对不上立绘。
-                var isEyeBeam = string.Equals(cardEntryId, EyeBeamCardId, StringComparison.OrdinalIgnoreCase);
+                var isAncientEyeBeam = string.Equals(cardEntryId, AncientEyeBeamCardId, StringComparison.OrdinalIgnoreCase);
+                var isEyeBeam = isAncientEyeBeam || string.Equals(cardEntryId, EyeBeamCardId, StringComparison.OrdinalIgnoreCase);
                 if (!isSpiritBomb && !isEyeBeam)
                 {
                     PlayWindupTween(staticModel, repeatCount, windupRest.Pos, windupRest.Scale, windupScaleMultiplier);
@@ -194,7 +195,7 @@ public static partial class KakarotCombatPresentation
 
                 if (isEyeBeam)
                 {
-                    PlayEyeBeamVfx(player, cardPlay, visualsRoot, staticModel);
+                    PlayEyeBeamVfx(player, cardPlay, visualsRoot, staticModel, isAncientEyeBeam);
                 }
                 else if (!string.IsNullOrWhiteSpace(cardEntryId) && SpecialAttackSfxOverrides.TryGetValue(cardEntryId, out var special))
                 {

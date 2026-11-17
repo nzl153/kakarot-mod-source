@@ -58,6 +58,6 @@ public static class KakarotArchaicToothUpgradePatch
 {
     public static void Postfix(Dictionary<ModelId, CardModel> __result)
     {
-        __result[ModelDb.Card<KakarotEyeBeam>().Id] = ModelDb.Card<KakarotFatherSonWave>();
+        __result[ModelDb.Card<KakarotEyeBeam>().Id] = ModelDb.Card<KakarotAncientEyeBeam>();
     }
 }

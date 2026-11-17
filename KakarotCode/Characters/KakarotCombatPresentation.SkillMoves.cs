@@ -12,6 +12,7 @@ namespace KakarotMod.KakarotCode.Characters;
 public static partial class KakarotCombatPresentation
 {
     private const string EyeBeamCardId = "KAKAROTMOD-KAKAROT_EYE_BEAM";
+    private const string AncientEyeBeamCardId = "KAKAROTMOD-KAKAROT_ANCIENT_EYE_BEAM";
     private const string RoarCardId = "KAKAROTMOD-KAKAROT_ROAR";
     private const string LevitationCardId = "KAKAROTMOD-KAKAROT_LEVITATION";
     private const string SenzuBeanCardId = "KAKAROTMOD-KAKAROT_SENZU_BEAN";
@@ -102,7 +103,8 @@ public static partial class KakarotCombatPresentation
         return ModelPixelToWorld(staticModel, new Vector2(size.X * 0.5f, size.Y * 0.97f));
     }
 
-    private static void PlayEyeBeamVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel)
+    // 眼射线和气合眼共用；气合眼更粗更久，震得更狠。
+    private static void PlayEyeBeamVfx(Player player, CardPlay cardPlay, Node visualsRoot, Sprite2D staticModel, bool ancient)
     {
         try
         {
@@ -116,7 +118,7 @@ public static partial class KakarotCombatPresentation
                 KakarotFormVisuals.RefreshFacingToTarget(player.Creature, cardPlay.Target);
             }
 
-            PlaySfx(visualsRoot, "EyeBeamSfx", EyeBeamSfxPath, -6f, true);
+            PlaySfx(visualsRoot, "EyeBeamSfx", EyeBeamSfxPath, ancient ? 0f : -2f, true);
 
             var eye = ResolveEyeWorld(staticModel);
             var target = ResolvePrimaryBeamTarget(player, cardPlay);
@@ -133,16 +135,17 @@ public static partial class KakarotCombatPresentation
             float length = eye.DistanceTo(end);
 
             // 三层光（淡蓝外晕、白中层、细实芯）+ 冲在最前的弹头，眼睛先闪一颗星芒。
-            const float grow = 0.07f;
-            const float hold = 0.12f;
-            const float thin = 0.13f;
+            float w = ancient ? 3.6f : 2.4f;
+            const float grow = 0.06f;
+            float hold = ancient ? 0.34f : 0.24f;
+            float thin = ancient ? 0.22f : 0.18f;
             float sx = length / 64f;
 
             var layers = new (Sprite2D Strip, float Width)[]
             {
-                (CreateBeamStrip(64, new Color(0.72f, 0.88f, 1f, 0.38f), 1.3f), 20f),
-                (CreateBeamStrip(64, new Color(1f, 1f, 1f, 0.85f), 2.2f), 8f),
-                (CreateBeamStrip(64, Colors.White, 6f), 3f),
+                (CreateBeamStrip(64, new Color(0.72f, 0.88f, 1f, ancient ? 0.6f : 0.5f), 1.3f), 20f * w),
+                (CreateBeamStrip(64, new Color(1f, 1f, 1f, 0.85f), 2.2f), 8f * w),
+                (CreateBeamStrip(64, Colors.White, 6f), 3f * w),
             };
             var tw = holder.CreateTween().SetParallel(true);
             foreach (var (strip, width) in layers)
@@ -156,16 +159,30 @@ public static partial class KakarotCombatPresentation
             }
 
             var core = layers[2].Strip;
-            tw.TweenProperty(core, "scale:y", 5f / 64f, hold * 0.5f).SetDelay(grow);
-            tw.TweenProperty(core, "scale:y", 3f / 64f, hold * 0.5f).SetDelay(grow + hold * 0.5f);
+            tw.TweenProperty(core, "scale:y", 5f * w / 64f, hold * 0.5f).SetDelay(grow);
+            tw.TweenProperty(core, "scale:y", 3f * w / 64f, hold * 0.5f).SetDelay(grow + hold * 0.5f);
 
-            var bolt = CreateStreak(new Color(1f, 1f, 1f), 46f, 14f);
+            var bolt = CreateStreak(new Color(1f, 1f, 1f), 46f * w, 14f * w);
             holder.AddChild(bolt);
             tw.TweenProperty(bolt, "position:x", length, grow).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
             tw.TweenProperty(bolt, "modulate:a", 0f, 0.1).SetDelay(grow);
 
-            SpawnStarGlint(holder, Vector2.Zero, 64f, 0.28f, 0f);
-            SpawnStarGlint(holder, new Vector2(length, 0f), 52f, 0.24f, grow);
+            SpawnStarGlint(holder, Vector2.Zero, 64f * w, ancient ? 0.5f : 0.4f, 0f);
+            SpawnStarGlint(holder, new Vector2(length, 0f), 52f * w, ancient ? 0.42f : 0.34f, grow);
+
+            tw.TweenCallback(Callable.From(() =>
+            {
+                if (ancient)
+                {
+                    PlayImpactFeedback(ShakeStrength.Strong, ShakeDuration.Short, hitStop: true);
+                    SpawnRadialBurst(anchor, end, 4f, 0.4f, new Color(0.8f, 0.92f, 1f));
+                }
+                else
+                {
+                    PlayImpactFeedback(ShakeStrength.Medium, ShakeDuration.Short, hitStop: false);
+                    SpawnRadialBurst(anchor, end, 2.6f, 0.3f, new Color(0.8f, 0.92f, 1f));
+                }
+            })).SetDelay(grow);
 
             tw.Chain().TweenInterval(0.05);
             tw.Chain().TweenCallback(Callable.From(() => FreeIfValid(holder)));
