@@ -21,7 +21,7 @@ public static class KakarotBetaCompat
         decimal damage,
         ValueProp props)
     {
-#if STS2_BETA
+#if STS2_V109
         return CommonActions.CardAttack(card, cardPlay, cardPlay.Target, damage, props);
 #else
         return CommonActions.CardAttack(card, cardPlay.Target, damage, props);
@@ -33,7 +33,7 @@ public static class KakarotBetaCompat
         CardModel card,
         CardPlay cardPlay)
     {
-#if STS2_BETA
+#if STS2_V109
         return command.FromCard(card, cardPlay);
 #else
         return command.FromCard(card);
@@ -49,7 +49,7 @@ public static class KakarotBetaCompat
         CardModel cardSource,
         CardPlay cardPlay)
     {
-#if STS2_BETA
+#if STS2_V109
         return CreatureCmd.Damage(choiceContext, target, amount, props, dealer, cardSource, cardPlay);
 #else
         return CreatureCmd.Damage(choiceContext, target, amount, props, dealer, cardSource);
@@ -62,7 +62,7 @@ public static class KakarotBetaCompat
         decimal amount,
         Creature remover = null)
     {
-#if STS2_BETA
+#if STS2_V109
         return CreatureCmd.LoseBlock(choiceContext, target, amount, remover);
 #else
         return CreatureCmd.LoseBlock(target, amount);
@@ -74,7 +74,7 @@ public static class KakarotBetaCompat
         Creature creature,
         decimal amount)
     {
-#if STS2_BETA
+#if STS2_V113
         return CreatureCmd.LoseMaxHp(choiceContext, creature, amount, cardSource: null);
 #else
         return CreatureCmd.LoseMaxHp(choiceContext, creature, amount, isFromCard: false);

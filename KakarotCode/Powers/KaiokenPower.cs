@@ -62,7 +62,7 @@ public sealed class KaiokenPower : KakarotPower
         private decimal Resolved =>
             _owner is KaiokenPower { IsMutable: true } power ? power.EffectiveHpLossPerTurn : BaseValue;
 
-#if !STS2_BETA
+#if !STS2_V109
         protected override decimal GetBaseValueForIConvertible() => Resolved;
 #endif
 

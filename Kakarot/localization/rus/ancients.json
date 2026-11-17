@@ -1,6 +1,20 @@
 {
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "У тебя решительный вид.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "Я раз за разом преодолеваю свои пределы.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "Ты ищешь противников посильнее.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Бой начинается."
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "Привет, я Гоку! Ты ведь самый сильный во всей этой башне, да?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "Продолжить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "Ещё один восходящий, не знающий своего места.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.next": "Ответить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-2r.char": "Ух ты, я аж весь загорелся! Давай, сразимся в полную силу!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.ancient": "Снова ты. Прошлого поражения было мало?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.next": "Ответить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.char": "Хе-хе, проигрывая, становишься сильнее! А в этот раз я как следует потренировался!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.next": "Продолжить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-2r.ancient": "Глупое упорство.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.ancient": "Зачем ты снова и снова поднимаешься сюда?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.next": "Ответить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.char": "Потому что здесь есть сильный противник! А после этого боя — давай реванш!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.next": "Продолжить",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-2r.ancient": "...Ты совершенно безрассуден.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-attack": "Both"
 }

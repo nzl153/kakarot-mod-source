@@ -222,7 +222,7 @@ public sealed class SuperSaiyanFormPower : KakarotPower
         }
     }
 
-#if STS2_BETA
+#if STS2_V109
     public override decimal ModifyDamageMultiplicative(
         Creature target,
         decimal amount,

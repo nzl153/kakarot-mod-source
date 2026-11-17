@@ -24,7 +24,7 @@ public sealed class KakarotShenronSlay() : CustomCardModel(
     {
         if (cardPlay.Target is { IsAlive: true } target)
         {
-#if STS2_BETA
+#if STS2_V113
             await CreatureCmd.Kill(target, this);
 #else
             await CreatureCmd.Kill(target);

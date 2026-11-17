@@ -138,7 +138,7 @@ public sealed class KakarotSevenDragonBalls : KakarotRelic
         player == Owner && Wishes == KakarotWish.BlackStarDraw
             ? count + ModelDb.Card<KakarotWishBlackStarDraw>().DynamicVars["Cards"].BaseValue : count;
 
-#if STS2_BETA
+#if STS2_V109
     public override decimal ModifyDamageMultiplicative(Creature? target, decimal amount, ValueProp props,
         Creature? dealer, CardModel? cardSource, CardPlay? cardPlay)
 #else

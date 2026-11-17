@@ -63,7 +63,7 @@ public class KakarotSuperSaiyanTransform() : KakarotCard(0, CardType.Skill, Card
         AddKeyword(CardKeyword.Retain);
     }
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

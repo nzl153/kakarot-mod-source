@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using BaseLib.Utils;
+using Godot;
+using KakarotMod.KakarotCode.Characters;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -26,7 +28,9 @@ public class KakarotEyeBeam() : KakarotCard(0, CardType.Attack, CardRarity.Commo
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CommonActions.CardAttack(this, cardPlay).Execute(choiceContext);
+        await DamageCmd.Attack(DynamicVars.Damage.BaseValue).FromKakarotCard(this, cardPlay).Targeting(cardPlay.Target)
+            .WithHitVfxNode(KakarotCombatPresentation.KiHit(KiHitStyle.Palm, 0.55f, Colors.White))
+            .Execute(choiceContext);
         await KakarotPowerCmd.Apply<WeakPower>(choiceContext, cardPlay.Target, DynamicVars.Weak.BaseValue, Owner.Creature, this);
     }
 

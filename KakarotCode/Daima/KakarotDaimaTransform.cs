@@ -23,7 +23,7 @@ public class KakarotDaimaTransform() : KakarotCard(0, CardType.Skill, CardRarity
 
     private PileType ResultPile => KakarotDaima.CanTransformFurther(Owner.Creature) ? PileType.Hand : PileType.Exhaust;
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

@@ -1,6 +1,20 @@
 {
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "你看起来意志坚定。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "我会不断突破。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "你渴望更强的对手。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "战斗，现在开始。"
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "嘿，我是孙悟空！你就是这座塔里最强的家伙吧？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "继续",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "又一个不知天高地厚的攀登者。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.next": "回答",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-2r.char": "哇，光是站在这儿我就兴奋起来了！来吧，全力打一场！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.ancient": "你又来了。上次输得还不够惨么？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.next": "回答",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.char": "嘿嘿，输了才能变得更强嘛。这次我可是好好修行过了！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.next": "继续",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-2r.ancient": "愚蠢的执着。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.ancient": "你究竟为什么一次又一次地爬上来？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.next": "回答",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.char": "因为这里有强者啊！打完这一场，下次再来比过！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.next": "继续",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-2r.ancient": "……真是个不可理喻的家伙。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-attack": "Both"
 }

@@ -80,9 +80,9 @@ public sealed class KakarotGravityWeights : KakarotRelic
     public int HpBoost => Level switch { 1 => 25, 2 => 50, 3 => 80, _ => 0 };
     public int DamageBoost => Level switch { 1 => 10, 2 => 20, 3 => 30, _ => 0 };
 
-    // 弗利萨战三档一律 +10%。
-    public int HpBoostIn(EncounterModel encounter) => encounter is FriezaBossEncounter ? 10 : HpBoost;
-    private int DamageBoostIn(EncounterModel encounter) => encounter is FriezaBossEncounter ? 10 : DamageBoost;
+    // 弗利萨战：十倍、五十倍 +10% 生命和伤害，百倍 +20% 生命、+15% 伤害。
+    public int HpBoostIn(EncounterModel encounter) => encounter is FriezaBossEncounter ? (Level == 3 ? 20 : 10) : HpBoost;
+    private int DamageBoostIn(EncounterModel encounter) => encounter is FriezaBossEncounter ? (Level == 3 ? 15 : 10) : DamageBoost;
 
     public bool IsActive => Level is >= 1 and <= 3
         && Owner.RunState.Players.Count == 1
@@ -152,7 +152,7 @@ public sealed class KakarotGravityWeights : KakarotRelic
         return Task.CompletedTask;
     }
 
-#if STS2_BETA
+#if STS2_V109
     public override decimal ModifyDamageMultiplicative(Creature target, decimal amount, ValueProp props,
         Creature dealer, CardModel cardSource, CardPlay cardPlay)
 #else

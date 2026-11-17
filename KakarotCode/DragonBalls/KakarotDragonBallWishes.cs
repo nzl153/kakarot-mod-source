@@ -214,7 +214,7 @@ internal static class KakarotDragonBallWishes
         var prefs = new CardSelectorPrefs(upgrade ? CardSelectorPrefs.UpgradeSelectionPrompt
             : CardSelectorPrefs.RemoveSelectionPrompt, count) { Cancelable = false };
         // 牌组选择同步牌组索引，但不负责暂停 GameAction。
-#if STS2_BETA
+#if STS2_V109
         await context.SignalPlayerChoiceBegun(player, PlayerChoiceOptions.None);
 #else
         await context.SignalPlayerChoiceBegun(PlayerChoiceOptions.None);

@@ -1,6 +1,20 @@
 {
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "굳은 의지가 느껴지는걸.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "난 계속 한계를 뛰어넘을 거야!",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "더 강한 상대를 갈망하는구나.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "자, 싸움을 시작하자!"
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "안녕, 난 손오공이야! 네가 이 탑에서 제일 센 녀석이지?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "계속",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "주제를 모르는 등반자가 또 하나 왔군.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.next": "대답",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-2r.char": "우와, 여기 서 있기만 해도 두근두근해! 자, 전력으로 붙어 보자!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.ancient": "또 왔나. 지난번 패배로는 부족했나?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.next": "대답",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.char": "헤헤, 져야 더 강해지는 법이지. 이번엔 제대로 수행하고 왔다고!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.next": "계속",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-2r.ancient": "어리석은 집착이로군.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.ancient": "어째서 몇 번이고 다시 올라오는 거지?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.next": "대답",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.char": "강한 녀석이 여기 있으니까! 이번 판 끝나면 다음에 또 붙자고!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.next": "계속",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-2r.ancient": "……정말 이해할 수 없는 녀석이군.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-attack": "Both"
 }

@@ -15,7 +15,7 @@ public sealed class KakarotDaimaTailPower : KakarotPower
     public override string CustomPackedIconPath => "kakarot_tail_prep_power.png".PowerImagePath();
     public override string CustomBigIconPath => "kakarot_tail_prep_power.png".BigPowerImagePath();
 
-#if STS2_BETA
+#if STS2_V109
     public override decimal ModifyDamageAdditive(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource, CardPlay cardPlay)
 #else
     public override decimal ModifyDamageAdditive(Creature target, decimal amount, ValueProp props, Creature dealer, CardModel cardSource)

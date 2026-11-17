@@ -16,7 +16,7 @@ public class KakarotOutOfControl() : KakarotCard(1, CardType.Status, CardRarity.
 
     protected override Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay) => Task.CompletedTask;
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

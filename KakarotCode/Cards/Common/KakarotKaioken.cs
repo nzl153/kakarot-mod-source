@@ -51,7 +51,7 @@ public class KakarotKaioken() : KakarotCard(0, CardType.Skill, CardRarity.Uncomm
         DynamicVars["HpLoss"].UpgradeValueBy(-1m);
     }
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

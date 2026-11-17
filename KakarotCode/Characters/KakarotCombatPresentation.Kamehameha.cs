@@ -272,12 +272,8 @@ public static partial class KakarotCombatPresentation
             if (KamehamehaUseShaderBeam && !spawned)
             {
                 var beamEntry = cardPlay.Card?.Id.Entry ?? string.Empty;
-                if (!KamehamehaBeamPalette.TryGetValue(beamEntry, out var palette))
-                {
-                    palette = (KamehamehaBeamColorDefault, KamehamehaCoreColorDefault);
-                }
-
-                var isBreakthrough = string.Equals(beamEntry, "KAKAROTMOD-KAKAROT_DAIMA_BREAKTHROUGH_KAMEHAMEHA", StringComparison.OrdinalIgnoreCase);
+                var palette = ResolveKamehamehaPalette(beamEntry);
+                var isBreakthrough = string.Equals(beamEntry, DaimaBreakthroughKamehamehaId, StringComparison.OrdinalIgnoreCase);
                 if (isBreakthrough)
                 {
                     // A black core cancels the additive halo's center, preserving the blue beam.
@@ -305,10 +301,9 @@ public static partial class KakarotCombatPresentation
             if (!spawned)
             {
                 TryPlayKamehamehaBeamVfxProcedural(anchor, beamOriginWorld, beamEndWorld);
-                spawned = true;
             }
 
-            // 光束本体已提供清晰命中反馈，不额外叠加逐目标爆点，避免群体目标出现位置错觉和视觉干扰。
+            ScheduleKamehamehaBeamFeedback(player, cardPlay, anchor, beamOriginWorld, beamEndWorld);
         }
         catch (Exception ex)
         {

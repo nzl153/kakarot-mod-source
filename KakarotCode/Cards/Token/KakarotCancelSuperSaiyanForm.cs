@@ -63,7 +63,7 @@ public class KakarotCancelSuperSaiyanForm() : KakarotCard(0, CardType.Skill, Car
         KakarotFormVisuals.Refresh(creature);
     }
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

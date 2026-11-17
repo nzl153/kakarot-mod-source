@@ -43,7 +43,7 @@ internal static class KakarotDragonBallSelection
     {
         var run = RunManager.Instance;
 
-#if STS2_BETA
+#if STS2_V113
         var selector = run.CardSelectorStack.GetSelector(player);
 #else
         var selector = CardSelectCmd.Selector;
@@ -56,18 +56,20 @@ internal static class KakarotDragonBallSelection
         else
         {
             uint choiceId = run.PlayerChoiceSynchronizer.ReserveChoiceId(player);
-#if STS2_BETA
+#if STS2_V109
             await context.SignalPlayerChoiceBegun(player, PlayerChoiceOptions.None);
 #else
             await context.SignalPlayerChoiceBegun(PlayerChoiceOptions.None);
 #endif
             if (LocalContext.IsMe(player) && run.NetService.Type != NetGameType.Replay)
             {
-#if STS2_BETA
+#if STS2_V113
                 var localSelector = run.CardSelectorStack.LocalSelector;
+#elif STS2_V109
+                var localSelector = CardSelectCmd.LocalSelector;
 #endif
                 CardModel selected;
-#if STS2_BETA
+#if STS2_V109
                 if (localSelector != null)
                 {
                     selected = (await localSelector.GetSelectedCards(cards, 1, 1)).Single();

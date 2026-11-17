@@ -1,6 +1,20 @@
 {
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "Hi, I'm Goku! You look pretty strong.",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "I just keep pushing past my limits!",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "Always looking for a stronger opponent, huh?",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Alright, here I come!"
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "Hi, I'm Goku! You must be the strongest guy in this whole tower, huh?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "Continue",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "Another climber who doesn’t know his place.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.next": "Answer",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-2r.char": "Wow, just standing here's got me all fired up! C'mon, let's go all out!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.ancient": "You again. Didn’t you lose badly enough last time?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.next": "Answer",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.char": "Heh, losing is how you get stronger! And I’ve been training real hard this time!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.next": "Continue",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-2r.ancient": "Foolish persistence.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.ancient": "Why do you keep climbing back up here, again and again?",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.next": "Answer",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.char": "'Cause there's someone strong up here! After this one, let's have a rematch!",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.next": "Continue",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-2r.ancient": "...You are utterly unreasonable.",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-attack": "Both"
 }

@@ -28,7 +28,7 @@ public class KakarotRuyiStaff() : KakarotCard(0, CardType.Attack, CardRarity.Tok
             .Execute(choiceContext);
     }
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

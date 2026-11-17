@@ -57,17 +57,25 @@ public static class KakarotGravityMonsterHpPatch
 }
 
 // 怪物在战斗中重设血量（孵化、换阶段、复活、蜈蚣节进场）走的是这两个命令，在这里补上重力加成。
+// SetMaxAndCurrentHp 内部会同步调用 SetMaxHp，那一次不能再乘，否则上限被乘两次、当前血量只乘一次。
 [HarmonyPatch]
 public static class KakarotGravityMonsterHpResetPatch
 {
+    private static bool _skipNextSetMaxHp;
+
     public static IEnumerable<System.Reflection.MethodBase> TargetMethods() =>
     [
         AccessTools.Method(typeof(CreatureCmd), nameof(CreatureCmd.SetMaxAndCurrentHp)),
         AccessTools.Method(typeof(CreatureCmd), nameof(CreatureCmd.SetMaxHp)),
     ];
 
-    public static void Prefix(Creature creature, ref decimal amount)
+    public static void Prefix(System.Reflection.MethodBase __originalMethod, Creature creature, ref decimal amount)
     {
+        if (__originalMethod.Name == nameof(CreatureCmd.SetMaxHp) && _skipNextSetMaxHp)
+        {
+            _skipNextSetMaxHp = false;
+            return;
+        }
         // 瀑布巨人末阶段把血量设成近乎无限，不能再乘。
         if (creature.Side != CombatSide.Enemy || creature.Monster == null || amount >= 100000000m
             || creature.CombatState is not { } state || state.RunState.Players.Count != 1)
@@ -79,6 +87,7 @@ public static class KakarotGravityMonsterHpResetPatch
         if (relic is { IsActive: true })
         {
             amount = Math.Floor(amount * (1m + relic.HpBoostIn(state.Encounter) / 100m));
+            _skipNextSetMaxHp = __originalMethod.Name == nameof(CreatureCmd.SetMaxAndCurrentHp);
         }
     }
 }

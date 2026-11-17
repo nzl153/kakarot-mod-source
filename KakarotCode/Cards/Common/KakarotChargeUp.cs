@@ -24,7 +24,7 @@ public class KakarotChargeUp() : KakarotCard(1, CardType.Skill, CardRarity.Uncom
         AddKeyword(CardKeyword.Innate);
     }
 
-#if STS2_BETA
+#if STS2_V109
     protected override CardLocation GetResultLocationForCardPlay()
     {
         var result = base.GetResultLocationForCardPlay();

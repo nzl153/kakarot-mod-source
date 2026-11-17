@@ -108,6 +108,7 @@ public static partial class KakarotCombatPresentation
     private static readonly HashSet<string> ChargeCardOverrides = new(StringComparer.OrdinalIgnoreCase)
     {
         "KAKAROTMOD-KAKAROT_CHARGE_UP",
+        "KAKAROTMOD-KAKAROT_KI_DIFFUSION",
         "KAKAROTMOD-KAKAROT_CANCEL_SUPER_SAIYAN_FORM",
         "KAKAROTMOD-KAKAROT_DAIMA_TAIL_REGROWTH",
     };
@@ -184,12 +185,18 @@ public static partial class KakarotCombatPresentation
                 var windupScaleMultiplier = useKamehamehaPose ? KamehamehaPoseScaleMultiplier : 1f;
                 // 元气弹是"举起来蓄力再扔"，不该有近战前冲，也不该切出拳姿势。
                 var isSpiritBomb = string.Equals(cardEntryId, SpiritBombCardId, StringComparison.OrdinalIgnoreCase);
-                if (!isSpiritBomb)
+                // 眼射线站着放，不前冲也不切姿势，不然眼睛位置对不上立绘。
+                var isEyeBeam = string.Equals(cardEntryId, EyeBeamCardId, StringComparison.OrdinalIgnoreCase);
+                if (!isSpiritBomb && !isEyeBeam)
                 {
                     PlayWindupTween(staticModel, repeatCount, windupRest.Pos, windupRest.Scale, windupScaleMultiplier);
                 }
 
-                if (!string.IsNullOrWhiteSpace(cardEntryId) && SpecialAttackSfxOverrides.TryGetValue(cardEntryId, out var special))
+                if (isEyeBeam)
+                {
+                    PlayEyeBeamVfx(player, cardPlay, visualsRoot, staticModel);
+                }
+                else if (!string.IsNullOrWhiteSpace(cardEntryId) && SpecialAttackSfxOverrides.TryGetValue(cardEntryId, out var special))
                 {
                     PlaySfx(visualsRoot, special.NodeName, special.Path, special.VolumeDb, true);
                     // Beam cards use the optional scene, then fall back to generated light.
@@ -284,6 +291,8 @@ public static partial class KakarotCombatPresentation
             {
                 PlaySolarFlareVfx(visualsRoot, staticModel);
             }
+
+            TryPlaySkillMoveVfx(player, cardEntryId, visualsRoot, staticModel);
 
             if (IsDefenseCard(cardPlay.Card, cardEntryId))
             {

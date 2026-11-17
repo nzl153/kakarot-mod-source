@@ -23,7 +23,7 @@ public sealed class FriezaEmperorGuardPower : KakarotPower
 
     protected override IEnumerable<DynamicVar> CanonicalVars => [new DynamicVar("Reduction", 25m)];
 
-#if STS2_BETA
+#if STS2_V109
     public override decimal ModifyDamageMultiplicative(
         Creature? target,
         decimal amount,

@@ -1,6 +1,20 @@
 {
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "強い決意を感じます。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "オラは限界を超え続ける。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "あなたはさらなる強敵を求めています。",
-  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "さあ、バトル開始だ。"
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.char": "オッス！オラ悟空！おめえがこの塔でいちばん強えヤツか？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-0r.next": "続ける",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.ancient": "身の程を知らぬ登塔者がまた一人。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-1r.next": "答える",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-2r.char": "ひゃー、ここに立ってるだけでワクワクしてきたぞ！さあ、全力でやろうぜ！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.ancient": "また来たのか。前の敗北では足りなかったか？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-0r.next": "答える",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.char": "へへっ、負けたらもっと強くなれるんだ。今度はしっかり修行してきたぞ！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-1r.next": "続ける",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-2r.ancient": "愚かな執念だ。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.ancient": "なぜ何度も何度も登ってくる？",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-0r.next": "答える",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.char": "強えヤツがいるからに決まってんだろ！これが終わったら、また勝負しようぜ！",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-1r.next": "続ける",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-2r.ancient": "……まったく、理解できぬ奴だ。",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.0-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.1-attack": "Both",
+  "THE_ARCHITECT.talk.KAKAROTMOD-KAKAROT.2-attack": "Both"
 }

@@ -154,6 +154,7 @@ internal static class KakarotAuraFormResolver
 
     private static bool IsChargeCard(string cardEntryId) =>
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_CHARGE_UP") ||
+        EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_KI_DIFFUSION") ||
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_GOD_KI") ||
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_GREAT_APE_FORM") ||
         EqualsId(cardEntryId, "KAKAROTMOD-KAKAROT_SHENRON_WISH_TRANSFORM");
