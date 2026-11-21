@@ -89,6 +89,9 @@ public static partial class KakarotCombatPresentation
     // 光束越过最远敌人后继续延伸，形成贯穿整排的视觉效果。
     private const float KamehamehaBeamOvershoot = 320f;
 
+    // 波头越出屏幕边缘的距离。
+    private const float KamehamehaBeamScreenExit = 160f;
+
     // 场上无法解析敌人时的兜底长度。
     private const float KamehamehaBeamFallbackLength = 900f;
 
@@ -341,23 +344,33 @@ public static partial class KakarotCombatPresentation
     }
 
     // 光束保持发射者手部高度；朝向按近敌判断，长度按同侧最远敌人判断，两者用途不同。
+    // 终点至少越过屏幕边缘，各分辨率下都贯穿出屏。
     private static Vector2 ComputeKamehamehaBeamEndWorld(
         Sprite2D staticModel, Creature primaryTarget, Vector2 beamOriginWorld, Player player = null)
     {
         float dir = staticModel.FlipH ? -1f : 1f;
 
+        float endX;
         if (TryResolveFarthestBeamTargetX(player, staticModel, out float farthestX))
         {
-            return new Vector2(farthestX + KamehamehaBeamOvershoot * dir, beamOriginWorld.Y);
+            endX = farthestX + KamehamehaBeamOvershoot * dir;
         }
-
-        // 无法解析全场目标时回退到主目标。
-        if (primaryTarget != null && TryGetCreatureChestWorld(primaryTarget, out Vector2 enemyAnchor))
+        else if (primaryTarget != null && TryGetCreatureChestWorld(primaryTarget, out Vector2 enemyAnchor))
         {
-            return new Vector2(enemyAnchor.X + KamehamehaBeamOvershoot * dir, beamOriginWorld.Y);
+            // 无法解析全场目标时回退到主目标。
+            endX = enemyAnchor.X + KamehamehaBeamOvershoot * dir;
+        }
+        else
+        {
+            endX = beamOriginWorld.X + KamehamehaBeamFallbackLength * dir;
         }
 
-        return beamOriginWorld + new Vector2(KamehamehaBeamFallbackLength * dir, 0f);
+        Rect2 screen = staticModel.GetCanvasTransform().AffineInverse() * staticModel.GetViewportRect();
+        endX = dir > 0f
+            ? Mathf.Max(endX, screen.End.X + KamehamehaBeamScreenExit)
+            : Mathf.Min(endX, screen.Position.X - KamehamehaBeamScreenExit);
+
+        return new Vector2(endX, beamOriginWorld.Y);
     }
 
     // 返回当前朝向一侧最远可命中敌人的世界 X；同侧无目标时回退到全场最远。
